@@ -1,7 +1,7 @@
-import Home from "./components/Home/Home.jsx"
+import Home from "./pages/Home/Home.jsx"
 
-let routes = [
+const routes = [
   { path: '/', element: <Home /> }
 ]
 
-export default routes
+export {routes}
