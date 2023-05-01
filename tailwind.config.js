@@ -8,5 +8,15 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
+  // daisyui: {
+  //   themes: [
+  //     {
+  //       mytheme: {
+  //         "primary-content": "white"
+  //       },
+  //     },
+  //   ],
+  // },
+
 }

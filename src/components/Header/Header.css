@@ -1,0 +1,35 @@
+.header__navlink,
+.header__navlink-active {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.header__navlink::before {
+  content: "";
+  background-color: white;
+  width: 0.25rem;
+  height: 0.25rem;
+  border-radius: 0.25rem;
+  position: absolute;
+  right: -0.75rem;
+  transition: 250ms ease;
+  transform: scale(0.75);
+  opacity: 0;
+}
+
+.header__navlink:hover::before {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.header__navlink-active::before {
+  content: "";
+  background-color: white;
+  width: 0.25rem;
+  height: 0.25rem;
+  border-radius: 0.25rem;
+  position: absolute;
+  right: -0.75rem;
+  transition: 250ms ease;
+}

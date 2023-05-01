@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "cas";
+  src: url("./../public/fonts/Casablanca.Font.ttf");
+}
+
 html {
   overflow-x: hidden;
   direction: rtl
@@ -9,4 +14,5 @@ html {
 
 * {
   @apply transition duration-200;
+  font-family: "cas"
 }
