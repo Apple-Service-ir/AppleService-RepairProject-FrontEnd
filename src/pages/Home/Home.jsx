@@ -3,12 +3,17 @@ import { Header } from "../../components/Header/Header"
 
 export default function Home() {
   return (
-    <div className="bg-blue-500 w-screen h-[500px] flex flex-col items-center relative" id="hero-section">
+    <div className="bg-blue-500 w-screen h-[550px] flex flex-col items-center relative" id="hero-section">
       <Header />
       <h1 className="text-3xl text-white sansbold text-center mt-10 sm:text-5xl sm:mt-16 lg:text-7xl lg:mt-20">سرویس تعمیر گوشی در محل</h1>
       <p className="text-white w-full text-center mt-7 px-7 lg:px-24">
         لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع
       </p>
+      <div className="btn btn-wide btn-outline bg-white text-blue-500 flex items-center gap-2 mt-10 hover:bg-white">ثبت سفارش
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+        </svg>
+      </div>
       <div className="bg-white shadow-md shadow-slate-300 w-11/12 h-max
         flex flex-col justify-center items-center gap-5 rounded-xl p-5
         absolute -bottom-[600px] left-1/2 -translate-x-1/2 sm:h-96 sm:-bottom-64 lg:flex-row lg:h-56 lg:-bottom-32">
