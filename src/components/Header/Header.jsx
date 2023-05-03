@@ -32,6 +32,9 @@ export function Header() {
         </div>
         <ul className='hidden justify-center items-center gap-10 lg:flex'>
           <li>
+            <NavLink className='header__navlink text-white text-xl'>ثبت سفارش</NavLink>
+          </li>
+          <li>
             <NavLink className='header__navlink-active text-white text-xl'>صفحه اصلی</NavLink>
           </li>
           <li>
@@ -42,9 +45,6 @@ export function Header() {
           </li>
           <li>
             <NavLink className='header__navlink text-white text-xl'>ثبت شکایات</NavLink>
-          </li>
-          <li>
-            <NavLink className='header__navlink text-white text-xl'>همکاری با ما</NavLink>
           </li>
         </ul>
         <NavLink className='btn btn-outline text-white border-white text-xl rounded-full py-3 px-7
