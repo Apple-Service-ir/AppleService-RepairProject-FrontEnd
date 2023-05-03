@@ -85,7 +85,7 @@ export default function Home() {
             )}
             title="تعویض ویندوز"
           />
-                    <ServiceBox
+          <ServiceBox
             svg={(
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
                 <path className="fill-zinc-500" d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z" />
@@ -119,7 +119,7 @@ export default function Home() {
             )}
             title="تعویض ویندوز"
           />
-                    <ServiceBox
+          <ServiceBox
             svg={(
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
                 <path className="fill-zinc-500" d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z" />
@@ -153,6 +153,77 @@ export default function Home() {
             )}
             title="تعویض ویندوز"
           />
+        </div>
+      </div>
+
+      <div className="container flex flex-col justify-center items-center gap-16 mt-16 mx-auto">
+        <div className="w-full flex justify-start relative">
+          <div className="bg-blue-500 w-[500px] h-[500px] rounded-full absolute -left-44 -top-64 blur-[150px] -z-10 opacity-25 hidden lg:block"></div>
+          <div className="w-full h-48 flex justify-center items-center gap-3
+            lg:w-3/4 sm:gap-10">
+            <div className="w-1/2 h-full flex flex-col justify-center items-center gap-3">
+              <h3 className="text-xl sansbold flex justify-center items-center relative
+              before:absolute before:w-[110%] before:h-1/2 before:bg-blue-500 before:opacity-25
+              lg:text-3xl">
+                ارایه پشتیبانی آنلاین
+              </h3>
+              <p className="text-center text-sm sm:text-base">
+                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون
+              </p>
+            </div>
+            <div className="bg-slate-200 w-40 h-40 rounded-full lg:w-48 lg:h-48"></div>
+          </div>
+        </div>
+        <div className="w-full flex justify-end relative">
+        <div className="bg-blue-500 w-[500px] h-[500px] rounded-full absolute -right-44 -top-64 blur-[150px] -z-10 opacity-25 hidden lg:block"></div>
+          <div className="w-full h-48 flex flex-row-reverse justify-center items-center gap-3
+            lg:w-3/4 sm:gap-10">
+            <div className="w-1/2 h-full flex flex-col justify-center items-center gap-3">
+              <h3 className="text-xl sansbold flex justify-center items-center relative
+              before:absolute before:w-[110%] before:h-1/2 before:bg-blue-500 before:opacity-25
+              lg:text-3xl">
+                ارایه پشتیبانی آنلاین
+              </h3>
+              <p className="text-center text-sm sm:text-base">
+                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون
+              </p>
+            </div>
+            <div className="bg-slate-200 w-40 h-40 rounded-full lg:w-48 lg:h-48"></div>
+          </div>
+        </div>
+        <div className="w-full flex justify-start relative">
+          <div className="bg-blue-500 w-[500px] h-[500px] rounded-full absolute -left-44 top-0 blur-[150px] -z-10 opacity-25 hidden lg:block"></div>
+          <div className="w-full h-48 flex justify-center items-center gap-3
+            lg:w-3/4 sm:gap-10">
+            <div className="w-1/2 h-full flex flex-col justify-center items-center gap-3">
+              <h3 className="text-xl sansbold flex justify-center items-center relative
+              before:absolute before:w-[110%] before:h-1/2 before:bg-blue-500 before:opacity-25
+              lg:text-3xl">
+                ارایه پشتیبانی آنلاین
+              </h3>
+              <p className="text-center text-sm sm:text-base">
+                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون
+              </p>
+            </div>
+            <div className="bg-slate-200 w-40 h-40 rounded-full lg:w-48 lg:h-48"></div>
+          </div>
+        </div>
+        <div className="w-full flex justify-end relative">
+        <div className="bg-blue-500 w-[500px] h-[500px] rounded-full absolute -right-44 top-0 blur-[150px] -z-10 opacity-25 hidden lg:block"></div>
+          <div className="w-full h-48 flex flex-row-reverse justify-center items-center gap-3
+            lg:w-3/4 sm:gap-10">
+            <div className="w-1/2 h-full flex flex-col justify-center items-center gap-3">
+              <h3 className="text-xl sansbold flex justify-center items-center relative
+              before:absolute before:w-[110%] before:h-1/2 before:bg-blue-500 before:opacity-25
+              lg:text-3xl">
+                ارایه پشتیبانی آنلاین
+              </h3>
+              <p className="text-center text-sm sm:text-base">
+                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون
+              </p>
+            </div>
+            <div className="bg-slate-200 w-40 h-40 rounded-full lg:w-48 lg:h-48"></div>
+          </div>
         </div>
       </div>
     </>
