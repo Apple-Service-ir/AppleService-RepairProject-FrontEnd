@@ -21,8 +21,8 @@ export default function Home() {
         <p className="text-white w-full text-center mt-7 px-7 lg:px-24">
           لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع
         </p>
-        <a href="#" className="btn btn-wide btn-outline bg-white text-blue-500 flex items-center gap-2 mt-5
-      hover:bg-white md:mt-10">ثبت سفارش
+        <a href="#" className="btn btn-outline bg-white text-blue-500 flex items-center gap-3
+         mt-5 rounded-full px-7 py-3 hover:bg-white hover:text-blue-500 md:mt-10">ثبت سفارش
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
           </svg>
