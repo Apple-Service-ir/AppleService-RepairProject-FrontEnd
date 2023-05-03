@@ -32,10 +32,10 @@ export function Header() {
         </div>
         <ul className='hidden justify-center items-center gap-10 lg:flex'>
           <li>
-            <NavLink className='header__navlink text-white text-xl'>ثبت سفارش</NavLink>
+            <NavLink className='header__navlink-active text-white text-xl'>صفحه اصلی</NavLink>
           </li>
           <li>
-            <NavLink className='header__navlink-active text-white text-xl'>صفحه اصلی</NavLink>
+            <NavLink className='header__navlink text-white text-xl'>ثبت سفارش</NavLink>
           </li>
           <li>
             <NavLink className='header__navlink text-white text-xl'>ارتباط با ما</NavLink>
