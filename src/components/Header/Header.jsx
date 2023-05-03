@@ -47,8 +47,7 @@ export function Header() {
             <NavLink className='header__navlink text-white text-xl'>ثبت شکایات</NavLink>
           </li>
         </ul>
-        <NavLink className='btn btn-outline text-white border-white text-xl rounded-full py-3 px-7
-          hover:bg-white hover:text-blue-500'>ثبت نام / ورود</NavLink>
+        <NavLink className='borderBtn'>ثبت نام / ورود</NavLink>
       </div>
     </>
   )

@@ -7,6 +7,5 @@ export default {
         "sm": "540px"
       }
     },
-  },
-  plugins: [require("daisyui")],
+  }
 }
