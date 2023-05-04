@@ -156,7 +156,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="container flex flex-col justify-center items-center gap-16 mt-16 mx-auto">
+      <div className="container flex flex-col justify-center items-center gap-0 mt-16 mx-auto sm:gap-16">
         <div className="w-full flex justify-start relative">
           <div className="bg-blue-500 w-[500px] h-[500px] rounded-full absolute -left-44 -top-64 blur-[150px] -z-10 opacity-25 hidden lg:block"></div>
           <div className="w-full h-48 flex justify-center items-center gap-3

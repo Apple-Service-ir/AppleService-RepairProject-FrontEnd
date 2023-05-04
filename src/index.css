@@ -14,6 +14,20 @@
   font-weight: bolder;
 }
 
+body::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 5px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #00000000;
+}
+
+body::-webkit-scrollbar-thumb {
+  @apply bg-slate-300;
+  border-radius: 5px;
+}
+
 html {
   overflow-x: hidden;
   direction: rtl
