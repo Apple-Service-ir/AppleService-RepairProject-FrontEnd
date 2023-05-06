@@ -8,7 +8,7 @@ function FooterIcon(props) {
 export default function Footer() {
   return (
     <>
-      <div className='container mt-16 px-3
+      <div className='container mt-16 px-3 mx-auto
         sm:p-0'>
         <div className="bg-slate-200 shadow-sm shadow-slate-400 flex flex-col justify-center mx-auto rounded-xl
           sm:flex-row">
