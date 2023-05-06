@@ -27,7 +27,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="container flex justify-center flex-col items-center gap-5 mt-[690px] mb-24 mx-auto sm:mt-72 lg:mt-44">
+      <div className="container flex justify-center flex-col items-center gap-5 mt-[690px] mx-auto sm:mt-72 lg:mt-44">
         <h1 className="text-slate-700 sansbold text-2xl sm:text-5xl">برخی از خدمات ما</h1>
         <div className="w-full flex flex-wrap justify-center items-center gap-3 sm:gap-5">
           <ServiceBox
