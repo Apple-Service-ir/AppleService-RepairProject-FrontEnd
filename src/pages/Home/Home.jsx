@@ -20,14 +20,14 @@ export default function Home() {
         </a>
         <div className="bg-white shadow-md shadow-slate-300 w-11/12 h-max
         flex flex-col justify-center items-center gap-5 rounded-xl p-5
-        absolute -bottom-[650px] left-1/2 -translate-x-1/2 sm:h-96 sm:-bottom-64 lg:flex-row lg:h-56 lg:-bottom-32">
+        absolute -bottom-[590px] left-1/2 -translate-x-1/2 sm:h-96 sm:-bottom-64 lg:flex-row lg:h-56 lg:-bottom-32">
           <HeroItem image="./../../../public/imgs/poz.png" title="پرداخت در محل" description="پرداخت ۸۰ درصد مبلغ در محل شما برای جمع بودن خیال شما  متن تستی متن تستی متن تستی از پرداخت امن" />
 
           <HeroItem image="./../../../public/imgs/location.png" title="پرداخت در محل" description="پرداخت ۸۰ درصد مبلغ در محل شما برای جمع بودن خیال شما  متن تستی متن تستی متن تستی از پرداخت امن" />
         </div>
       </div>
 
-      <div className="container flex justify-center flex-col items-center gap-5 mt-[690px] mx-auto sm:mt-72 lg:mt-44">
+      <div className="container flex justify-center flex-col items-center gap-5 mt-[645px] mx-auto sm:mt-72 lg:mt-44">
         <h1 className="text-slate-700 sansbold text-2xl sm:text-5xl">برخی از خدمات ما</h1>
         <div className="w-full flex flex-wrap justify-center items-center gap-3 sm:gap-5">
           <ServiceBox
