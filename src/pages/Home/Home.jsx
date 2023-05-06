@@ -9,7 +9,6 @@ export default function Home() {
   return (
     <>
       <div className="bg-blue-500 w-screen h-[550px] flex flex-col items-center relative" id="hero-section">
-        <Header />
         <h1 className="text-3xl text-white sansbold text-center mt-10 px-3 sm:px-0 sm:text-5xl sm:mt-16 lg:text-7xl lg:mt-20">سرویس تعمیر گوشی در محل</h1>
         <p className="text-white w-full text-center mt-7 px-7 lg:px-24">
           لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع

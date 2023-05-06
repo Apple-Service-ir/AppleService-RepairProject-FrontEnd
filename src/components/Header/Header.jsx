@@ -5,7 +5,8 @@ import "./Header.css"
 export function Header() {
   return (
     <>
-      <div className='container h-20 flex justify-between items-center px-5 mt-5 rounded-md'>
+      <div className='bg-blue-500 w-screen h-20 flex justify-between items-center px-5
+        sm:px-10'>
         <div className="btn btn-ghost text-xl flex items-center relative lg:hidden group">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-white w-9 h-9 cursor-pointer">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
