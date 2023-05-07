@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import Btn from "./../../components/Btn/Btn"
 import Input from '../../components/Input/Input'
 import FileInput from '../../components/FileInput/FileInput'
@@ -6,6 +7,28 @@ import SelectBox from '../../components/SelectBox/SelectBox'
 import TeaxtArea from '../../components/TextArea/TeaxtArea'
 
 export default function Order() {
+  const [devices, setDevices] = useState([])
+  const [parts, setParts] = useState([])
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/list/devices')
+      .then(response => {
+        const mapped = response.data.map(item => ({ id: item.id, value: `${item.brand} ${item.model}` }))
+        setDevices(mapped)
+      })
+  }, [])
+
+  const changeHandler = (event) => {
+    const value = event.target.value
+    const brand = value.split(" ")[0]
+    const model = value.replace(brand, "").trim()
+    axios.get(`http://localhost:3000/list/parts?brand=${brand}&model=${model}`)
+      .then(response => {
+        const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
+        setParts(mapped)
+      })
+  }
+
   return (
     <div className='container mx-auto px-3 mt-16
       sm:p-0'>
@@ -30,9 +53,21 @@ export default function Order() {
               </svg>
             )}
           />
-          <Input
+          <SelectBox
             width='w-full'
-            placeholder='نام دستگاه'
+            name='مدل دستگاهتان را انتخاب کنید'
+            options={devices}
+            svg={(
+              <svg className="stroke-blue-500 w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
+              </svg>
+            )}
+            inputHandler={changeHandler}
+          />
+          <SelectBox
+            width='w-full'
+            name='قطعه تعویضی را انتخاب کنید'
+            options={parts}
             svg={(
               <svg className="stroke-blue-500 w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
@@ -87,8 +122,6 @@ export default function Order() {
               </svg>
             )}
           />
-        </div>
-        <div className="w-full mt-9">
           <Btn
             href='/'
             width='w-full'
