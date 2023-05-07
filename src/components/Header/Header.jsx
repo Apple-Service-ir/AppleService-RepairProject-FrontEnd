@@ -16,10 +16,10 @@ export function Header() {
           <ul className="bg-white shadow-md shadow-[#25252545] w-max flex flex-col justify-center items-center gap-7 p-5 px-3 rounded-xl z-50
             absolute top-[140%] right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible" id='mobileMenu'>
             <li>
-              <NavLink className='bg-slate-200 text-blue-500 p-2 px-10 rounded-md'>صفحه اصلی</NavLink>
+              <NavLink to='/' className='bg-slate-200 text-blue-500 p-2 px-10 rounded-md'>صفحه اصلی</NavLink>
             </li>
             <li>
-              <NavLink className='bg-slate-200 text-blue-500 p-2 px-10 rounded-md'>صفحه اصلی</NavLink>
+              <NavLink to='/order' className='bg-slate-200 text-blue-500 p-2 px-10 rounded-md'>صفحه اصلی</NavLink>
             </li>
             <li>
               <NavLink className='bg-slate-200 text-blue-500 p-2 px-10 rounded-md'>صفحه اصلی</NavLink>
@@ -34,10 +34,10 @@ export function Header() {
         </div>
         <ul className='hidden justify-center items-center gap-10 lg:flex'>
           <li>
-            <NavLink className='header__navlink-active text-white text-xl'>صفحه اصلی</NavLink>
+            <NavLink to='/' className='header__navlink-active text-white text-xl'>صفحه اصلی</NavLink>
           </li>
           <li>
-            <NavLink className='header__navlink text-white text-xl'>ثبت سفارش</NavLink>
+            <NavLink to='/order' className='header__navlink text-white text-xl'>ثبت سفارش</NavLink>
           </li>
           <li>
             <NavLink className='header__navlink text-white text-xl'>ارتباط با ما</NavLink>
