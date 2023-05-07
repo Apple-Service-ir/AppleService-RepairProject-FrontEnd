@@ -14,17 +14,17 @@
   font-weight: bolder;
 }
 
-body::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 5px;
   border-radius: 5px;
 }
 
-body::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: #00000000;
 }
 
-body::-webkit-scrollbar-thumb {
-  @apply bg-slate-300;
+*::-webkit-scrollbar-thumb {
+  @apply bg-slate-400;
   border-radius: 5px;
 }
 
