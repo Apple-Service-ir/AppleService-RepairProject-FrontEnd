@@ -12,7 +12,6 @@ export function Header() {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-white w-9 h-9 cursor-pointer">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
           </svg>
-
           <ul className="bg-white shadow-md shadow-[#25252545] w-max flex flex-col justify-center items-center gap-7 p-5 px-3 rounded-xl z-50
             absolute top-[140%] right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible" id='mobileMenu'>
             <li>
@@ -34,19 +33,34 @@ export function Header() {
         </div>
         <ul className='hidden justify-center items-center gap-10 lg:flex'>
           <li>
-            <NavLink to='/' className='header__navlink-active text-white text-xl'>صفحه اصلی</NavLink>
+            <NavLink to='/'
+              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
+              صفحه اصلی
+            </NavLink>
           </li>
           <li>
-            <NavLink to='/order' className='header__navlink text-white text-xl'>ثبت سفارش</NavLink>
+            <NavLink to='/order'
+              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
+              ثبت سفارش
+            </NavLink>
           </li>
           <li>
-            <NavLink className='header__navlink text-white text-xl'>ارتباط با ما</NavLink>
+            <NavLink to='/contact-us'
+              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
+              ارتباط با ما
+            </NavLink>
           </li>
           <li>
-            <NavLink className='header__navlink text-white text-xl'>درباره ما</NavLink>
+            <NavLink to='/about-us'
+              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
+              درباره ما
+            </NavLink>
           </li>
           <li>
-            <NavLink className='header__navlink text-white text-xl'>ثبت شکایات</NavLink>
+            <NavLink to='/report'
+              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
+              ثبت شکایات
+            </NavLink>
           </li>
         </ul>
         <Btn
