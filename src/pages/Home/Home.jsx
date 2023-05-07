@@ -1,5 +1,5 @@
 import "./Home.css"
-import { Header } from "../../components/Header/Header"
+import Btn from "../../components/Btn/Btn"
 import { ServiceBox } from "../../components/ServiceBox/ServiceBox"
 import { HeroItem } from "../../components/HeroItem/HeroItem"
 import { HonorItem } from "../../components/HonorItem/HonorItem"
@@ -8,16 +8,22 @@ import { QuestionItem } from "../../components/QuestionItem/QuestionItem"
 export default function Home() {
   return (
     <>
-      <div className="bg-blue-500 w-screen h-[550px] flex flex-col items-center relative" id="hero-section">
+      <div className="bg-blue-500 w-screen h-[475px] flex flex-col items-center relative" id="hero-section">
         <h1 className="text-3xl text-white sansbold text-center mt-10 px-3 sm:px-0 sm:text-5xl sm:mt-16 lg:text-7xl lg:mt-20">سرویس تعمیر گوشی در محل</h1>
-        <p className="text-white w-full text-center mt-7 px-7 lg:px-24">
+        <p className="text-white w-full text-center mt-10 px-7 lg:px-24">
           لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع
         </p>
-        <a href="#" className="whiteBtn mt-5 md:mt-10">ثبت سفارش
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-          </svg>
-        </a>
+        <div className="w-full mt-10"></div>
+        <Btn
+          bgColor='bg-white'
+          color='text-blue-500'
+          text='ثبت سفارش'
+          svg={(
+            <svg className="duration-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+            </svg>
+          )}
+        />
         <div className="bg-white shadow-md shadow-slate-300 w-11/12 h-max
         flex flex-col justify-center items-center gap-5 rounded-xl p-5
         absolute -bottom-[590px] left-1/2 -translate-x-1/2 sm:h-96 sm:-bottom-64 lg:flex-row lg:h-56 lg:-bottom-32">

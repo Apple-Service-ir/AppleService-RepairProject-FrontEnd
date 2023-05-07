@@ -1,5 +1,6 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
+import Btn from '../Btn/Btn'
 import "./Header.css"
 
 export function Header() {
@@ -48,7 +49,15 @@ export function Header() {
             <NavLink className='header__navlink text-white text-xl'>ثبت شکایات</NavLink>
           </li>
         </ul>
-        <NavLink className='borderBtn'>ثبت نام / ورود</NavLink>
+        <Btn
+          bgColor='bg-blue-500'
+          color='text-white'
+          border='border border-white'
+          hoverBgColor='hover:bg-white'
+          hoverColor='hover:text-blue-500'
+          hoverBorder='hover:border-blue-500'
+          text='ثبت نام / ورود'
+        />
       </div>
     </>
   )
