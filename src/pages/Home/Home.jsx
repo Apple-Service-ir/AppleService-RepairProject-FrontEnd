@@ -15,6 +15,7 @@ export default function Home() {
         </p>
         <div className="w-full mt-10"></div>
         <Btn
+          href='/'
           bgColor='bg-white'
           color='text-blue-500'
           text='ثبت سفارش'

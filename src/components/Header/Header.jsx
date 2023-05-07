@@ -50,6 +50,7 @@ export function Header() {
           </li>
         </ul>
         <Btn
+          href='/'
           bgColor='bg-blue-500'
           color='text-white'
           border='border border-white'

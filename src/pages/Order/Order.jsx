@@ -1,4 +1,5 @@
 import React from 'react'
+import Btn from "./../../components/Btn/Btn"
 import Input from '../../components/Input/Input'
 import FileInput from '../../components/FileInput/FileInput'
 import SelectBox from '../../components/SelectBox/SelectBox'
@@ -87,7 +88,18 @@ export default function Order() {
             )}
           />
         </div>
-        <button className='bg-green-500 text-white w-full text-xl p-3 rounded-md mt-9'>ثبت سفارش</button>
+        <div className="w-full mt-9">
+          <Btn
+            href='/'
+            width='w-full'
+            bgColor='bg-white'
+            color='text-green-500'
+            border='border border-green-500'
+            hoverBgColor='hover:bg-green-500'
+            hoverColor='hover:text-white'
+            text='ثبت سفارش'
+          />
+        </div>
       </div>
     </div>
   )
