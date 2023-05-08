@@ -9,44 +9,54 @@ import TeaxtArea from '../../components/TextArea/TeaxtArea'
 import Box from '../../components/Box/Box'
 
 export default function Order() {
+  const [brands, setBranads] = useState([])
   const [devices, setDevices] = useState([])
   const [parts, setParts] = useState([])
+  const [brandsModal, setBrandsModal] = useState(false)
+  const [selectBrand, setSelectBrand] = useState('')
   const [deviceModal, setDeviceModal] = useState(false)
   const [selectDevice, setSelectDevice] = useState('')
   const [partsModal, setPartsModal] = useState(false)
   const [selectPart, setSelectPart] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3000/list/devices')
+    axios.get('http://192.168.1.123:3000/list/devices')
       .then(response => {
-        const mapped = response.data.map(item => ({ id: item.id, value: `${item.brand} ${item.model}` }))
-        setDevices(mapped)
+        setBranads(response.data.brands)
+        console.log(brands);
+        // const mapped = response.data.map(item => ({ id: item.id, value: `${item.brand} ${item.model}` }))
+        // setDevices(mapped)
       })
+
+    // axios.get(`http://192.168.1.123:3000/list/parts`)
+    //   .then(response => {
+    //     const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
+    //     setParts(mapped)
+    //   })
   }, [])
 
-  function getParts(value) {
-    const brand = value.split(" ")[0]
-    const model = value.replace(brand, "").trim()
-    axios.get(`http://localhost:3000/list/parts?brand=${brand}&model=${model}`)
-      .then(response => {
-        const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
-        setParts(mapped)
-      })
+  function showBrandsModal() {
+    setBrandsModal(true)
+    setPartsModal(false)
+    setDeviceModal(false)
   }
 
   function showDeviceModal() {
+    setBrandsModal(false)
     setPartsModal(false)
     setDeviceModal(true)
   }
 
   function showPartsModal() {
-    setDeviceModal(false)
+    setBrandsModal(false)
     setPartsModal(true)
+    setDeviceModal(false)
   }
 
   function closeAllModal() {
-    setDeviceModal(false)
+    setBrandsModal(false)
     setPartsModal(false)
+    setDeviceModal(false)
   }
 
   return (
@@ -77,24 +87,13 @@ export default function Order() {
             <Box
               width='w-full'
               allow={true}
-              name={selectDevice || 'مدل دستگاهتان را انتخاب کنید'}
+              name={selectDevice && selectPart ? `${selectDevice} - ${selectPart.split(' - ')[1]}` : 'مدل دستگاهتان را انتخاب کنید'}
               svg={(
                 <svg className="stroke-blue-500 w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
                 </svg>
               )}
-              clickHandler={showDeviceModal}
-            />
-            <Box
-              width='w-full'
-              allow={selectDevice}
-              name={selectPart || 'نوع تعمیر را انتخاب کنید'}
-              svg={(
-                <svg className="stroke-blue-500 w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75l2.25-1.313M12 21.75V19.5m0 2.25l-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25" />
-                </svg>
-              )}
-              clickHandler={showPartsModal}
+              clickHandler={showBrandsModal}
             />
             <FileInput
               width='w-full'
@@ -158,15 +157,31 @@ export default function Order() {
         </div>
       </div>
       {
+        brandsModal &&
+        <Modal closeModal={closeAllModal} title='برند مورد نظرتان را انتخاب کنید'>
+          {
+            brands.map((item, index) => (
+              <div key={index} onClick={() => {
+                setSelectBrand(item); closeAllModal(); setDeviceModal(true);
+              }}
+                className='bg-slate-200 shadow-sm shadow-slate-400 w-full p-3
+                rounded-md flex justify-center items-center cursor-pointer hover:bg-slate-300'>
+                {item}
+              </div>
+            ))
+          }
+        </Modal>
+      }
+      {
         deviceModal &&
         <Modal closeModal={closeAllModal} title='دستگاه های مورد نطرتان را انتخاب کنید'>
           {
             devices.map(item => (
               <div key={item.id} onClick={() => {
-                getParts(item.value); closeAllModal(); setSelectDevice(item.value)
+                setSelectDevice(item.value); closeAllModal(); setPartsModal(true)
               }}
                 className='bg-slate-200 shadow-sm shadow-slate-400 w-full p-3
-                    rounded-md flex justify-center items-center cursor-pointer hover:bg-slate-300'>
+                rounded-md flex justify-center items-center cursor-pointer hover:bg-slate-300'>
                 {item.value}
               </div>
             ))
@@ -179,7 +194,7 @@ export default function Order() {
           {
             parts.map(item => (
               <div key={item.id} onClick={() => {
-                closeAllModal(); setSelectPart(item.value)
+                setSelectPart(item.value); closeAllModal();
               }}
                 className='bg-slate-200 shadow-sm shadow-slate-400 w-full p-3
                     rounded-md flex justify-center items-center cursor-pointer hover:bg-slate-300'>
