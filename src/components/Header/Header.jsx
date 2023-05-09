@@ -1,14 +1,13 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import Btn from '../Btn/Btn'
-import "./Header.css"
 
 export function Header() {
   return (
     <>
       <div className='container flex justify-between items-center p-3 mx-auto z-50'>
         <div className="btn btn-ghost text-xl flex items-center relative lg:hidden group">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-white w-9 h-9 cursor-pointer">
+          <svg className="stroke-blue-500 w-9 h-9 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
           </svg>
           <ul className="bg-white shadow-md shadow-[#25252545] w-max flex flex-col justify-center items-center gap-7 p-5 px-3 rounded-xl z-50
