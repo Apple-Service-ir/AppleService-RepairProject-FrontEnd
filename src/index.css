@@ -38,8 +38,19 @@ html {
   font-family: "sans"
 }
 
-@layer base {
+@layer utilities {
   .sansbold {
     font-family: "sansbold";
+  }
+
+  .header__navlink,
+  .header__navlink-active {
+    @apply text-blue-500 relative flex items-center before:content-normal before:bg-blue-500 before:w-1 before:h-1
+      before:rounded-full before:absolute before:-right-3 before:transition-all before:duration-200 before:scale-0 before:opacity-0
+      hover:before:scale-100 hover:before:opacity-100;
+  }
+
+  .header__navlink-active {
+    @apply before:scale-100 before:opacity-100;
   }
 }

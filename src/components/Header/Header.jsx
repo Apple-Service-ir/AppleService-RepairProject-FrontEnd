@@ -6,8 +6,7 @@ import "./Header.css"
 export function Header() {
   return (
     <>
-      <div className='bg-blue-500 w-screen h-20 flex justify-between items-center px-5 z-50
-        sm:px-10'>
+      <div className='container flex justify-between items-center p-3 mx-auto z-50'>
         <div className="btn btn-ghost text-xl flex items-center relative lg:hidden group">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-white w-9 h-9 cursor-pointer">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
@@ -31,7 +30,7 @@ export function Header() {
             </li>
           </ul>
         </div>
-        <ul className='hidden justify-center items-center gap-10 lg:flex'>
+        <ul className='hidden justify-center items-center gap-7 lg:flex'>
           <li>
             <NavLink to='/'
               className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
@@ -65,12 +64,11 @@ export function Header() {
         </ul>
         <Btn
           href='/'
-          bgColor='bg-blue-500'
-          color='text-white'
-          border='border border-white'
-          hoverBgColor='hover:bg-white'
-          hoverColor='hover:text-blue-500'
-          hoverBorder='hover:border-blue-500'
+          bgColor='bg-white'
+          color='text-blue-500'
+          border='border border-blue-500'
+          hoverBgColor='hover:bg-blue-500'
+          hoverColor='hover:text-white'
           text='ثبت نام / ورود'
         />
       </div>
