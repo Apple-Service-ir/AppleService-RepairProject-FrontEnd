@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import Modal from '../../components/Modal/Modal'
 import Btn from "./../../components/Btn/Btn"
@@ -11,52 +11,59 @@ import Box from '../../components/Box/Box'
 export default function Order() {
   const [brands, setBranads] = useState([])
   const [devices, setDevices] = useState([])
+  const [allDevices, setAllDevices] = useState([])
   const [parts, setParts] = useState([])
+
   const [brandsModal, setBrandsModal] = useState(false)
-  const [selectBrand, setSelectBrand] = useState('')
   const [deviceModal, setDeviceModal] = useState(false)
-  const [selectDevice, setSelectDevice] = useState('')
   const [partsModal, setPartsModal] = useState(false)
-  const [selectPart, setSelectPart] = useState('')
+  const [selectDevice, setSelectDevice] = useState({})
+  const [selectPart, setSelectPart] = useState({})
+
+  const [cities, setCities] = useState([])
+
+  const nameAndLastName = useRef()
+  const numberRef = useRef()
+  const fileRef = useRef()
+  const citiesRef = useRef()
+  const addressRef = useRef()
+  const descRef = useRef()
 
   useEffect(() => {
     axios.get('http://192.168.1.123:3000/list/devices')
       .then(response => {
         setBranads(response.data.brands)
-        console.log(brands);
-        // const mapped = response.data.map(item => ({ id: item.id, value: `${item.brand} ${item.model}` }))
-        // setDevices(mapped)
+        const mapped = response.data.phones.map(item => {
+          return { id: item.id, value: `${item.brand} ${item.model}`, brand: item.brand }
+        })
+        setAllDevices(mapped)
       })
 
-    // axios.get(`http://192.168.1.123:3000/list/parts`)
-    //   .then(response => {
-    //     const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
-    //     setParts(mapped)
-    //   })
+    axios.get(`http://192.168.1.123:3000/list/parts`)
+      .then(response => {
+        const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
+        setParts(mapped)
+      })
+
+    axios.get('http://192.168.1.123:3000/list/cities')
+      .then(response => {
+        setCities(response.data)
+      })
   }, [])
 
   function showBrandsModal() {
     setBrandsModal(true)
-    setPartsModal(false)
-    setDeviceModal(false)
-  }
-
-  function showDeviceModal() {
-    setBrandsModal(false)
-    setPartsModal(false)
-    setDeviceModal(true)
-  }
-
-  function showPartsModal() {
-    setBrandsModal(false)
-    setPartsModal(true)
-    setDeviceModal(false)
   }
 
   function closeAllModal() {
     setBrandsModal(false)
     setPartsModal(false)
     setDeviceModal(false)
+  }
+
+  function postOrder() {
+    // const formData = new FormData()
+    console.log(fileRef.current.files[0]);
   }
 
   return (
@@ -67,6 +74,7 @@ export default function Order() {
           <div className="w-full flex flex-col gap-3
           md:w-1/2 md:pl-3">
             <Input
+              inputRef={nameAndLastName}
               width='w-full'
               placeholder='نام و نام خانوادگی'
               svg={(
@@ -76,6 +84,7 @@ export default function Order() {
               )}
             />
             <Input
+              inputRef={numberRef}
               width='w-full'
               placeholder='شماره تماس'
               svg={(
@@ -86,8 +95,7 @@ export default function Order() {
             />
             <Box
               width='w-full'
-              allow={true}
-              name={selectDevice && selectPart ? `${selectDevice} - ${selectPart.split(' - ')[1]}` : 'مدل دستگاهتان را انتخاب کنید'}
+              name={selectDevice.value && selectPart.value ? `${selectDevice.value} - ${selectPart.value.split(' - ')[1]}` : 'مدل دستگاهتان را انتخاب کنید'}
               svg={(
                 <svg className="stroke-blue-500 w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
@@ -96,6 +104,7 @@ export default function Order() {
               clickHandler={showBrandsModal}
             />
             <FileInput
+              inputRef={fileRef}
               width='w-full'
               name='تصویر دستگاهتان را بارگذاری کنید'
               svg={(
@@ -108,14 +117,10 @@ export default function Order() {
           <div className="w-full flex flex-col gap-3 mt-9
           md:w-1/2 md:m-0">
             <SelectBox
+              selectRef={citiesRef}
               width='w-full'
               name='شهرتان را انتخاب کنید'
-              options={[
-                { id: 1, value: 'تهران' },
-                { id: 2, value: 'مشهد' },
-                { id: 3, value: 'نیشابور' },
-                { id: 4, value: 'اصفهان' }
-              ]}
+              options={cities}
               svg={(
                 <svg className="stroke-blue-500 w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -124,6 +129,7 @@ export default function Order() {
               )}
             />
             <TeaxtArea
+              textRef={addressRef}
               width='w-full'
               resize='resize-none'
               placeholder='آدرس دقیق محل زندگی'
@@ -134,6 +140,7 @@ export default function Order() {
               )}
             />
             <TeaxtArea
+              textRef={descRef}
               width='w-full'
               resize='resize-y'
               placeholder='در مورد مشکل دستگاه و تعمیر آن توضیح دهید'
@@ -144,7 +151,8 @@ export default function Order() {
               )}
             />
             <Btn
-              href='/'
+              clickHandler={postOrder}
+              href=''
               width='w-full'
               bgColor='bg-white'
               color='text-green-500'
@@ -162,7 +170,12 @@ export default function Order() {
           {
             brands.map((item, index) => (
               <div key={index} onClick={() => {
-                setSelectBrand(item); closeAllModal(); setDeviceModal(true);
+                setDevices(() => {
+                  const filtered = allDevices.filter(device => device.brand === item)
+                  return filtered
+                })
+                closeAllModal();
+                setDeviceModal(true);
               }}
                 className='bg-slate-200 shadow-sm shadow-slate-400 w-full p-3
                 rounded-md flex justify-center items-center cursor-pointer hover:bg-slate-300'>
@@ -178,7 +191,9 @@ export default function Order() {
           {
             devices.map(item => (
               <div key={item.id} onClick={() => {
-                setSelectDevice(item.value); closeAllModal(); setPartsModal(true)
+                setSelectDevice(item)
+                closeAllModal();
+                setPartsModal(true)
               }}
                 className='bg-slate-200 shadow-sm shadow-slate-400 w-full p-3
                 rounded-md flex justify-center items-center cursor-pointer hover:bg-slate-300'>
@@ -194,7 +209,8 @@ export default function Order() {
           {
             parts.map(item => (
               <div key={item.id} onClick={() => {
-                setSelectPart(item.value); closeAllModal();
+                setSelectPart(item);
+                closeAllModal();
               }}
                 className='bg-slate-200 shadow-sm shadow-slate-400 w-full p-3
                     rounded-md flex justify-center items-center cursor-pointer hover:bg-slate-300'>

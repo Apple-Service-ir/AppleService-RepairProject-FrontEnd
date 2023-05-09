@@ -2,7 +2,7 @@ import React from 'react'
 import { useRef } from 'react'
 
 export default function FileInput(props) {
-  const inputRef = useRef(null)
+  const inputRef = props.inputRef
   const nameFileRef = useRef('')
 
   function clickHandler() {
