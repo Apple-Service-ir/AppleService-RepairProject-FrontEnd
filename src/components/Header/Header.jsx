@@ -5,9 +5,9 @@ import Btn from '../Btn/Btn'
 export function Header() {
   return (
     <>
-      <div className='container flex justify-between items-center p-3 mx-auto z-50'>
+      <div className='bg-blue-500 w-screen flex justify-between items-center p-3 px-7 z-50'>
         <div className="btn btn-ghost text-xl flex items-center relative lg:hidden group">
-          <svg className="stroke-blue-500 w-9 h-9 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}>
+          <svg className="stroke-white w-9 h-9 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
           </svg>
           <ul className="bg-white shadow-md shadow-[#25252545] w-max flex flex-col justify-center items-center gap-7 p-5 px-3 rounded-xl z-50
@@ -62,12 +62,13 @@ export function Header() {
           </li>
         </ul>
         <Btn
+          type='link'
           href='/'
-          bgColor='bg-white'
-          color='text-blue-500'
-          border='border border-blue-500'
-          hoverBgColor='hover:bg-blue-500'
-          hoverColor='hover:text-white'
+          bgColor='bg-blue-500'
+          color='text-white'
+          border='border border-white'
+          hoverBgColor='hover:bg-white'
+          hoverColor='hover:text-blue-500'
           text='ثبت نام / ورود'
         />
       </div>

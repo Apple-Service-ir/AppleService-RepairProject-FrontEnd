@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function SelectBox(props) {
   return (
-    <div ref={props.selectRef} className={`${props.width} h-16 relative`}>
+    <div className={`${props.width} h-16 relative`}>
       <select onChange={props.inputHandler} style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
         ref={props.selectRef}
         className="bg-slate-200 text-blue-500 border-2 border-slate-300

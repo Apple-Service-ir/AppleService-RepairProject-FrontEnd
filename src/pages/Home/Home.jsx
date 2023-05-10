@@ -8,29 +8,34 @@ import { QuestionItem } from "../../components/QuestionItem/QuestionItem"
 export default function Home() {
   return (
     <>
-      <div className="text-blue-500 container flex flex-col items-center relative mx-auto" id="hero-section">
-        <h1 className="text-3xl sansbold text-center mt-7 px-7 sm:px-0 sm:text-5xl sm:mt-12 lg:text-7xl">سرویس تعمیر گوشی در محل</h1>
-        <p className="text-slate-500 w-full text-justify mt-5 px-7 sm:text-center sm:mt-7 lg:px-24">
+      <div className="bg-blue-500 w-screen h-[475px] flex flex-col items-center relative" id="hero-section">
+        <h1 className="text-3xl text-white sansbold text-center mt-10 px-3 sm:px-0 sm:text-5xl sm:mt-16 lg:text-7xl lg:mt-20">سرویس تعمیر گوشی در محل</h1>
+        <p className="text-white w-full text-center mt-10 px-7 lg:px-24">
           لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع
         </p>
-        <div className="w-full mt-7 flex justify-center items-center">
-          <div className="bg-slate-200 shadow-md shadow-slate-400 w-72 h-72 rounded-full
-            -translate-x-7 z-30">
-              <img className="object-cover h-full object-left rounded-full"
-                src="https://foucanet.ir/wp-content/uploads/2022/08/%DA%AF%D9%84%DA%A9%D8%B3%DB%8C%D9%86%D9%88%D8%AA20%D8%B3%D8%A7%D9%85%D8%B3%D9%88%D9%86%DA%AF.jpg" alt="" />
-            </div>
-          <div className="bg-slate-200 shadow-md shadow-slate-400 w-72 h-72 rounded-full z-40">
-            <img className="object-cover h-full object-left rounded-full"
-              src="https://foucanet.ir/wp-content/uploads/2022/08/%DA%AF%D9%84%DA%A9%D8%B3%DB%8C%D9%86%D9%88%D8%AA20%D8%B3%D8%A7%D9%85%D8%B3%D9%88%D9%86%DA%AF.jpg" alt="" />
-          </div>
-          <div className="bg-slate-200 shadow-md shadow-slate-400 w-72 h-72 rounded-full
-            translate-x-7 z-50">
-              <img className="object-cover h-full object-left rounded-full"
-                src="https://foucanet.ir/wp-content/uploads/2022/08/%DA%AF%D9%84%DA%A9%D8%B3%DB%8C%D9%86%D9%88%D8%AA20%D8%B3%D8%A7%D9%85%D8%B3%D9%88%D9%86%DA%AF.jpg" alt="" />
-            </div>
+        <div className="w-full mt-10"></div>
+        <Btn
+          type='link'
+          href='/'
+          bgColor='bg-white'
+          color='text-blue-500'
+          text='ثبت سفارش'
+          svg={(
+            <svg className="duration-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+            </svg>
+          )}
+        />
+        <div className="bg-white shadow-md shadow-slate-300 w-11/12 h-max
+        flex flex-col justify-center items-center gap-5 rounded-xl p-5
+        absolute -bottom-[590px] left-1/2 -translate-x-1/2 sm:h-96 sm:-bottom-64 lg:flex-row lg:h-56 lg:-bottom-32">
+          <HeroItem image="./../../../public/imgs/poz.png" title="پرداخت در محل" description="پرداخت ۸۰ درصد مبلغ در محل شما برای جمع بودن خیال شما  متن تستی متن تستی متن تستی از پرداخت امن" />
+
+          <HeroItem image="./../../../public/imgs/location.png" title="پرداخت در محل" description="پرداخت ۸۰ درصد مبلغ در محل شما برای جمع بودن خیال شما  متن تستی متن تستی متن تستی از پرداخت امن" />
         </div>
       </div>
-      <div className="container flex justify-center flex-col items-center gap-5 mt-16 mx-auto">
+
+      <div className="container flex justify-center flex-col items-center gap-5 mt-[645px] mx-auto sm:mt-72 lg:mt-44">
         <h1 className="text-slate-700 sansbold text-2xl sm:text-5xl">برخی از خدمات ما</h1>
         <div className="w-full flex flex-wrap justify-center items-center gap-3 sm:gap-5">
           <ServiceBox
