@@ -2,11 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import Modal from '../../components/Modal/Modal'
 import Btn from "./../../components/Btn/Btn"
-import Input from '../../components/Input/Input'
 import FileInput from '../../components/FileInput/FileInput'
 import SelectBox from '../../components/SelectBox/SelectBox'
 import TeaxtArea from '../../components/TextArea/TeaxtArea'
-import Box from '../../components/Box/Box'
 
 export default function Order() {
   const [brands, setBranads] = useState([])
@@ -61,20 +59,39 @@ export default function Order() {
   }
 
   function postOrder() {
-    const formData = new FormData()
-    formData.append('userId', 2)
-    formData.append('address', addressRef.current.value)
-    formData.append('city', citiesRef.current.value)
-    formData.append('phoneId', selectDevice.id)
-    formData.append('partId', selectPart.id)
-    formData.append('description', descRef.current.value)
-    formData.append('picture', fileRef.current.files[0]);
-    axios({
-      method: 'post',
-      headers: { 'Content-Type': 'multipart/form-data' },
-      url: 'http://192.168.1.123:3000/orders/submit',
-      data: formData,
-    }).then(response => console.log(response))
+    const items = [
+      !!addressRef.current.value,
+      !!selectDevice.id,
+      !!selectPart.id,
+      !!descRef.current.value,
+      !!fileRef.current.files[0],
+      citiesRef.current.value !== 'none'
+    ]
+
+    let orderStatus = true
+
+    items.forEach((item, index) => {
+      if (!item) {
+        console.log(items[0], 'device');
+        orderStatus = false
+      }
+    })
+
+    console.log(orderStatus);
+    // const formData = new FormData()
+    // formData.append('userId', 2)
+    // formData.append('address', addressRef.current.value)
+    // formData.append('city', citiesRef.current.value)
+    // formData.append('phoneId', selectDevice.id)
+    // formData.append('partId', selectPart.id)
+    // formData.append('description', descRef.current.value)
+    // formData.append('picture', fileRef.current.files[0]);
+    // axios({
+    //   method: 'post',
+    //   headers: { 'Content-Type': 'multipart/form-data' },
+    //   url: 'http://192.168.1.123:3000/orders/submit',
+    //   data: formData,
+    // }).then(response => console.log(response))
   }
 
   return (
