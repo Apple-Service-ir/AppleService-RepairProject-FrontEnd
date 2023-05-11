@@ -49,12 +49,6 @@ export function Header() {
             </NavLink>
           </li>
           <li>
-            <NavLink to='/about-us'
-              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
-              درباره ما
-            </NavLink>
-          </li>
-          <li>
             <NavLink to='/report'
               className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
               ثبت شکایات
