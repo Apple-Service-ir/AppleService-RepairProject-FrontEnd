@@ -4,6 +4,7 @@ import { ServiceBox } from "../../components/ServiceBox/ServiceBox"
 import { HeroItem } from "../../components/HeroItem/HeroItem"
 import { HonorItem } from "../../components/HonorItem/HonorItem"
 import { QuestionItem } from "../../components/QuestionItem/QuestionItem"
+import { Link } from "react-router-dom"
 
 export default function Home() {
   return (
@@ -14,18 +15,12 @@ export default function Home() {
           لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع
         </p>
         <div className="w-full mt-10"></div>
-        <Btn
-          type='link'
-          href='/'
-          bgColor='bg-white'
-          color='text-blue-500'
-          text='ثبت سفارش'
-          svg={(
-            <svg className="duration-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-            </svg>
-          )}
-        />
+        <Link className="btn btn-white" to='/order'>
+          ثبت سفارش
+          <svg className="duration-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path className="duration-0" strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+          </svg>
+        </Link>
         <div className="bg-white shadow-md shadow-slate-300 w-11/12 h-max
         flex flex-col justify-center items-center gap-5 rounded-xl p-5
         absolute -bottom-[590px] left-1/2 -translate-x-1/2 sm:h-96 sm:-bottom-64 lg:flex-row lg:h-56 lg:-bottom-32">

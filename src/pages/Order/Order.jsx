@@ -189,17 +189,7 @@ export default function Order() {
             )}
           />
         </div>
-        <Btn
-          type='btn'
-          clickHandler={postOrder}
-          width='w-1/3'
-          bgColor='bg-white'
-          color='text-green-500'
-          border='border border-green-500'
-          hoverBgColor='hover:bg-green-500'
-          hoverColor='hover:text-white'
-          text='ثبت سفارش'
-        />
+        <button className='btn btn-outline-green w-1/3' onClick={postOrder}>ثبت سفارش</button>
       </div>
       {
         brandsModal &&

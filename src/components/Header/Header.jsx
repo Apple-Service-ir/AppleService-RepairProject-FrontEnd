@@ -55,16 +55,8 @@ export function Header() {
             </NavLink>
           </li>
         </ul>
-        <Btn
-          type='link'
-          href='/'
-          bgColor='bg-blue-500'
-          color='text-white'
-          border='border border-white'
-          hoverBgColor='hover:bg-white'
-          hoverColor='hover:text-blue-500'
-          text='ثبت نام / ورود'
-        />
+        <NavLink className={link => link.isActive ? 'btn btn-white' : 'btn btn-outline-white'}
+          to='/register'>ثبت نام / ورود</NavLink>
       </div>
     </>
   )
