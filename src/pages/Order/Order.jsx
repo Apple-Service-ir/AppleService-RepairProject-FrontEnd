@@ -3,7 +3,6 @@ import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast';
 
 import Modal from '../../components/Modal/Modal'
-import Btn from "./../../components/Btn/Btn"
 import FileInput from '../../components/FileInput/FileInput'
 import SelectBox from '../../components/SelectBox/SelectBox'
 import TeaxtArea from '../../components/TextArea/TeaxtArea'
