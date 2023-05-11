@@ -120,7 +120,14 @@ export default function Order() {
       headers: { 'Content-Type': 'multipart/form-data' },
       url: 'http://192.168.1.123:3000/orders/submit',
       data: formData,
-    }).then(response => console.log(response))
+    }).then(() => {
+      setSelectDevice({})
+      setSelectPart({})
+      citiesRef.current.value = ''
+      // fileRef.current.value = ''
+      addressRef.current.value = ''
+      descRef.current.value = ''
+    })
   }
 
   return (
@@ -246,7 +253,6 @@ export default function Order() {
           }
         </Modal>
       }
-
       <Toaster />
     </>
   )
