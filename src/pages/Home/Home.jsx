@@ -1,5 +1,4 @@
 import "./Home.css"
-import Btn from "../../components/Btn/Btn"
 import { ServiceBox } from "../../components/ServiceBox/ServiceBox"
 import { HeroItem } from "../../components/HeroItem/HeroItem"
 import { HonorItem } from "../../components/HonorItem/HonorItem"
