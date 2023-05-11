@@ -9,7 +9,10 @@ function App() {
     <>
       <Header />
       {router}
-      <Footer />
+      {
+        location.pathname !== '/register' &&
+        <Footer />
+      }
     </>
   )
 }
