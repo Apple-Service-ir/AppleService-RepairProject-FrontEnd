@@ -17,7 +17,7 @@ export default function FileInput(props) {
     <div className={`${props.width} h-16 relative`}>
       <input className='hidden' type="file" ref={inputRef} onChange={changeHandler}
         accept='.png,.jpg,.jpeg,.heif,.hevc'/>
-      <div className="bg-slate-200 border-2 border-slate-300
+      <div ref={props.inputWrapperRef} className="bg-slate-200 border-2 border-slate-300
         w-full h-full flex items-center absolute top-0 left-0 p-3 pl-16 rounded-xl
       	cursor-pointer hover:border-slate-400" onClick={clickHandler}>
         <span className='text-blue-500 text-sm sm:text-base' ref={nameFileRef}>{props.name}</span>

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
+import toast, { Toaster } from 'react-hot-toast';
+
 import Modal from '../../components/Modal/Modal'
 import Btn from "./../../components/Btn/Btn"
 import FileInput from '../../components/FileInput/FileInput'
@@ -21,8 +23,10 @@ export default function Order() {
 
   const [cities, setCities] = useState([])
 
-  const fileRef = useRef()
+  const deviceRef = useRef()
   const citiesRef = useRef()
+  const fileWrapperRef = useRef()
+  const fileRef = useRef()
   const addressRef = useRef()
   const descRef = useRef()
 
@@ -59,39 +63,65 @@ export default function Order() {
   }
 
   function postOrder() {
-    const items = [
-      !!addressRef.current.value,
-      !!selectDevice.id,
-      !!selectPart.id,
-      !!descRef.current.value,
-      !!fileRef.current.files[0],
-      citiesRef.current.value !== 'none'
+    const orderValidation = [
+      {
+        element: deviceRef,
+        validation: !!selectDevice.id
+      },
+      {
+        element: deviceRef,
+        validation: !!selectPart.id
+      },
+      {
+        element: citiesRef,
+        validation: citiesRef.current.value !== 'none'
+      },
+      {
+        element: fileWrapperRef,
+        validation: !!fileRef.current.files[0]
+      },
+      {
+        element: addressRef,
+        validation: !!addressRef.current.value
+      },
+      {
+        element: descRef,
+        validation: !!descRef.current.value
+      },
     ]
 
     let orderStatus = true
 
-    items.forEach((item, index) => {
-      if (!item) {
-        console.log(items[0], 'device');
+    orderValidation.forEach(item => {
+      if (!item.validation) {
+        item.element.current.classList.remove('border-slate-300', 'focus:border-slate-400', 'hover:border-slate-400')
+        item.element.current.classList.add('border-red-300', 'focus:border-red-400', 'hover:border-red-400')
         orderStatus = false
+      } else {
+        item.element.current.classList.remove('border-red-300', 'focus:border-red-400', 'hover:border-red-400')
+        item.element.current.classList.add('border-slate-300', 'focus:border-slate-400', 'hover:border-slate-400')
       }
     })
 
-    console.log(orderStatus);
-    // const formData = new FormData()
-    // formData.append('userId', 2)
-    // formData.append('address', addressRef.current.value)
-    // formData.append('city', citiesRef.current.value)
-    // formData.append('phoneId', selectDevice.id)
-    // formData.append('partId', selectPart.id)
-    // formData.append('description', descRef.current.value)
-    // formData.append('picture', fileRef.current.files[0]);
-    // axios({
-    //   method: 'post',
-    //   headers: { 'Content-Type': 'multipart/form-data' },
-    //   url: 'http://192.168.1.123:3000/orders/submit',
-    //   data: formData,
-    // }).then(response => console.log(response))
+    if (!orderStatus) {
+      toast.error('لطفا فیلد هارا تکمیل کنید');
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('userId', 2)
+    formData.append('address', addressRef.current.value)
+    formData.append('city', citiesRef.current.value)
+    formData.append('phoneId', selectDevice.id)
+    formData.append('partId', selectPart.id)
+    formData.append('description', descRef.current.value)
+    formData.append('picture', fileRef.current.files[0]);
+    axios({
+      method: 'post',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      url: 'http://192.168.1.123:3000/orders/submit',
+      data: formData,
+    }).then(response => console.log(response))
   }
 
   return (
@@ -99,7 +129,7 @@ export default function Order() {
       <div className='container flex flex-col justify-center items-center gap-3 mx-auto mt-7 px-3
       sm:p-0'>
         <div className="w-full flex justify-center items-center gap-3">
-          <div onClick={showBrandsModal} className='w-1/2 bg-slate-200 text-blue-500 border-2 border-slate-300
+          <div ref={deviceRef} onClick={showBrandsModal} className='w-1/2 bg-slate-200 text-blue-500 border-2 border-slate-300
             h-16 relative flex items-center rounded-xl text-sm sm:text-base p-3 select-none cursor-pointer
             hover:border-slate-400'>
             {
@@ -125,6 +155,7 @@ export default function Order() {
           />
         </div>
         <FileInput
+          inputWrapperRef={fileWrapperRef}
           inputRef={fileRef}
           width='w-full'
           name='تصویر دستگاه خود را بارگذاری کنید'
@@ -226,6 +257,8 @@ export default function Order() {
           }
         </Modal>
       }
+
+      <Toaster />
     </>
   )
 }
