@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast';
 
+import { get } from '../../utility';
+
 import Modal from '../../components/Modal/Modal'
 import FileInput from '../../components/FileInput/FileInput'
 import SelectBox from '../../components/SelectBox/SelectBox'
@@ -30,25 +32,22 @@ export default function Order() {
   const descRef = useRef()
 
   useEffect(() => {
-    axios.get('http://192.168.1.123:3000/list/devices')
-      .then(response => {
-        setBranads(response.data.brands)
-        const mapped = response.data.phones.map(item => {
-          return { id: item.id, value: `${item.brand} ${item.model}`, brand: item.brand }
-        })
-        setAllDevices(mapped)
+    get('/list/devices').then(response => {
+      setBranads(response.data.brands)
+      const mapped = response.data.phones.map(item => {
+        return { id: item.id, value: `${item.brand} ${item.model}`, brand: item.brand }
       })
+      setAllDevices(mapped)
+    })
 
-    axios.get(`http://192.168.1.123:3000/list/parts`)
-      .then(response => {
-        const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
-        setParts(mapped)
-      })
+    get('list/parts').then(response => {
+      const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
+      setParts(mapped)
+    })
 
-    axios.get('http://192.168.1.123:3000/list/cities')
-      .then(response => {
-        setCities(response.data)
-      })
+    get('/list/cities').then(response => {
+      setCities(response.data)
+    })
   }, [])
 
   function showBrandsModal() {
