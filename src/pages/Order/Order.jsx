@@ -28,6 +28,7 @@ export default function Order() {
   const citiesRef = useRef()
   const fileWrapperRef = useRef()
   const fileRef = useRef()
+  const nameFileRef = useRef()
   const addressRef = useRef()
   const descRef = useRef()
 
@@ -40,7 +41,7 @@ export default function Order() {
       setAllDevices(mapped)
     })
 
-    get('list/parts').then(response => {
+    get('/list/parts').then(response => {
       const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
       setParts(mapped)
     })
@@ -122,8 +123,8 @@ export default function Order() {
     }).then(() => {
       setSelectDevice({})
       setSelectPart({})
-      citiesRef.current.value = ''
-      // fileRef.current.value = ''
+      citiesRef.current.value = 'none'
+      nameFileRef.current.innerHTML = 'تصویر دستگاه خود را بارگذاری کنید'
       addressRef.current.value = ''
       descRef.current.value = ''
     })
@@ -162,6 +163,7 @@ export default function Order() {
         <FileInput
           inputWrapperRef={fileWrapperRef}
           inputRef={fileRef}
+          nameFileRef={nameFileRef}
           width='w-full'
           name='تصویر دستگاه خود را بارگذاری کنید'
           svg={(
