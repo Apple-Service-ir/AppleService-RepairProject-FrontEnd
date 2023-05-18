@@ -28,7 +28,7 @@ export function Header() {
             </li>
           </ul>
         </div>
-        <ul className='hidden justify-center items-center gap-7 lg:flex'>
+        <ul className='hidden justify-center items-center gap-9 lg:flex'>
           <li>
             <NavLink to='/'
               className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
@@ -54,8 +54,7 @@ export function Header() {
             </NavLink>
           </li>
         </ul>
-        <NavLink className={link => link.isActive ? 'btn btn-white' : 'btn btn-outline-white'}
-          to='/register'>ثبت نام / ورود</NavLink>
+        <NavLink className='btn btn-out-white' to='/register'>ثبت نام / ورود</NavLink>
       </div>
     </>
   )

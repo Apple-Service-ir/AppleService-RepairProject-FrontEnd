@@ -63,6 +63,10 @@ html {
   .btn-out-white {
     @apply text-white border-white border hover:bg-white hover:text-blue-500 hover:ring-4 hover:ring-white hover:ring-opacity-50;
   }
+  
+  .btn-white {
+    @apply bg-white text-blue-500 border-white border hover:ring-4 hover:ring-white hover:ring-opacity-50;
+  }
 
   .btn-blue {
     @apply bg-blue-500 text-white border-blue-500 border hover:ring-4 hover:ring-blue-200;
