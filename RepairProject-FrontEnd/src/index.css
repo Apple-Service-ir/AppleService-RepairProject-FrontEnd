@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "sans";
+  src: url("./../public/fonts/sans.woff2");
+  font-weight: lighter;
+}
+
+@font-face {
+  font-family: "sansbold";
+  src: url("./../public/fonts/sansbold.woff2");
+  font-weight: bolder;
+}
+
+*::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #00000000;
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply bg-slate-400;
+  border-radius: 5px;
+}
+
+html {
+  overflow-x: hidden;
+  direction: rtl
+}
+
+* {
+  @apply transition duration-200;
+  font-family: "sans"
+}
+
+@layer utilities {
+  .sansbold {
+    font-family: "sansbold";
+  }
+
+  .header__navlink,
+  .header__navlink-active {
+    @apply text-white relative flex items-center before:content-normal before:bg-white before:w-1 before:h-1
+      before:rounded-full before:absolute before:-right-3 before:transition-all before:duration-200 before:scale-0 before:opacity-0
+      hover:before:scale-100 hover:before:opacity-100;
+  }
+
+  .header__navlink-active {
+    @apply before:scale-100 before:opacity-100;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply h-12 flex justify-center items-center gap-2 py-3 px-6 rounded-full border;
+  }
+
+  .btn-out-white {
+    @apply text-white border-white border hover:bg-white hover:text-blue-500 hover:ring-4 hover:ring-white hover:ring-opacity-50;
+  }
+
+  .btn-blue {
+    @apply bg-blue-500 text-white border-blue-500 border hover:ring-4 hover:ring-blue-200;
+  }
+
+  .bg-input {
+    @apply h-12 relative;
+  }
+
+  .input {
+    @apply border border-blue-500 text-blue-500 placeholder:text-blue-500
+    absolute top-0 left-0 w-full h-full pr-6 pl-12 rounded-full
+    focus:outline-0 focus:ring-4 focus:ring-blue-200;
+  }
+
+  .svg-input {
+    @apply stroke-blue-500 absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6;
+  }
+}
