@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast';
 
 import { get, post } from '../../utility'
 
 export default function Register() {
-  const [formPage, setFormPage] = useState('login')
-
   const [cities, setCities] = useState([])
+  const navigate = useNavigate()
+
+  const [formPage, setFormPage] = useState('login')
+  const [prevPage, setPrevPage] = useState('login')
 
   const loginPhoneRef = useRef()
 
@@ -15,6 +17,8 @@ export default function Register() {
   const signinLastNameRef = useRef()
   const signinPhoneRef = useRef()
   const signinCityRef = useRef()
+
+  const otpNumberRef = useRef()
 
   useEffect(() => {
     get('/list/cities').then(response => {
@@ -26,8 +30,20 @@ export default function Register() {
     if (loginPhoneRef.current.value.length !== 11 || !loginPhoneRef.current.value.startsWith('09')) {
       toast.error('لطفا شماره خود را به درستی وارد کنید!')
     } else {
-      post('/auth?action=generate', { phone: loginPhoneRef.current.value }).then(response => {
-        console.log(response);
+      setPrevPage('login')
+      post('/auth?action=generate&mode=login', { phone: loginPhoneRef.current.value }).then(response => {
+        if (response.data.ok) {
+          toast.success(`کد تایید ارسال`)
+        } else {
+          toast(response.data.err, {
+            icon: (
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
+              className="bg-yellow-300 stroke-white w-7 h-7 p-1 rounded-full">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+              </svg>
+            )
+          })
+        }
         setFormPage('otpPage')
       })
     }
@@ -41,7 +57,28 @@ export default function Register() {
       || !signinPhoneRef.current.value.startsWith('09')
       || signinCityRef.current.value === 'none'
     ) toast.error('لطفا فیلد هارا به درستی کامل کنید!')
-    else setFormPage('otpPage')
+    else {
+      setPrevPage('signin')
+      setFormPage('otpPage')
+    }
+  }
+
+  function otpSubmit() {
+    otpNumberRef.current.value.length !== 4
+      ? toast.error('لطفا کد را کامل وارد کنید!')
+      : post('/auth?action=submit&mode=login', {
+        code: otpNumberRef.current.value,
+        phone: (prevPage === 'login') ? loginPhoneRef.current.value : signinPhoneRef.current.value,
+        mode: (prevPage === 'login') ? 'login' : 'register'
+      }).then(response => {
+        console.log(response)
+        const expire = new Date()
+        expire.setDate(expire.getDate() + 30)
+        console.log(expire);
+        console.log(expire.toUTCString());
+        document.cookie = `token=${response.data};expires=${expire.toUTCString()};`
+        navigate('/')
+      })
   }
 
   return (
@@ -145,16 +182,23 @@ export default function Register() {
           w-full flex flex-col justify-center items-center gap-3 p-6 show-up`}>
           <div className='w-full bg-input'>
             <input className='input tracking-[0.25rem]'
-              type="number" placeholder='*********09' />
+              type="number" placeholder='کد 4 رقمی را وارد کنید' ref={otpNumberRef} />
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
             </svg>
           </div>
-          <button className='btn btn-blue w-full'>ثبت کد</button>
+          <button className='btn btn-blue w-full' onClick={otpSubmit}>ثبت کد</button>
           <span className='text-xs flex justify-center items-center gap-2 mt-1 show-up'>
             شماره خود را اشتباه وارد کرده اید؟
-            <span className='text-blue-500 cursor-pointer select-none'
-              onClick={() => setFormPage('login')}>بازگشت به صفحه ورود</span>
+            {
+              prevPage === 'login' ? (
+                <span className='text-blue-500 cursor-pointer select-none'
+                  onClick={() => setFormPage('login')}>بازگشت به صفحه ورود</span>
+              ) : (
+                <span className='text-blue-500 cursor-pointer select-none'
+                  onClick={() => setFormPage('signin')}>بازگشت به صفحه ثبت نام</span>
+              )
+            }
           </span>
           <span className='text-xs flex justify-center items-center gap-2 show-up'>
             کدی دریافت نکردید؟
