@@ -72,6 +72,10 @@ input[type="number"] {
   .header__navlink-active {
     @apply before:scale-100 before:opacity-100;
   }
+
+  .a-slow {
+    animation-duration: 350ms;
+  }
 }
 
 @layer components {

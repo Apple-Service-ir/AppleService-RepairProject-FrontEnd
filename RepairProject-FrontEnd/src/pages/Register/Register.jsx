@@ -26,11 +26,11 @@ export default function Register() {
     })
   }, [])
 
-  function generateOtp() {
+  function generateLoginOtp() {
     otpNumberRef.current.value = ''
     post('/auth?action=generate&mode=login', { phone: loginPhoneRef.current.value }).then(response => {
       if (response.data.ok) {
-        toast.success(`کد تایید ارسال`)
+        toast.success(`کد تایید ارسال شد`)
       } else {
         toast(response.data.err, {
           icon: (
@@ -41,7 +41,7 @@ export default function Register() {
           )
         })
       }
-      setFormPage('otpPage')
+      response.data.nextPage && setFormPage('otpPage')
     })
   }
 
@@ -50,8 +50,28 @@ export default function Register() {
       toast.error('لطفا شماره خود را به درستی وارد کنید!')
     } else {
       setPrevPage('login')
-      generateOtp()
+      generateLoginOtp()
     }
+  }
+
+  function generateSigninOtp() {
+    otpNumberRef.current.value = ''
+
+    post('/auth?action=generate&mode=register', { phone: signinPhoneRef.current.value }).then(response => {
+      if (response.data.ok) {
+        toast.success(`کد تایید ارسال شد`)
+      } else {
+        toast(response.data.err, {
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
+              className="bg-yellow-300 stroke-white w-7 h-7 p-1 rounded-full">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          )
+        })
+      }
+      response.data.nextPage && setFormPage('otpPage')
+    })
   }
 
   function submitSignin() {
@@ -64,48 +84,78 @@ export default function Register() {
     ) toast.error('لطفا فیلد هارا به درستی کامل کنید!')
     else {
       setPrevPage('signin')
-      setFormPage('otpPage')
+      generateSigninOtp()
     }
   }
 
-  function otpSubmit() {
-    otpNumberRef.current.value.length !== 4
-      ? toast.error('لطفا کد را کامل وارد کنید!')
-      : post('/auth?action=submit&mode=login', {
-        code: otpNumberRef.current.value,
-        phone: (prevPage === 'login') ? loginPhoneRef.current.value : signinPhoneRef.current.value,
-        mode: (prevPage === 'login') ? 'login' : 'register'
-      }).then(response => {
-        console.log(response)
-        const expire = new Date()
-        expire.setDate(expire.getDate() + 30)
-        console.log(expire);
-        console.log(expire.toUTCString());
-        document.cookie = `token=${response.data};expires=${expire.toUTCString()};`
-        navigate('/')
-      })
+  async function otpSubmit() {
+    const isLogin = prevPage === 'login'
+
+    if (otpNumberRef.current.value.length !== 4) return toast.error('لطفا کد را کامل وارد کنید!')
+
+    const response = await post(`/auth?action=submit&mode=${isLogin ? 'login' : 'register'}`, {
+      code: otpNumberRef.current.value,
+      phone: isLogin ? loginPhoneRef.current.value : signinPhoneRef.current.value,
+      mode: isLogin ? 'login' : 'register'
+    })
+
+    if (response.data.ok) {
+
+      let token = response.data.token || null
+
+      if (!isLogin) {
+        const createdUser = await post(`/register`, {
+          firstName: signinNameRef.current.value,
+          lastName: signinLastNameRef.current.value,
+          phone: signinPhoneRef.current.value,
+          city: signinCityRef.current.value
+        })
+
+        createdUser.data.ok ? token = createdUser.data.token : toast.error(createdUser.data.err)
+      }
+
+      const expire = new Date()
+      expire.setDate(expire.getDate() + 30)
+
+      document.cookie = `token=${token};expires=${expire.toUTCString()};`
+
+      navigate('/')
+
+    } else toast.error(response.data.err)
   }
 
   return (
     <div className="w-screen h-screen flex">
-      <div className="w-1/2 h-full flex flex-col justify-center items-center relative">
-        <div className={`${formPage === 'login' ? 'flex' : 'hidden'} bg-title title-blue absolute top-6 show-up`}>
-          ورورد به حساب قبلی
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-          </svg>
-        </div>
-        <div className={`${formPage === 'signin' ? 'flex' : 'hidden'} bg-title title-blue absolute top-6 show-up`}>
-          ساخت حساب کاربری
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
-          </svg>
-        </div>
-        <div className={`${formPage === 'otpPage' ? 'flex' : 'hidden'} bg-title title-blue absolute top-6 show-up`}>
-          تایید کد یکبار مصرف
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-          </svg>
+      <div className="w-full h-full flex flex-col justify-center items-center relative
+        md:w-1/2">
+        <div className="w-full p-3 flex justify-between items-center absolute top-0
+          md:justify-center">
+          <div className={`${formPage === 'login' ? 'flex' : 'hidden'} bg-title title-blue show-up`}>
+            ورورد به حساب قبلی
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+          </div>
+          <div className={`${formPage === 'signin' ? 'flex' : 'hidden'} bg-title title-blue show-up`}>
+            ساخت حساب کاربری
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+            </svg>
+          </div>
+          <div className={`${formPage === 'otpPage' ? 'flex' : 'hidden'} bg-title title-blue show-up`}>
+            تایید کد یکبار مصرف
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+            </svg>
+          </div>
+          <Link to={'/'}
+            className={`border border-blue-500 w-11 h-11 flex justify-center items-center rounded-full      
+            show-up
+            md:hidden`}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-blue-500 w-7 h-7">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+          </Link>
         </div>
 
         <div className={`${formPage === 'login' ? 'flex' : 'hidden'}
@@ -119,7 +169,7 @@ export default function Register() {
           </div>
           <button className='btn btn-blue w-full'
             onClick={submitLogin}>ورود</button>
-          <span className='text-xs flex justify-center items-center gap-2 mt-1 show-up'>
+          <span className='text-xs flex justify-center items-center gap-2 mt-1 show-up a-slow'>
             حساب کاربری ندارید؟
             <span className='text-blue-500 cursor-pointer select-none'
               onClick={() => setFormPage('signin')}>ثبت نام کنید</span>
@@ -166,7 +216,7 @@ export default function Register() {
               <option value="none">شهرتان را انتخاب کنید</option>
               {
                 cities.map(city => (
-                  <option key={city.id} value={city.id}>{city.name}</option>
+                  <option key={city.id} value={city.name}>{city.name}</option>
                 ))
               }
             </select>
@@ -176,7 +226,7 @@ export default function Register() {
           </div>
           <button className='btn btn-blue w-full'
             onClick={submitSignin}>ثبت نام</button>
-          <span className='text-xs flex justify-center items-center gap-2 mt-1 show-up'>
+          <span className='text-xs flex justify-center items-center gap-2 mt-1 show-up a-slow'>
             حساب کاربری دارید؟
             <span className='text-blue-500 cursor-pointer select-none'
               onClick={() => setFormPage('login')}>وارد شوید</span>
@@ -193,7 +243,7 @@ export default function Register() {
             </svg>
           </div>
           <button className='btn btn-blue w-full' onClick={otpSubmit}>ثبت کد</button>
-          <span className='text-xs flex justify-center items-center gap-2 mt-1 show-up'>
+          <span className='text-xs flex justify-center items-center gap-2 mt-1 show-up a-slow'>
             شماره خود را اشتباه وارد کرده اید؟
             {
               prevPage === 'login' ? (
@@ -209,15 +259,16 @@ export default function Register() {
             کدی دریافت نکردید؟
             <button
               className='text-blue-500 cursor-pointer select-none'
-              onClick={generateOtp}
+              onClick={generateLoginOtp}
             >
               دریافت دوباره
             </button>
           </span>
         </div>
-
       </div>
-      <div className="bg-blue-500 w-1/2 h-full flex flex-col justify-between items-center pt-6 relative">
+
+      <div className="bg-blue-500 w-1/2 h-full hidden flex-col justify-between items-center pt-6 relative
+        md:flex">
         <img className='h-full w-full object-cover absolute top-0 z-10 brightness-50'
           src="https://ariavash.ir/fa/storage/2020/09/%D8%AA%D8%B9%D9%85%DB%8C%D8%B1%D8%A7%D8%AA-%D9%85%D9%88%D8%A8%D8%A7%DB%8C%D9%84-%D8%A8%D8%A7%D8%B2%D8%A7%D8%B1-%DA%A9%D8%A7%D8%B1-1200x900.jpg" alt="repair" />
         <Link to='/' className='btn btn-out-white z-20'>
