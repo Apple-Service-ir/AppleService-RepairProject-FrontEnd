@@ -12,25 +12,25 @@ export default function Footer() {
         sm:p-0'>
         <div className="bg-slate-200 shadow-sm shadow-slate-400 flex flex-col justify-center mx-auto rounded-xl
           sm:flex-row">
-          <div className="w-full flex flex-col items-center gap-3 p-5
+          <div className="w-full flex flex-col items-center gap-3 p-9
           sm:w-1/3 lg:w-1/4">
             <span className='text-blue-500 text-3xl sansbold mb-3'>اسم سایت</span>
-            <span className='text-slate-700 text-justify'>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون</span>
+            <span className='text-slate-700 text-justify text-sm'>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون</span>
           </div>
-          <div className="w-full flex flex-col items-center gap-3 p-5
+          <div className="w-full flex flex-col items-center gap-3 p-9
           sm:w-1/3 lg:w-1/4">
             <span className='text-blue-500 text-3xl sansbold mb-3'>متن تستی</span>
-            <span className='text-slate-700'>example@gmail.com</span>
-            <span className='text-slate-700'>09104502065</span>
+            <span className='text-slate-700 text-sm'>example@gmail.com</span>
+            <span className='text-slate-700 text-sm'>09104502065</span>
           </div>
-          <div className="w-full hidden flex-col items-center gap-3 p-5 lg:flex
+          <div className="w-full hidden flex-col items-center gap-3 p-9 lg:flex
           sm:w-1/3 lg:w-1/4">
             <span className='text-blue-500 text-3xl sansbold mb-3'>لینک ها</span>
-            <Link to='/' className='text-slate-700 hover:text-blue-500  underline'>ثبت سفارش</Link>
-            <Link to='/' className='text-slate-700 hover:text-blue-500  underline'>همکاری با ما</Link>
-            <Link to='/' className='text-slate-700 hover:text-blue-500  underline'>همکاری با ما</Link>
+            <Link to='/' className='text-slate-700 hover:text-blue-500 underline text-sm'>ثبت سفارش</Link>
+            <Link to='/' className='text-slate-700 hover:text-blue-500 underline text-sm'>همکاری با ما</Link>
+            <Link to='/' className='text-slate-700 hover:text-blue-500 underline text-sm'>همکاری با ما</Link>
           </div>
-          <div className="w-full flex flex-col items-center gap-3 p-5
+          <div className="w-full flex flex-col items-center gap-3 p-9
           sm:w-1/3 lg:w-1/4">
             <span className='text-blue-500 text-3xl sansbold mb-3'>دنبال کنید</span>
             <div className="w-full flex justify-center items-center gap-6">
