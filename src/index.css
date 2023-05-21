@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "sans";
+  src: url("./../public/fonts/sans.woff2");
+  font-weight: lighter;
+}
+
+@font-face {
+  font-family: "sansbold";
+  src: url("./../public/fonts/sansbold.woff2");
+  font-weight: bolder;
+}
+
+*::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #00000000;
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply bg-slate-400;
+  border-radius: 5px;
+}
+
+html {
+  overflow-x: hidden;
+  direction: rtl
+}
+
+* {
+  @apply transition duration-200;
+  font-family: "sans"
+}
+
+@layer utilities {
+  .sansbold {
+    font-family: "sansbold";
+  }
+
+  .header__navlink,
+  .header__navlink-active {
+    @apply text-white relative flex items-center before:content-normal before:bg-white before:w-1 before:h-1
+      before:rounded-full before:absolute before:-right-3 before:transition-all before:duration-200 before:scale-0 before:opacity-0
+      hover:before:scale-100 hover:before:opacity-100;
+  }
+
+  .header__navlink-active {
+    @apply before:scale-100 before:opacity-100;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply flex justify-center items-center gap-2 py-2 px-7 rounded-full border;
+  }
+
+  .btn-outline-white {
+    @apply text-white border-white hover:bg-white hover:text-blue-500;
+  }
+  
+  .btn-outline-green {
+    @apply text-green-500 border-green-500 hover:bg-green-500 hover:text-white;
+  }
+
+  .btn-white {
+    @apply bg-white text-blue-500 border-white hover:bg-blue-500 hover:text-white;
+  }
+}
