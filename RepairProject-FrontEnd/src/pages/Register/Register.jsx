@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useFetcher, useNavigate } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast';
 
 import { get, post } from '../../utility'
@@ -20,11 +20,20 @@ export default function Register() {
 
   const otpNumberRef = useRef()
 
+  const mobileHomeRef = useRef()
+
   useEffect(() => {
     get('/list/cities').then(response => {
       setCities(response.data)
     })
   }, [])
+
+  useEffect(() => {
+    mobileHomeRef.current.classList.remove('show-up')
+    setTimeout(() => {
+      mobileHomeRef.current.classList.add('show-up')
+    }, 0);
+  }, [formPage])
 
   function generateLoginOtp() {
     otpNumberRef.current.value = ''
@@ -151,7 +160,9 @@ export default function Register() {
           <Link to={'/'}
             className={`border border-blue-500 w-11 h-11 flex justify-center items-center rounded-full      
             show-up
-            md:hidden`}>
+            md:hidden`}
+            ref={mobileHomeRef}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-blue-500 w-7 h-7">
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
             </svg>
@@ -204,7 +215,7 @@ export default function Register() {
             <input
               className='input tracking-[0.25rem] text-right' dir='ltr'
               type="number"
-              placeholder='*********09'
+              placeholder='09*********'
               ref={signinPhoneRef}
             />
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
@@ -236,7 +247,7 @@ export default function Register() {
         <div className={`${formPage === 'otpPage' ? 'flex' : 'hidden'}
           w-full flex flex-col justify-center items-center gap-3 p-6 show-up`}>
           <div className='w-full bg-input'>
-            <input className='input tracking-[0.25rem]'
+            <input className='input tracking-[0.25rem] placeholder:tracking-normal'
               type="number" placeholder='کد 4 رقمی را وارد کنید' ref={otpNumberRef} />
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />

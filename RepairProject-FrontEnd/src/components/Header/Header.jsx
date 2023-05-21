@@ -1,7 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
+import { getMe } from '../../utility'
+
 export function Header() {
+  const [userCookie, setUserCookie] = useState({})
+
+  useEffect(() => {
+    getMe().then(response => {
+      response && setUserCookie(response)
+    })
+  }, [])
+
+  useEffect(() => {
+    console.log(userCookie);
+  }, [userCookie])
+
   return (
     <>
       <div className='bg-blue-500 w-screen flex justify-between items-center p-3 px-7 z-50'>
@@ -54,7 +68,15 @@ export function Header() {
             </NavLink>
           </li>
         </ul>
-        <NavLink className='btn btn-out-white' to='/register'>ثبت نام / ورود</NavLink>
+        {
+          userCookie.firstName && userCookie.lastName ? (
+            <NavLink className='btn btn-out-white' to='/dashboard'>
+              {userCookie.firstName} {userCookie.lastName}
+            </NavLink>
+          ) : (
+            <NavLink className='btn btn-out-white' to='/register'>ثبت نام / ورورد</NavLink>
+          )
+        }
       </div>
     </>
   )
