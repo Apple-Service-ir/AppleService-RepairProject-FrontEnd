@@ -114,19 +114,16 @@ export default function Register() {
 
       if (!isLogin) {
         const createdUser = await post(`/register`, {
-          firstName: signinNameRef.current.value,
-          lastName: signinLastNameRef.current.value,
+          firstName: signinNameRef.current.value.trim(),
+          lastName: signinLastNameRef.current.value.trim(),
           phone: signinPhoneRef.current.value,
-          city: signinCityRef.current.value
+          city: signinCityRef.current.value.trim()
         })
 
         createdUser.data.ok ? token = createdUser.data.token : toast.error(createdUser.data.err)
       }
 
-      const expire = new Date()
-      expire.setDate(expire.getDate() + 30)
-
-      document.cookie = `token=${token};expires=${expire.toUTCString()};`
+      localStorage.setItem('e-service-token', token)
 
       navigate('/')
 

@@ -20,9 +20,10 @@ const postForm = async (url, formData) => {
 
 // getMe
 const getMe = async () => {
-  if (!document.cookie.includes("token")) return null
-  const userCookie = document.cookie.split('=')[1]
-  const response = await get(`/informations/get?token=${userCookie}`)
+  const userToken = localStorage.getItem('e-service-token')
+  if (!userToken) return null
+  const response = await get(`/informations/get?token=${userToken}`)
+  !response.data.ok && localStorage.removeItem('e-service-token')
   return response.data.ok ? response.data.user : null
 }
 // ---
