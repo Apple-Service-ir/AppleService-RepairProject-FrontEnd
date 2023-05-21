@@ -2,7 +2,7 @@ import React from 'react'
 
 export function QuestionItem(props) {
   return (
-    <div className="w-72 bg-slate-200 shadow-sm shadow-slate-400
+    <div className="w-full bg-slate-200 shadow-sm shadow-slate-400
       flex flex-col justify-center items-center rounded-xl
       sm:w-96">
       <div className="w-full flex justify-between items-center p-3 sm:p-5 pb-3 sm:pb-5">

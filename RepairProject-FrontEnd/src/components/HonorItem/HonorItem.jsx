@@ -10,7 +10,7 @@ export function HonorItem(props) {
       <div className="w-full h-48 flex justify-center items-center gap-3
         lg:w-3/4 sm:gap-10">
         <div className="w-1/2 h-full flex flex-col justify-center items-center gap-3">
-          <h3 className="text-xl sansbold flex justify-center items-center relative
+          <h3 className="text-lg sansbold flex justify-center items-center relative
             before:absolute before:w-[110%] before:h-1/2 before:bg-blue-500 before:opacity-25
             lg:text-3xl">
             {props.title}
