@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast';
 
-import { get } from '../../utility';
+import { get, postForm } from '../../utility';
 
 import Modal from '../../components/Modal/Modal'
 import FileInput from '../../components/FileInput/FileInput'
@@ -115,19 +115,15 @@ export default function Order() {
     formData.append('partId', selectPart.id)
     formData.append('description', descRef.current.value)
     formData.append('picture', fileRef.current.files[0]);
-    axios({
-      method: 'post',
-      headers: { 'Content-Type': 'multipart/form-data' },
-      url: 'http://192.168.1.123:3000/orders/submit',
-      data: formData,
-    }).then(() => {
-      setSelectDevice({})
-      setSelectPart({})
-      citiesRef.current.value = 'none'
-      nameFileRef.current.innerHTML = 'تصویر دستگاه خود را بارگذاری کنید'
-      addressRef.current.value = ''
-      descRef.current.value = ''
+    postForm('/orders/submit', formData).then(response => {
+      console.log(response);
     })
+    // setSelectDevice({})
+    // setSelectPart({})
+    // citiesRef.current.value = 'none'
+    // nameFileRef.current.innerHTML = 'تصویر دستگاه خود را بارگذاری کنید'
+    // addressRef.current.value = ''
+    // descRef.current.value = ''
   }
 
   return (
@@ -196,7 +192,7 @@ export default function Order() {
             )}
           />
         </div>
-        <button className='btn btn-outline-green w-1/3' onClick={postOrder}>ثبت سفارش</button>
+        <button className='btn btn-out-green w-1/3' onClick={postOrder}>ثبت سفارش</button>
       </div>
       {
         brandsModal &&

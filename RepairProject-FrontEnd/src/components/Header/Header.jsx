@@ -4,17 +4,13 @@ import { Link, NavLink } from 'react-router-dom'
 import { getMe } from '../../utility'
 
 export function Header() {
-  const [userCookie, setUserCookie] = useState({})
+  const [userCookie, setUserCookie] = useState(null)
 
   useEffect(() => {
     getMe().then(response => {
       response && setUserCookie(response)
     })
   }, [])
-
-  useEffect(() => {
-    console.log(userCookie);
-  }, [userCookie])
 
   return (
     <>
@@ -69,7 +65,7 @@ export function Header() {
           </li>
         </ul>
         {
-          userCookie.firstName && userCookie.lastName ? (
+          userCookie ? (
             <NavLink className='btn btn-out-white' to='/dashboard'>
               {userCookie.firstName} {userCookie.lastName}
             </NavLink>

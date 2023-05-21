@@ -90,6 +90,10 @@ input[type="number"] {
   .btn-out-blue {
     @apply text-blue-500 border-blue-500 border hover:bg-blue-500 hover:text-white hover:ring-4 hover:ring-blue-200;
   }
+
+  .btn-out-green {
+    @apply text-green-500 border-green-500 border hover:bg-green-500 hover:text-white hover:ring-4 hover:ring-green-200;
+  }
   
   .btn-white {
     @apply bg-white text-blue-500 border-white border hover:ring-4 hover:ring-white hover:ring-opacity-50;
