@@ -4,7 +4,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { getMe } from '../../utility'
 
 export function Header() {
-  const [userCookie, setUserCookie] = useState(null)
+  const [userCookie, setUserCookie] = useState({})
 
   useEffect(() => {
     getMe().then(response => {
@@ -66,8 +66,14 @@ export function Header() {
         </ul>
         {
           userCookie ? (
-            <NavLink className='btn btn-out-white' to='/dashboard'>
+            <NavLink
+              className={link => link.isActive ? 'btn btn-white' : 'btn btn-out-white'}
+              to='/dashboard'
+            >
               {userCookie.firstName} {userCookie.lastName}
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="duration-0 w-5 h-5">
+                <path className="duration-0" strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
             </NavLink>
           ) : (
             <NavLink className='btn btn-out-white' to='/register'>ثبت نام / ورورد</NavLink>

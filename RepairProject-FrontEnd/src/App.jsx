@@ -11,7 +11,6 @@ function App() {
       {
         (
           location.pathname !== '/register'
-          && location.pathname !== '/dashboard'
         ) && <Header />
       }
       {router}

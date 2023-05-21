@@ -80,7 +80,7 @@ input[type="number"] {
 
 @layer components {
   .btn {
-    @apply h-12 flex justify-center items-center gap-3 py-3 px-6 rounded-full border cursor-pointer;
+    @apply h-12 flex justify-center items-center gap-3 py-2 px-6 rounded-full border cursor-pointer;
   }
 
   .btn-out-white {
@@ -101,6 +101,10 @@ input[type="number"] {
 
   .btn-blue {
     @apply bg-blue-500 text-white border-blue-500 border hover:ring-4 hover:ring-blue-200;
+  }
+
+  .btn-danger {
+    @apply bg-red-500 text-white border-red-500 border hover:ring-4 hover:ring-red-400;
   }
 
   .bg-title {

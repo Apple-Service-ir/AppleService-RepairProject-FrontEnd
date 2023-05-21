@@ -3,6 +3,7 @@ import Home from "./pages/Home/Home.jsx"
 import Order from "./pages/Order/Order.jsx"
 import Register from "./pages/Register/Register.jsx"
 import UserDashboard from "./pages/Dashboards/UserDashboard.jsx"
+import UserOrders from "./pages/Dashboards/UserOrders.jsx"
 
 const routes = [
   { path: '/', element: <Home /> },
