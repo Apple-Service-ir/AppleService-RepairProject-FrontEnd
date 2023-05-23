@@ -123,6 +123,12 @@ input[type="number"] {
     @apply bg-red-500 text-white;
   }
 
+  .tooltip {
+    @apply bg-white text-black w-max text-xs
+    px-3 py-0.5 rounded-full absolute -top-6 invisible opacity-0
+    group-hover:visible group-hover:opacity-100;
+  }
+
   .bg-title {
     @apply h-12 flex justify-center items-center gap-3 py-3 px-6 rounded-full border select-none;
   }
