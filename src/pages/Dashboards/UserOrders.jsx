@@ -4,24 +4,82 @@ function UserOrders() {
   return (
     <div className='w-full flex flex-col justify-center items-center gap-6'>
 
-      <div className="w-full">
-        <div className="bg-blue-200 w-full h-12 flex justify-between items-center p-6 rounded-t-xl">
-          <div className="h-full flex justify-center items-center gap-6">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-blue-500 w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0118 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3l1.5 1.5 3-3.75" />
-            </svg>
-            <div className='text-blue-500 flex justify-center items-center gap-2'>
-              <span className='sansbold'>کد سفارش:</span>
-              <span className='text-gray-500 cursor-pointer text-sm'>#1935402</span>
-            </div>
-          </div>
-          <button className='badge badge-blue'>در انتطار تایید</button>
-          {/* <button className='badge badge-danger cursor-pointer'>لغو سفارش</button> */}
-        </div>
-        <div className="border-blue-200 border-2 border-dashed border-t-0 w-full
-        flex flex-col justify-center items-center p-6 rounded-b-xl">
-
-        </div>
+      <div className="w-full rounded-xl overflow-hidden">
+        <table className='w-full'>
+          <thead className='bg-blue-200 w-full'>
+            <tr className='w-full'>
+              <th className='w-3/12 font-light text-right px-3 py-1'>نام دستگاه</th>
+              <th className='w-4/12 font-light text-right px-3 py-1'>قطعات</th>
+              <th className='w-3/12 font-light text-right px-3 py-1'>تعمیر کار</th>
+              <th className='w-2/12 font-light text-right px-3 py-1'>کد سفارش</th>
+            </tr>
+          </thead>
+          <tbody className='w-full'>
+            <tr className='border-blue-200 border-b border-dashed w-full'>
+              <td className='w-2/12 p-3'>Iphone 13</td>
+              <td className='w-4/12 p-3'>
+                <div className="w-full flex items-center gap-3">
+                  <span>LCD</span>
+                  <span>سوکت شارژ</span>
+                  <span>دوربین جلو</span>
+                </div>
+              </td>
+              <td className='w-2/12 p-3'>
+                <button className='text-blue-500 underline decoration-blue-300'>شایان نصر آبادی</button>
+              </td>
+              <td className='w-2/12 p-3'>
+                <button className='badge-btn badge-blue'>
+                  <span>20314</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+            <tr className='border-blue-200 border-b border-dashed w-full'>
+              <td className='w-2/12 p-3'>Iphone 13</td>
+              <td className='w-4/12 p-3'>
+                <div className="w-full flex items-center gap-3">
+                  <span>LCD</span>
+                  <span>سوکت شارژ</span>
+                  <span>دوربین جلو</span>
+                </div>
+              </td>
+              <td className='w-2/12 p-3'>
+                <button className='text-blue-500 underline decoration-blue-300'>شایان نصر آبادی</button>
+              </td>
+              <td className='w-2/12 p-3'>
+                <button className='badge-btn badge-blue'>
+                  <span>20314</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+            <tr className='border-blue-200 border-b border-dashed w-full'>
+              <td className='w-2/12 p-3'>Iphone 13</td>
+              <td className='w-4/12 p-3'>
+                <div className="w-full flex items-center gap-3">
+                  <span>LCD</span>
+                  <span>سوکت شارژ</span>
+                  <span>دوربین جلو</span>
+                </div>
+              </td>
+              <td className='w-2/12 p-3'>
+                <button className='text-blue-500 underline decoration-blue-300'>شایان نصر آبادی</button>
+              </td>
+              <td className='w-2/12 p-3'>
+                <button className='badge-btn badge-blue'>
+                  <span>20314</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
     </div>
