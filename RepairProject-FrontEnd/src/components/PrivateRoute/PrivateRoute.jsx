@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { Navigate } from 'react-router-dom'
 
-import { getMe } from '../../utility'
+import AuthContext from '../../context/AuthContext'
 
 function PrivateRoute({ reDirectPath, children }) {
-  const [isLogin, setIsLogin] = useState(true)
+  const authContext = useContext(AuthContext)
 
-  useEffect(() => {
-    getMe().then(response => {
-      response === null && setIsLogin(false)
-    })
-  }, [])
-
-  return isLogin ? children : <Navigate to={reDirectPath} />
+  return authContext.isLogin ? children : <Navigate to={reDirectPath} />
 }
 
 export default PrivateRoute

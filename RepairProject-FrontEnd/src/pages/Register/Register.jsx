@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Link, useFetcher, useNavigate } from 'react-router-dom'
+import React, { useEffect, useRef, useState, useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast';
 
 import { get, post } from '../../utility'
+import AuthContext from '../../context/AuthContext';
 
 export default function Register() {
+  const authcontext = useContext(AuthContext)
+
   const [cities, setCities] = useState([])
   const navigate = useNavigate()
 
@@ -123,8 +126,7 @@ export default function Register() {
         createdUser.data.ok ? token = createdUser.data.token : toast.error(createdUser.data.err)
       }
 
-      localStorage.setItem('e-service-token', token)
-
+      authcontext.login(token, response.data.user)
       navigate('/')
 
     } else toast.error(response.data.err)
