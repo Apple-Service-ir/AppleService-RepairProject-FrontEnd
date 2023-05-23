@@ -9,7 +9,7 @@ import { get } from "./utility"
 
 function App() {
   const [userToken, setUserToken] = useState(null)
-  const [isLogin, setIslogin] = useState(false)
+  const [isLogin, setIslogin] = useState(localStorage.getItem("e-service-token") ? true : false)
   const [userInfo, setUserInfo] = useState({})
 
   const router = useRoutes(routes)
@@ -31,21 +31,21 @@ function App() {
 
   useEffect(() => {
     const localStorageData = localStorage.getItem('e-service-token')
-    if (localStorageData) {
-      get(`/informations/get?token=${localStorageData}`)
-        .then(response => {
-          console.log(response);
-          if (response.data.ok) {
-            setIslogin(true)
-            setUserInfo(response.data.user)
-          }
-          else {
-            setUserToken(null)
-            setIslogin(false)
-            setUserInfo({})
-          }
-        })
-    }
+    get(`/informations/get?token=${localStorageData}`)
+      .then(response => {
+        console.log(response);
+        if (response.data.ok) {
+          setIslogin(true)
+          setUserInfo(response.data.user)
+          setUserToken(localStorageData)
+        }
+        else {
+          setUserToken(null)
+          setIslogin(false)
+          setUserInfo({})
+          localStorage.removeItem('e-service-token')
+        }
+      })
   }, [])
 
   return (

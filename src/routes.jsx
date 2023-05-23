@@ -17,8 +17,8 @@ const routes = [
     path: '/dashboard',
     element: <PrivateRoute reDirectPath='/dashboard'> <UserDashboard /> </PrivateRoute>,
     children: [
-      {path: '/dashboard/orders', element: <UserOrders />},
-      {path: '/dashboard/tickets', element: <UserTickets />}
+      { path: '/dashboard/orders', element: <UserOrders /> },
+      { path: '/dashboard/tickets', element: <UserTickets /> }
     ]
   },
 ]

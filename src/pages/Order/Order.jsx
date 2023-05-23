@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
-import axios from 'axios'
+import React, { useEffect, useRef, useState, useContext } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 
 import { get, postForm } from '../../utility';
+import AuthContext from './../../context/AuthContext'
 
 import Modal from '../../components/Modal/Modal'
 import FileInput from '../../components/FileInput/FileInput'
@@ -10,6 +10,8 @@ import SelectBox from '../../components/SelectBox/SelectBox'
 import TeaxtArea from '../../components/TextArea/TeaxtArea'
 
 export default function Order() {
+  const authContext = useContext(AuthContext)
+
   const [brands, setBranads] = useState([])
   const [devices, setDevices] = useState([])
   const [allDevices, setAllDevices] = useState([])
@@ -106,9 +108,8 @@ export default function Order() {
       toast.error('لطفا فیلد هارا تکمیل کنید');
       return
     }
-
     const formData = new FormData()
-    formData.append('userId', 2)
+    formData.append('token', authContext.userToken)
     formData.append('address', addressRef.current.value)
     formData.append('city', citiesRef.current.value)
     formData.append('phoneId', selectDevice.id)
@@ -116,14 +117,16 @@ export default function Order() {
     formData.append('description', descRef.current.value)
     formData.append('picture', fileRef.current.files[0]);
     postForm('/orders/submit', formData).then(response => {
-      console.log(response);
+      if (response.data.ok) {
+        setSelectDevice({})
+        setSelectPart({})
+        citiesRef.current.value = 'none'
+        nameFileRef.current.innerHTML = 'تصویر دستگاه خود را بارگذاری کنید'
+        addressRef.current.value = ''
+        descRef.current.value = ''
+        toast.success('سفارش شما با موفقیت ثبت شد')
+      } else toast.error(response.data.err)
     })
-    // setSelectDevice({})
-    // setSelectPart({})
-    // citiesRef.current.value = 'none'
-    // nameFileRef.current.innerHTML = 'تصویر دستگاه خود را بارگذاری کنید'
-    // addressRef.current.value = ''
-    // descRef.current.value = ''
   }
 
   return (
