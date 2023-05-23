@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { getMe } from '../../utility'
 
 function UserDashboradSideBar() {
@@ -12,7 +12,7 @@ function UserDashboradSideBar() {
   }, [])
 
   return (
-    <div className='bg-blue-500 w-full h-full flex flex-col items-center rounded-xl p-3'>
+    <div className='bg-blue-500 w-full min-h-max flex flex-col items-center rounded-xl p-3'>
       <svg className='w-24 h-24' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path opacity="0.4" d="M18 18.86H17.24C16.44 18.86 15.68 19.17 15.12 19.73L13.41 21.42C12.63 22.19 11.36 22.19 10.58 21.42L8.87 19.73C8.31 19.17 7.54 18.86 6.75 18.86H6C4.34 18.86 3 17.53 3 15.89V4.97998C3 3.33998 4.34 2.01001 6 2.01001H18C19.66 2.01001 21 3.33998 21 4.97998V15.89C21 17.52 19.66 18.86 18 18.86Z" fill="white" />
         <path d="M11.9999 10.41C13.2868 10.41 14.33 9.36684 14.33 8.08002C14.33 6.79319 13.2868 5.75 11.9999 5.75C10.7131 5.75 9.66992 6.79319 9.66992 8.08002C9.66992 9.36684 10.7131 10.41 11.9999 10.41Z" fill="white" />
@@ -28,10 +28,20 @@ function UserDashboradSideBar() {
         {userInfo.firstName} {userInfo.lastName}
       </span>
       <div className="w-full flex flex-col justify-center items-center gap-3 mt-3">
-        <Link className='btn btn-out-white w-full'>سفارشات</Link>
-        <Link className='btn btn-out-white w-full'>تیکت پشتیبانی</Link>
+        <NavLink
+          to='/dashboard/orders'
+          className={link => link.isActive ? 'btn btn-white w-full' : 'btn btn-out-white w-full'}
+        >
+          سفارشات
+        </NavLink>
+        <NavLink
+          to='/dashboard/tickets'
+          className={link => link.isActive ? 'btn btn-white w-full' : 'btn btn-out-white w-full'}
+        >
+          تیکت پشتیبانی
+        </NavLink>
       </div>
-      <Link className='btn btn-danger w-full mt-auto'>خروج از حساب</Link>
+      <Link className='btn btn-danger w-full mt-9'>خروج از حساب</Link>
     </div>
   )
 }
