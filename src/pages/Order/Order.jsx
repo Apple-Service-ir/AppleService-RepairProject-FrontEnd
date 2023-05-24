@@ -133,10 +133,12 @@ export default function Order() {
     <>
       <div className='container flex flex-col justify-center items-center gap-3 mx-auto mt-7 px-3
       sm:p-0'>
-        <div className="w-full flex justify-center items-center gap-3">
-          <div ref={deviceRef} onClick={showBrandsModal} className='w-1/2 bg-slate-200 text-blue-500 border-2 border-slate-300
+        <div className="w-full flex flex-col justify-center items-center gap-3
+          sm:flex-row">
+          <div ref={deviceRef} onClick={showBrandsModal}
+          className='w-full bg-slate-200 text-blue-500 border-2 border-slate-300
             h-16 relative flex items-center rounded-xl text-sm sm:text-base p-3 select-none cursor-pointer
-            hover:border-slate-400'>
+            hover:border-slate-400 sm:w-1/2'>
             {
               selectDevice.value && selectPart.value ? `${selectDevice.value} - ${selectPart.value.split(' - ')[1]}` : 'مدل دستگاه خود را انتخاب کنید'
             }
@@ -148,7 +150,7 @@ export default function Order() {
           </div>
           <SelectBox
             selectRef={citiesRef}
-            width='w-1/2'
+            width='w-full sm:w-1/2'
             name='شهرتان را انتخاب کنید'
             options={cities}
             svg={(
@@ -171,10 +173,11 @@ export default function Order() {
             </svg>
           )}
         />
-        <div className="w-full flex justify-center items-center gap-3">
+        <div className="w-full flex flex-col justify-center items-center gap-3
+          sm:flex-row">
           <TeaxtArea
             textRef={addressRef}
-            width='w-1/2'
+            width='w-full sm:w-1/2'
             resize='resize-none'
             placeholder='آدرس دقیق محل زندگی'
             svg={(
@@ -185,7 +188,7 @@ export default function Order() {
           />
           <TeaxtArea
             textRef={descRef}
-            width='w-1/2'
+            width='w-full sm:w-1/2'
             resize='resize-y'
             placeholder='در مورد مشکل دستگاه و تعمیر آن توضیح دهید'
             svg={(
@@ -195,7 +198,8 @@ export default function Order() {
             )}
           />
         </div>
-        <button className='btn btn-out-green w-1/3' onClick={postOrder}>ثبت سفارش</button>
+        <button className='btn btn-out-green w-1/2
+          sm:w-1/3' onClick={postOrder}>ثبت سفارش</button>
       </div>
       {
         brandsModal &&
