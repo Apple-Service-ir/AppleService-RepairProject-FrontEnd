@@ -15,7 +15,6 @@ function App() {
   const router = useRoutes(routes)
 
   const login = (token, info) => {
-    console.log('login');
     setUserToken(token)
     setIslogin(true)
     setUserInfo(info)
@@ -33,7 +32,6 @@ function App() {
     const localStorageData = localStorage.getItem('e-service-token')
     get(`/informations/get?token=${localStorageData}`)
       .then(response => {
-        console.log(response);
         if (response.data.ok) {
           setIslogin(true)
           setUserInfo(response.data.user)

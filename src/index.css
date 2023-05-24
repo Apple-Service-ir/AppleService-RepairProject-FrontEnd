@@ -157,6 +157,10 @@ input[type="number"] {
     focus:outline-0 focus:ring-4 focus:ring-blue-200 cursor-pointer;
   }
 
+  .alert-danger {
+    @apply bg-red-200 text-red-500 w-full flex justify-between items-center p-3 rounded-xl;
+  }
+
   .show-up {
     animation: show 250ms 1 ease;
   }
