@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+
+import AuthContext from '../../context/AuthContext'
 import { getMe } from '../../utility'
 
 function UserDashboradSideBar() {
+  const authContext = useContext(AuthContext)
   const [userInfo, setUserInfo] = useState({})
 
   useEffect(() => {
@@ -41,7 +44,8 @@ function UserDashboradSideBar() {
           تیکت پشتیبانی
         </NavLink>
       </div>
-      <Link className='btn btn-danger w-full mt-9'>خروج از حساب</Link>
+      <Link className='btn btn-danger w-full mt-9'
+        onClick={authContext.logOut}>خروج از حساب</Link>
     </div>
   )
 }

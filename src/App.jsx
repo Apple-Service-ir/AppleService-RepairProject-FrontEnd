@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react"
-import { useRoutes } from "react-router-dom"
+import { useRoutes, useNavigate } from "react-router-dom"
 import { routes } from "./routes"
 import { Header } from "./components/Header/Header"
 import Footer from "./components/Footer/Footer"
 
 import AuthContext from "./context/AuthContext"
-import { get } from "./utility"
+import { get, post } from "./utility"
+import { toast } from "react-hot-toast"
 
 function App() {
   const [userToken, setUserToken] = useState(null)
@@ -13,6 +14,7 @@ function App() {
   const [userInfo, setUserInfo] = useState({})
 
   const router = useRoutes(routes)
+  const redirect = useNavigate()
 
   const login = (token, info) => {
     setUserToken(token)
@@ -22,10 +24,16 @@ function App() {
   }
 
   const logOut = () => {
-    setUserToken(null)
-    setIslogin(false)
-    setUserInfo({})
-    localStorage.removeItem('e-service-token')
+    post('/logout', { token: userToken })
+      .then(response => {
+        if (response.data.ok) {
+          setUserToken(null)
+          setIslogin(false)
+          setUserInfo({})
+          localStorage.removeItem('e-service-token')
+          redirect('/')
+        } else toast.error(response.data.err)
+      })
   }
 
   useEffect(() => {

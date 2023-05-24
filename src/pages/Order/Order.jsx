@@ -131,12 +131,12 @@ export default function Order() {
 
   return (
     <>
-      <div className='container flex flex-col justify-center items-center gap-3 mx-auto mt-7 px-3
-      sm:p-0'>
+      <div className='container flex flex-col justify-center items-center gap-6 mx-auto my-16 px-5
+        sm:px-0'>
         <div className="w-full flex flex-col justify-center items-center gap-3
           sm:flex-row">
           <div ref={deviceRef} onClick={showBrandsModal}
-          className='w-full bg-slate-200 text-blue-500 border-2 border-slate-300
+            className='w-full bg-slate-200 text-blue-500 border-2 border-slate-300
             h-16 relative flex items-center rounded-xl text-sm sm:text-base p-3 select-none cursor-pointer
             hover:border-slate-400 sm:w-1/2'>
             {
