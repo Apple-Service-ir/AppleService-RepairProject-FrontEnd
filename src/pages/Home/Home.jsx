@@ -1,4 +1,3 @@
-import "./Home.css"
 import { ServiceBox } from "../../components/ServiceBox/ServiceBox"
 import { HeroItem } from "../../components/HeroItem/HeroItem"
 import { HonorItem } from "../../components/HonorItem/HonorItem"
@@ -164,10 +163,6 @@ export default function Home() {
             </svg>
           )} />
         </div>
-        <div className="bg-green-500 w-[500px] h-[500px] rounded-full absolute -left-44 -bottom-64
-          -z-10 opacity-25 blur-[150px] hidden lg:block"></div>
-        <div className="bg-green-500 w-[500px] h-[500px] rounded-full absolute -right-44 -bottom-64
-          -z-10 opacity-25 blur-[150px] hidden lg:block"></div>
       </div>
     </>
   )
