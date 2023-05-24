@@ -11,9 +11,10 @@ function UserOrders() {
 
 
   useEffect(() => {
-    get(`/orders/log?token=${authContext.userToken}`).then((response) => {
-      response.data.ok && setOrders(response.data.orders)
-    })
+    authContext.userToken &&
+      get(`/orders/log?token=${authContext.userToken}`).then((response) => {
+        response.data.ok && setOrders(response.data.orders)
+      })
   }, [authContext])
 
   function deleteOrder(orderId) {

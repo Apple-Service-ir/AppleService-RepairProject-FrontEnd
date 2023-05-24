@@ -164,6 +164,20 @@ input[type="number"] {
     focus:outline-0 focus:ring-4 focus:ring-blue-200 cursor-pointer;
   }
 
+  .bg-textarea {
+    @apply h-56 relative;
+  }
+
+  .textarea {
+    @apply border border-blue-500 text-blue-500 placeholder:text-blue-500
+    absolute top-0 left-0 w-full h-full pr-6 pl-16 pt-3 rounded-xl resize-none
+    focus:outline-0 focus:ring-4 focus:ring-blue-200;
+  }
+
+  .svg-textarea {
+    @apply stroke-blue-500 absolute left-6 top-3 w-6 h-6;
+  }
+
   .alert-danger {
     @apply bg-red-200 text-red-500 w-full flex justify-between items-center p-3 rounded-xl;
   }
