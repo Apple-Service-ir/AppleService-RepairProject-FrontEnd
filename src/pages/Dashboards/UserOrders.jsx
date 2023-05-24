@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { toast, Toaster } from 'react-hot-toast'
 
 import AuthContext from './../../context/AuthContext'
 import { get, post } from '../../utility'
+import Alert from '../../components/Alert/Alert'
 
 function UserOrders() {
   const authContext = useContext(AuthContext)
@@ -130,66 +130,66 @@ function UserOrders() {
         lg:overflow-hidden">
         {
           orders.length === 0 ? (
-            <div className="alert-danger">
-              <div className='flex justify-center items-center gap-3'>
-                <h1 className='text-xl'>شما هیچ سفارشی ندارید!</h1>
-                <Link to='/order' className='text-blue-500 underline text-sm'>ثبت سفارش</Link>
-              </div>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-              </svg>
-            </div>
+            <Alert
+              theme={'danger'}
+              title={'شما هیچ سفارشی ندارید!'}
+              link={'/order'}
+              linkTitle={'ثبت سفارش'}
+              icon={(
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+              )}
+            />
           ) : (
             orders[0] && orders.find(order => order.status == "done" || order.status == "cancelled") && (
-              <table className='w-[750px] lg:w-full'>
-                <thead className='bg-blue-200 w-full'>
-                  <tr className='w-full'>
-                    <th className='w-2/12 font-light text-center px-3 py-1'>کد سفارش</th>
-                    <th className='w-3/12 font-light text-right px-3 py-1'>نام دستگاه</th>
-                    <th className='w-3/12 font-light text-right px-3 py-1'>قطعات</th>
-                    <th className='w-2/12 font-light text-right px-3 py-1'>هزینه نهایی</th>
-                    <th className='w-2/12 font-light text-center px-3 py-1'>تاریخ</th>
+              <table className='table'>
+                <thead className='thead'>
+                  <tr className='thead__tr'>
+                    <th className='thead__tr__th w-2/12'>کد سفارش</th>
+                    <th className='thead__tr__th w-3/12'>نام دستگاه</th>
+                    <th className='thead__tr__th w-3/12'>قطعات</th>
+                    <th className='thead__tr__th w-2/12'>هزینه نهایی</th>
+                    <th className='thead__tr__th w-2/12'>تاریخ</th>
                   </tr>
                 </thead>
-                <tbody className='w-full'>
+                <tbody className='tbody'>
                   {
                     orders.map(order => {
                       if (order.status === 'done' || order.status === "cancelled") {
                         return (
-                          <tr key={order.id} className='border-blue-200 border-b border-dashed w-full'>
-                            <td className='w-2/12 p-3'>
-                              <div className='w-full flex flex-col justify-center items-center'>
+                          <tr key={order.id} className='tbody__tr'>
+                            <td className='tbody__tr__td w-2/12'>
+                              <div className='w-full flex flex-wrap items-center gap-3 justify-center'>
                                 {
                                   order.status === 'done' ? (
-                                    <button className='badge-btn badge-blue relative group'>
+                                    <button className='badge badge-blue select-text'>
                                       <span>{order.id}</span>
                                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
                                       </svg>
-                                      <span className='tooltip'>انجام شده، کپی کنید!</span>
                                     </button>
                                   ) : (
-                                    <button className='badge-btn badge-danger relative group'>
+                                    <button className='badge badge-danger select-text'>
                                       <span>{order.id}</span>
                                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                       </svg>
-                                      <span className='tooltip'>لفو شده، کپی کنید!</span>
                                     </button>
                                   )
                                 }
                               </div>
                             </td>
-                            <td className='w-3/12 p-3 text-sm'>{order.phoneName}</td>
-                            <td className='w-3/12 p-3'>
-                              <div className="w-full flex flex-wrap items-center gap-3">
+                            <td className='tbody__tr__td w-3/12 text-sm'>{order.phoneName}</td>
+                            <td className='tbody__tr__td w-3/12'>
+                              <div className="td__wrapper">
                                 <span className='text-xs'>{order.partName}</span>
                               </div>
                             </td>
-                            <td className='w-2/12 p-3 text-sm'>39,000,000
+                            <td className='tbody__tr__td w-2/12 text-sm'>39,000,000
                               <small className='italic opacity-75 mx-1'>تومان</small>
                             </td>
-                            <td className='w-2/12 p-3 text-sm text-center'>
+                            <td className='tbody__tr__td w-2/12 text-sm'>
                               {new Date(order.createdAt).toLocaleDateString('fa-IR')}
                             </td>
                           </tr>

@@ -131,7 +131,7 @@ export default function Order() {
 
   return (
     <>
-      <div className='container flex flex-col justify-center items-center gap-6 mx-auto my-16 px-5
+      <div className='container flex flex-col justify-center items-center gap-3 mx-auto my-6 px-5
         sm:px-0'>
         <div className="w-full flex flex-col justify-center items-center gap-3
           sm:flex-row">
@@ -198,7 +198,7 @@ export default function Order() {
             )}
           />
         </div>
-        <button className='btn btn-out-green w-1/2
+        <button className='btn btn-out-green w-1/2 mt-3
           sm:w-1/3' onClick={postOrder}>ثبت سفارش</button>
       </div>
       {

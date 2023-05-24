@@ -54,6 +54,13 @@ input[type="number"] {
     @apply transition duration-200;
     font-family: "sans"
   }
+
+  .thead__tr__th:first-child,
+  .thead__tr__th:last-child,
+  .tbody__tr__td:first-child,
+  .tbody__tr__td:last-child {
+    @apply text-center;
+  }
 }
 
 
@@ -62,6 +69,12 @@ input[type="number"] {
     font-family: "sansbold";
   }
 
+  .a-slow {
+    animation-duration: 350ms;
+  }
+}
+
+@layer components {
   .header__navlink,
   .header__navlink-active {
     @apply text-white relative flex items-center before:content-normal before:bg-white before:w-1 before:h-1
@@ -73,12 +86,6 @@ input[type="number"] {
     @apply before:scale-100 before:opacity-100;
   }
 
-  .a-slow {
-    animation-duration: 350ms;
-  }
-}
-
-@layer components {
   .btn {
     @apply h-12 flex justify-center items-center gap-3 py-2 px-6 rounded-full border cursor-pointer;
   }
@@ -159,6 +166,38 @@ input[type="number"] {
 
   .alert-danger {
     @apply bg-red-200 text-red-500 w-full flex justify-between items-center p-3 rounded-xl;
+  }
+
+  .table {
+    @apply w-[750px] lg:w-full;
+  }
+
+  .thead { 
+    @apply bg-blue-200 w-full;
+  }
+
+  .tbody {
+    @apply w-full;
+  }
+
+  .thead__tr {
+    @apply w-full;
+  }
+
+  .thead__tr__th {
+    @apply font-light text-right px-3 py-1;
+  }
+
+  .tbody__tr {
+    @apply border-blue-200 border-b border-dashed w-full hover:bg-blue-50;
+  }
+
+  .tbody__tr__td {
+    @apply p-3;
+  }
+
+  .td__wrapper {
+    @apply w-full flex flex-wrap items-center gap-3;
   }
 
   .show-up {
