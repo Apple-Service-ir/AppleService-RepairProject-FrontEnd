@@ -6,11 +6,14 @@ import UserDashboradSideBar from '../../components/Dashboards/UserDashboradSideB
 
 function UserDashboard() {
   return (
-    <div className='w-screen flex'>
-      <div className="w-3/12 p-6">
+    <div className='w-screen flex flex-col
+      lg:flex-row'>
+      <div className="w-full p-6
+        lg:w-3/12">
         <UserDashboradSideBar />
       </div>
-      <div className="w-9/12 rounded-xl p-6">{<Outlet />}</div>
+      <div className="w-full rounded-xl p-6
+        lg:w-9/12">{<Outlet />}</div>
     </div>
   )
 }

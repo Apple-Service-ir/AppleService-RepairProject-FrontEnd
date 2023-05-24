@@ -49,14 +49,19 @@ function UserOrders() {
                   </div>
                 </div>
                 <ul className='w-full flex flex-col mt-6'>
-                  <li className={`border-blue-300 border-t-2 border-dashed w-full
-                  flex justify-center items-center gap-3 p-3`}>
-                    <span className='sansbold'>نام دستگاه: </span>
-                    <span className='text-sm'>{order.phoneName}</span>
-                    <span>-</span>
-                    <span className='sansbold'>قطعات:</span>
-                    <span className='text-sm'>{order.partName}</span>
-                  </li>
+                  <ul className={`border-blue-300 border-t-2 border-dashed w-full
+                    flex flex-col justify-center items-start gap-3 p-3
+                    sm:flex-row sm:items-center`}>
+                    <li className='flex justify-center items-center gap-3'>
+                      <span className='sansbold'>نام دستگاه: </span>
+                      <span className='text-sm'>{order.phoneName}</span>
+                    </li>
+                    <span className='hidden sm:block'>-</span>
+                    <li className='flex justify-center items-center gap-3'>
+                      <span className='sansbold'>قطعات:</span>
+                      <span className='text-sm'>{order.partName}</span>
+                    </li>
+                  </ul>
                   <li className={`border-blue-300 border-t-2 border-dashed w-full
                   flex gap-3 p-3`}>
                     <span className='sansbold'>آدرس:</span>
@@ -121,7 +126,8 @@ function UserOrders() {
         )
       }
 
-      <div className="w-full rounded-xl overflow-hidden">
+      <div className="w-full rounded-xl overflow-x-scroll
+        lg:overflow-hidden">
         {
           orders.length === 0 ? (
             <div className="alert-danger">
@@ -135,14 +141,14 @@ function UserOrders() {
             </div>
           ) : (
             orders[0] && orders.find(order => order.status == "done" || order.status == "cancelled") && (
-              <table className='w-full'>
+              <table className='w-[750px] lg:w-full'>
                 <thead className='bg-blue-200 w-full'>
                   <tr className='w-full'>
+                    <th className='w-2/12 font-light text-center px-3 py-1'>کد سفارش</th>
                     <th className='w-3/12 font-light text-right px-3 py-1'>نام دستگاه</th>
                     <th className='w-3/12 font-light text-right px-3 py-1'>قطعات</th>
                     <th className='w-2/12 font-light text-right px-3 py-1'>هزینه نهایی</th>
-                    <th className='w-2/12 font-light text-right px-3 py-1'>تاریخ</th>
-                    <th className='w-2/12 font-light text-right px-3 py-1'>کد سفارش</th>
+                    <th className='w-2/12 font-light text-center px-3 py-1'>تاریخ</th>
                   </tr>
                 </thead>
                 <tbody className='w-full'>
@@ -151,36 +157,40 @@ function UserOrders() {
                       if (order.status === 'done' || order.status === "cancelled") {
                         return (
                           <tr key={order.id} className='border-blue-200 border-b border-dashed w-full'>
+                            <td className='w-2/12 p-3'>
+                              <div className='w-full flex flex-col justify-center items-center'>
+                                {
+                                  order.status === 'done' ? (
+                                    <button className='badge-btn badge-blue relative group'>
+                                      <span>{order.id}</span>
+                                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
+                                      </svg>
+                                      <span className='tooltip'>انجام شده، کپی کنید!</span>
+                                    </button>
+                                  ) : (
+                                    <button className='badge-btn badge-danger relative group'>
+                                      <span>{order.id}</span>
+                                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                      </svg>
+                                      <span className='tooltip'>لفو شده، کپی کنید!</span>
+                                    </button>
+                                  )
+                                }
+                              </div>
+                            </td>
                             <td className='w-3/12 p-3 text-sm'>{order.phoneName}</td>
                             <td className='w-3/12 p-3'>
                               <div className="w-full flex flex-wrap items-center gap-3">
                                 <span className='text-xs'>{order.partName}</span>
                               </div>
                             </td>
-                            <td className='w-2/12 p-3 text-sm'>39,000,000 ﷼</td>
-                            <td className='w-2/12 p-3 text-sm'>
-                              {new Date(order.createdAt).toLocaleDateString('fa-IR')}
+                            <td className='w-2/12 p-3 text-sm'>39,000,000
+                              <small className='italic opacity-75 mx-1'>تومان</small>
                             </td>
-                            <td className='w-2/12 p-3'>
-                              {
-                                order.status === 'done' ? (
-                                  <button className='badge-btn badge-blue relative group'>
-                                    <span>{order.id}</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
-                                      <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
-                                    </svg>
-                                    <span className='tooltip'>انجام شده، کپی کنید!</span>
-                                  </button>
-                                ) : (
-                                  <button className='badge-btn badge-danger relative group'>
-                                    <span>{order.id}</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
-                                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                    <span className='tooltip'>لفو شده، کپی کنید!</span>
-                                  </button>
-                                )
-                              }
+                            <td className='w-2/12 p-3 text-sm text-center'>
+                              {new Date(order.createdAt).toLocaleDateString('fa-IR')}
                             </td>
                           </tr>
                         )
