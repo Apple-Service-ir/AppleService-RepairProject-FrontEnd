@@ -3,14 +3,12 @@ import { toast, Toaster } from 'react-hot-toast'
 
 import AuthContext from './../../context/AuthContext'
 import Alert from '../Alert/Alert'
-import UserTicketModal from '../UserTicketModal/UserTicketModal'
 import { get, post } from './../../utility'
 
 function UserTickets() {
   const authContext = useContext(AuthContext)
 
   const [tickets, setTickets] = useState([])
-  const [ticketModal, setTicketModal] = useState(false)
 
   const ticketTitleRef = useRef()
   const ticketTextRef = useRef()
@@ -19,14 +17,9 @@ function UserTickets() {
     authContext.userToken &&
       get(`/tickets/all?token=${authContext.userToken}`)
         .then(response => {
-          console.log(response);
           response.data.ok && setTickets(response.data.tickets)
         })
   }, [authContext])
-
-  function closeTicketModal() {
-    setTicketModal(false)
-  }
 
   function submitTicketHandler() {
     post('/tickets/new', {
@@ -35,18 +28,44 @@ function UserTickets() {
       text: ticketTextRef.current.value.trim()
     }).then(response => {
       if (response.data.ok) {
+        setTickets(response.data.tickets)
         toast.success('تیکت با موفقیت ثبت شد!')
-        closeTicketModal()
+        ticketTitleRef.current.value = ''
+        ticketTextRef.current.value = ''
       } else toast.error(response.data.error)
     })
   }
 
   return (
     <>
-      <div className='w-full flex flex-col justify-center items-center gap-6'>
+      <div className='w-full flex flex-col justify-center items-center gap-3'>
         <div className="w-full flex flex-col justify-center items-center gap-3 p-3">
-          <button className='btn btn-blue'
-            onClick={() => setTicketModal(true)}>ثبت تیکت جدید</button>
+          <div className='w-full bg-input'>
+            <input
+              className='input'
+              type="text"
+              placeholder='عنوان تیکت'
+              ref={ticketTitleRef}
+            />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z" />
+            </svg>
+          </div>
+          <div className='w-full bg-textarea'>
+            <textarea
+              className='textarea'
+              placeholder='متن خود را وارد کنید'
+              ref={ticketTextRef}
+            >
+            </textarea>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-textarea">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+            </svg>
+          </div>
+          <div className="w-full">
+            <button className='btn btn-blue w-1/3'
+              onClick={submitTicketHandler}>ثبت تیکت</button>
+          </div>
         </div>
 
         {
@@ -63,79 +82,64 @@ function UserTickets() {
           )
         }
 
-        <h2 className='w-full text-right text-xl sansbold'>لیست تیکت ها</h2>
-        <div className="w-full rounded-xl overflow-x-scroll
-        lg:overflow-hidden">
-          <table className='table'>
-            <thead className='thead'>
-              <tr className='thead__tr'>
-                <th className='thead__tr__th w-2/12'>کد تیکت</th>
-                <th className='thead__tr__th w-2/12'>وضعیت</th>
-                <th className='thead__tr__th w-6/12'>موضوع تیکت</th>
-                <th className='thead__tr__th w-2/12'>تاریخ</th>
-              </tr>
-            </thead>
-            <tbody className='tbody'>
-              {
-                tickets.map(ticket => (
-                  <tr className='tbody__tr cursor-pointer'>
-                    <td className='tbody__tr__td w-2/12'>
-                      <div className='w-full flex flex-wrap items-center gap-3 justify-center'>
-                        <button className='badge badge-blue select-text'>
-                          <span>{ticket.id}</span>
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
-                          </svg>
-                        </button>
-                      </div>
-                    </td>
-                    <td className='tbody__tr__td w-2/12'>
-                      <div className="td__wrapper">
-                        <span className='text-xs'>
-                          {ticket.status === 'pending' ? 'در انتظار پاسخ' : ''}
-                        </span>
-                      </div>
-                    </td>
-                    <td className='tbody__tr__td w-6/12 text-sm'>{ticket.subject}</td>
-                    <td className='tbody__tr__td w-2/12 text-sm'>
-                      {new Date(ticket.createdAt).toLocaleDateString('fa-IR')}
-                    </td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
-        </div>
+        {
+          tickets.length > 0 && (
+            <>
+              <h2 className='w-full text-right text-xl sansbold'>لیست تیکت ها</h2>
+              <div className="w-full rounded-xl overflow-x-scroll
+                lg:overflow-hidden">
+                <table className='table'>
+                  <thead className='thead'>
+                    <tr className='thead__tr'>
+                      <th className='thead__tr__th w-2/12'>کد تیکت</th>
+                      <th className='thead__tr__th w-2/12'>وضعیت</th>
+                      <th className='thead__tr__th w-6/12'>موضوع تیکت</th>
+                      <th className='thead__tr__th w-2/12'>تاریخ</th>
+                    </tr>
+                  </thead>
+                  <tbody className='tbody'>
+                    {
+                      tickets.map(ticket => (
+                        <tr key={ticket.id} className='tbody__tr cursor-pointer'>
+                          <td className='tbody__tr__td w-2/12'>
+                            <div className='w-full flex flex-wrap items-center gap-3 justify-center'>
+                              <button className='badge badge-blue select-text'>
+                                <span>{ticket.id}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
+                                </svg>
+                              </button>
+                            </div>
+                          </td>
+                          <td className='tbody__tr__td w-2/12'>
+                            <div className="td__wrapper">
+                              <span className={`text-xs ${
+                                ticket.status === 'open' ? 'text-green-500'
+                                : ticket.status === 'close' ? 'text-red-500'
+                                  : ''
+                              }`}>
+                                {
+                                  ticket.status === 'open' ? 'پاسخ داده شده'
+                                    : ticket.status === 'close' ? 'بسته شده'
+                                      : 'در انتظار پاسخ'
+                                }
+                              </span>
+                            </div>
+                          </td>
+                          <td className='tbody__tr__td w-6/12 text-sm'>{ticket.subject}</td>
+                          <td className='tbody__tr__td w-2/12 text-sm'>
+                            {new Date(ticket.createdAt).toLocaleDateString('fa-IR')}
+                          </td>
+                        </tr>
+                      ))
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )
+        }
       </div>
-
-      {
-        ticketModal &&
-        <UserTicketModal
-          closeModal={closeTicketModal}
-        >
-          <div className="bg-white shadow-2xl w-[75vw] flex flex-col justify-center items-center gap-6 p-6
-            rounded-xl">
-            <div className="w-full flex flex-col gap-3 p-3 rounded-xl">
-              <div className='w-full bg-input'>
-                <input className='input'
-                  type="text" placeholder='عنوان تیکت' ref={ticketTitleRef} />
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z" />
-                </svg>
-              </div>
-              <div className='w-full bg-textarea'>
-                <textarea className='textarea' placeholder='متن را وارد کنید' ref={ticketTextRef}></textarea>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-textarea">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z" />
-                </svg>
-              </div>
-              <button className='btn btn-out-blue w-1/2'
-                onClick={submitTicketHandler}>ثبت تیکت</button>
-            </div>
-          </div>
-        </UserTicketModal>
-      }
-
       <Toaster />
     </>
   )
