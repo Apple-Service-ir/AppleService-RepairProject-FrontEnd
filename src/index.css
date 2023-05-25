@@ -230,20 +230,18 @@ input[type="number"] {
     }
   }
 
-  .show-scale-x {
-    animation: show-scale-x 250ms 1 ease;
+  .show-left-full {
+    animation: show-left-full 250ms 1 ease;
   }
 
-  @keyframes show-scale-x {
+  @keyframes show-left-full {
     from {
       opacity: 0;
-      width: 0;
-      transform: translateX(2rem);
+      transform: translateX(-100%);
     }
     
     to {
       opacity: 1;
-      width: 100%;
       transform: translateY(0);
     }
   }
