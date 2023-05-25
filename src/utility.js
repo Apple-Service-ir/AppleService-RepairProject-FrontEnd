@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const mainUrl = 'http://192.168.1.160:3000'
+const mainUrl = 'http://192.168.42.109:3000'
 
 // get
 const get = async url => (await axios.get(`${mainUrl}${url}`))
