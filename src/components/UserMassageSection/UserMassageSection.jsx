@@ -3,7 +3,7 @@ import React from 'react'
 function UserMassageSection({ showMassageSection, closeMassageSection }) {
   return (
     <div className={`${showMassageSection ? 'flex' : 'hidden'}
-      bg-white border-blue-500 border w-full h-full absolute z-50 rounded-xl show-right
+      bg-white border-blue-500 border w-full h-full absolute top-0 right-0 rounded-xl z-50 show-scale-x
       flex flex-col justify-between items-center`}>
       <div className="bg-blue-500 w-full h-16 flex justify-between items-center rounded-t-xl px-6">
         <span className='text-white sansbold'>
