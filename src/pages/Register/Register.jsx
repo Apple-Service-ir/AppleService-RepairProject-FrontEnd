@@ -114,6 +114,7 @@ export default function Register() {
     if (response.data.ok) {
 
       let token = response.data.token || null
+      let userData = response.data.user || null
 
       if (!isLogin) {
         const createdUser = await post(`/register`, {
@@ -123,10 +124,16 @@ export default function Register() {
           city: signinCityRef.current.value.trim()
         })
 
-        createdUser.data.ok ? token = createdUser.data.token : toast.error(createdUser.data.err)
+        if (createdUser.data.ok) {
+          token = createdUser.data.token
+          userData = createdUser.data.user
+        } else {
+          toast.error(createdUser.data.err)
+        }
+
       }
 
-      authcontext.login(token, response.data.user)
+      authcontext.login(token, userData)
       navigate('/')
 
     } else toast.error(response.data.err)
