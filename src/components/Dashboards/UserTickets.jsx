@@ -44,10 +44,7 @@ function UserTickets() {
   return (
     <>
       <div className='w-full flex flex-col justify-center items-center gap-6'>
-        <div className="border-2 border-blue-200 border-dashed w-full rounded-xl flex justify-between items-center p-3">
-          <p className='text-blue-500 text-sm'>
-            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است
-          </p>
+        <div className="w-full flex flex-col justify-center items-center gap-3 p-3">
           <button className='btn btn-blue'
             onClick={() => setTicketModal(true)}>ثبت تیکت جدید</button>
         </div>
