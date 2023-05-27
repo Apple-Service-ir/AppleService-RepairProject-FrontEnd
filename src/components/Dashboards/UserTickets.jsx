@@ -70,7 +70,8 @@ function UserTickets() {
             </svg>
           </div>
           <div className="w-full">
-            <button className='btn btn-blue w-1/3'
+            <button className='btn btn-blue w-1/2
+              sm:w-1/3'
               onClick={submitTicketHandler}>ثبت تیکت</button>
           </div>
         </div>

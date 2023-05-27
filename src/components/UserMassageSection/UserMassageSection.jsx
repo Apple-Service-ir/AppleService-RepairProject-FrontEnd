@@ -21,7 +21,8 @@ function UserMassageSection({ showMassageSection, closeMassageSection }) {
       <div className="w-full h-full mt-auto overflow-y-scroll p-3">
         <div className="w-full p-1">
           <div className="bg-green-200 w-max max-w-[80%] p-3 rounded-md">
-            <p>
+            <p className='text-sm
+              sm:text-base'>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
             </p>
           </div>
@@ -29,55 +30,8 @@ function UserMassageSection({ showMassageSection, closeMassageSection }) {
         <div className="w-full flex justify-end p-1">
           <div className="bg-blue-200 w-max max-w-[80%] p-3 rounded-md relative">
             <span className='text-blue-500 text-xs absolute left-2 -top-5'>پشتیبان</span>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-            </p>
-          </div>
-        </div>
-        <div className="w-full p-1">
-          <div className="bg-green-200 w-max max-w-[80%] p-3 rounded-md">
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-            </p>
-          </div>
-        </div>
-        <div className="w-full flex justify-end p-1">
-          <div className="bg-blue-200 w-max max-w-[80%] p-3 rounded-md relative">
-            <span className='text-blue-500 text-xs absolute left-2 -top-5'>پشتیبان</span>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-            </p>
-          </div>
-        </div>
-        <div className="w-full p-1">
-          <div className="bg-green-200 w-max max-w-[80%] p-3 rounded-md">
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
-            </p>
-          </div>
-        </div>
-        <div className="w-full flex justify-end p-1">
-          <div className="bg-blue-200 w-max max-w-[80%] p-3 rounded-md relative">
-            <span className='text-blue-500 text-xs absolute left-2 -top-5'>پشتیبان</span>
-            <p>
+            <p className='text-sm
+              sm:text-base'> 
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, aut.
