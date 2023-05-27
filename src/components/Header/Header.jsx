@@ -2,35 +2,50 @@ import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import AuthContext from '../../context/AuthContext'
+import { useState } from 'react'
 
 export function Header() {
   const authcontext = useContext(AuthContext)
 
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
+
+  function closeMobileMenu() {
+    setShowMobileMenu(false)
+  }
+
   return (
     <>
       <div className='bg-blue-500 w-screen flex justify-between items-center p-3 px-7 z-50'>
-        <div className="btn btn-ghost text-xl flex items-center relative lg:hidden group">
-          <svg className="stroke-white w-9 h-9 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-          </svg>
-          <ul className="bg-white shadow-md shadow-[#25252545] w-max flex flex-col justify-center items-center gap-7 p-5 px-3 rounded-xl z-50
-            absolute top-[140%] right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible" id='mobileMenu'>
-            <li>
-              <NavLink to='/' className='bg-slate-200 text-blue-500 p-2 px-10 rounded-md'>صفحه اصلی</NavLink>
-            </li>
-            <li>
-              <NavLink to='/order' className='bg-slate-200 text-blue-500 p-2 px-10 rounded-md'>صفحه اصلی</NavLink>
-            </li>
-            <li>
-              <NavLink className='bg-slate-200 text-blue-500 p-2 px-10 rounded-md'>صفحه اصلی</NavLink>
-            </li>
-            <li>
-              <NavLink className='bg-slate-200 text-blue-500 p-2 px-10 rounded-md'>صفحه اصلی</NavLink>
-            </li>
-            <li>
-              <NavLink className='bg-slate-200 text-blue-500 p-2 px-10 rounded-md'>صفحه اصلی</NavLink>
-            </li>
-          </ul>
+        <div
+          className="btn btn-ghost text-xl flex items-center relative lg:hidden"
+          onClick={() => {
+            showMobileMenu ? setShowMobileMenu(false) : setShowMobileMenu(true)
+          }}
+        >
+          {
+            showMobileMenu ? (
+              <svg
+                className="stroke-white w-9 h-9 cursor-pointer"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg
+                className="stroke-white w-9 h-9 cursor-pointer"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+              </svg>
+            )
+          }
         </div>
         <ul className='hidden justify-center items-center gap-9 lg:flex'>
           <li>
@@ -73,6 +88,43 @@ export function Header() {
             <NavLink className='btn btn-out-white' to='/register'>ثبت نام / ورورد</NavLink>
           )
         }
+      </div>
+
+      <div
+        className={`bg-white h-screen w-3/4 flex flex-col items-center
+        fixed top-0 left-0 z-50
+        ${showMobileMenu ? 'translate-x-0' : '-translate-x-full'}
+        lg:hidden`}>
+        <ul className='w-full flex flex-col justify-center items-center gap-3 p-3'>
+          <li className='w-full'>
+            <NavLink to='/'
+              className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
+              onClick={closeMobileMenu}>
+              صفحه اصلی
+            </NavLink>
+          </li>
+          <li className='w-full'>
+            <NavLink to='/order'
+              className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
+              onClick={closeMobileMenu}>
+              ثبت سفارش
+            </NavLink>
+          </li>
+          <li className='w-full'>
+            <NavLink to='/contact-us'
+              className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
+              onClick={closeMobileMenu}>
+              ارتباط با ما
+            </NavLink>
+          </li>
+          <li className='w-full'>
+            <NavLink to='/report'
+              className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
+              onClick={closeMobileMenu}>
+              ثبت شکایات
+            </NavLink>
+          </li>
+        </ul>
       </div>
     </>
   )
