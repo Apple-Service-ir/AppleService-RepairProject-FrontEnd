@@ -10,6 +10,7 @@ function UserTickets() {
   const authContext = useContext(AuthContext)
 
   const [tickets, setTickets] = useState([])
+  const [selectTicket, setSelectTicket] = useState([])
 
   const ticketTitleRef = useRef()
   const ticketTextRef = useRef()
@@ -112,7 +113,10 @@ function UserTickets() {
                         <tr
                           key={ticket.id}
                           className='tbody__tr cursor-pointer'
-                          onClick={() => seTshowMassageSection(true)}
+                          onClick={() => {
+                            seTshowMassageSection(true)
+                            setSelectTicket(ticket)
+                          }}
                         >
                           <td className='tbody__tr__td w-2/12'>
                             <div className='w-full flex flex-wrap items-center gap-3 justify-center'>
@@ -154,6 +158,7 @@ function UserTickets() {
         <UserMassageSection
           showMassageSection={showMassageSection}
           closeMassageSection={closeMassageSection}
+          ticket={selectTicket}
         />
       </div>
       <Toaster />
