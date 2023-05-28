@@ -48,16 +48,18 @@ function UserTickets() {
   function openMessageHandler(ticket) {
     seTshowMassageSection(true)
     setSelectTicket(ticket)
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    setTimeout(() => {
+      bottomRef.current.scrollTop = bottomRef.current.scrollHeight
+    }, 0);
   }
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current.scrollTop = bottomRef.current.scrollHeight
   }, [tickets]);
 
   return (
     <>
-      <div className='w-full h-full flex flex-col justify-center items-center gap-3 relative'>
+      <div className='w-full flex flex-col justify-center items-center gap-3 relative'>
         <div className="w-full flex flex-col justify-center items-center gap-3 p-3">
           <div className='w-full bg-input'>
             <input
@@ -138,12 +140,12 @@ function UserTickets() {
                           <td className='tbody__tr__td w-2/12'>
                             <div className="td__wrapper">
                               <span className={`text-xs ${ticket.status === 'open' ? 'text-green-500'
-                                : ticket.status === 'close' ? 'text-red-500'
+                                : ticket.status === 'closed' ? 'text-red-500'
                                   : ''
                                 }`}>
                                 {
                                   ticket.status === 'open' ? 'پاسخ داده شده'
-                                    : ticket.status === 'close' ? 'بسته شده'
+                                    : ticket.status === 'closed' ? 'بسته شده'
                                       : 'در انتظار پاسخ'
                                 }
                               </span>

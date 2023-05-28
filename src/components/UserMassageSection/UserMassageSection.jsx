@@ -35,8 +35,6 @@ function UserMassageSection(props) {
             return mapedTickets
           })
 
-          bottomRef.current.scrollIntoView({ behavior: "smooth" })
-
           sendMessageRef.current.value = ''
         } else toast.error(response.data.err)
       })
@@ -60,7 +58,7 @@ function UserMassageSection(props) {
         </button>
       </div>
 
-      <div className="w-full h-full mt-auto overflow-y-scroll p-3">
+      <div className="w-full h-full mt-auto overflow-y-scroll p-3" ref={bottomRef}>
         {
           ticket.messages ? (
             ticket.messages.map(message => {
@@ -83,8 +81,6 @@ function UserMassageSection(props) {
             })
           ) : ''
         }
-
-        <div ref={bottomRef}></div>
       </div>
 
       <div className="w-full flex justify-between items-center gap-3 p-3">

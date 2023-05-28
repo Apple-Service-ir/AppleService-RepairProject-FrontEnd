@@ -51,7 +51,7 @@ input[type="number"] {
   }
   
   * {
-    @apply transition duration-200;
+    @apply transition duration-200 scroll-smooth;
     font-family: "sans"
   }
 
