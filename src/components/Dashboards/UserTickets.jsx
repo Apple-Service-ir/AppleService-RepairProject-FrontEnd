@@ -21,7 +21,6 @@ function UserTickets() {
     authContext.userToken &&
       get(`/tickets/all?token=${authContext.userToken}`)
         .then(response => {
-          console.log(response);
           response.data.ok && setTickets(response.data.tickets)
         })
   }, [authContext])

@@ -20,13 +20,13 @@ function UserMassageSection({ showMassageSection, closeMassageSection, setTicket
         }
       ).then(response => {
         if (response.data.ok) {
-          setTickets((prev) => {
-            const mapedTickets = prev.filter(ticket => {
-              if (ticket.id === ticketId) ticket.messages.push(response.data.message)
-            })
 
-            return mapedTickets
+          setTickets((prev) => {
+            const currentTicket = prev.find(ticket => (ticket.id === ticketId))
+            currentTicket.messages = response.data.messages
+            return currentTicket
           })
+          
           sendMessageRef.current.value = ''
         } else toast.error(response.data.err)
       })
