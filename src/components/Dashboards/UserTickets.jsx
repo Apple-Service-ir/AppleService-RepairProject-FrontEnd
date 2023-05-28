@@ -158,6 +158,7 @@ function UserTickets() {
         <UserMassageSection
           showMassageSection={showMassageSection}
           closeMassageSection={closeMassageSection}
+          setTickets={setTickets}
           ticket={selectTicket}
         />
       </div>
