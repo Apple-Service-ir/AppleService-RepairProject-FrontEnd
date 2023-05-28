@@ -5,7 +5,9 @@ import { Toaster, toast } from 'react-hot-toast'
 import AuthContext from '../../context/AuthContext'
 import { post } from '../../utility'
 
-function UserMassageSection({ showMassageSection, closeMassageSection, setTickets, ticket }) {
+function UserMassageSection(props) {
+  const { showMassageSection, closeMassageSection, setTickets, ticket, bottomRef } = props
+
   const authContext = useContext(AuthContext)
 
   const sendMessageRef = useRef()
@@ -22,11 +24,19 @@ function UserMassageSection({ showMassageSection, closeMassageSection, setTicket
         if (response.data.ok) {
 
           setTickets((prev) => {
-            const currentTicket = prev.find(ticket => (ticket.id === ticketId))
-            currentTicket.messages = response.data.messages
-            return currentTicket
+            const mapedTickets = prev.map(ticket => {
+              if (ticket.id === ticketId) {
+                ticket.messages = response.data.messages
+                return ticket
+              }
+              return ticket
+            })
+
+            return mapedTickets
           })
-          
+
+          bottomRef.current.scrollIntoView({ behavior: "smooth" })
+
           sendMessageRef.current.value = ''
         } else toast.error(response.data.err)
       })
@@ -34,7 +44,7 @@ function UserMassageSection({ showMassageSection, closeMassageSection, setTicket
   }
 
   return (
-    <div id='test' className={`${showMassageSection ? 'flex' : 'hidden'}
+    <div className={`${showMassageSection ? 'flex' : 'hidden'}
       bg-white border-blue-500 border w-full h-full absolute top-0 right-0 rounded-xl z-50 show-left-full
       flex flex-col justify-between items-center`}>
       <div className="bg-blue-500 w-full h-16 flex justify-between items-center rounded-t-xl px-6">
@@ -73,6 +83,8 @@ function UserMassageSection({ showMassageSection, closeMassageSection, setTicket
             })
           ) : ''
         }
+
+        <div ref={bottomRef}></div>
       </div>
 
       <div className="w-full flex justify-between items-center gap-3 p-3">

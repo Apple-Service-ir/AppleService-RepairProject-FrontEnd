@@ -16,6 +16,7 @@ function UserTickets() {
   const ticketTextRef = useRef()
 
   const [showMassageSection, seTshowMassageSection] = useState(false)
+  const bottomRef = useRef()
 
   useEffect(() => {
     authContext.userToken &&
@@ -44,9 +45,19 @@ function UserTickets() {
     seTshowMassageSection(false)
   }
 
+  function openMessageHandler(ticket) {
+    seTshowMassageSection(true)
+    setSelectTicket(ticket)
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [tickets]);
+
   return (
     <>
-      <div className='w-full flex flex-col justify-center items-center gap-3 relative'>
+      <div className='w-full h-full flex flex-col justify-center items-center gap-3 relative'>
         <div className="w-full flex flex-col justify-center items-center gap-3 p-3">
           <div className='w-full bg-input'>
             <input
@@ -112,10 +123,7 @@ function UserTickets() {
                         <tr
                           key={ticket.id}
                           className='tbody__tr cursor-pointer'
-                          onClick={() => {
-                            seTshowMassageSection(true)
-                            setSelectTicket(ticket)
-                          }}
+                          onClick={() => openMessageHandler(ticket)}
                         >
                           <td className='tbody__tr__td w-2/12'>
                             <div className='w-full flex flex-wrap items-center gap-3 justify-center'>
@@ -130,8 +138,8 @@ function UserTickets() {
                           <td className='tbody__tr__td w-2/12'>
                             <div className="td__wrapper">
                               <span className={`text-xs ${ticket.status === 'open' ? 'text-green-500'
-                                  : ticket.status === 'close' ? 'text-red-500'
-                                    : ''
+                                : ticket.status === 'close' ? 'text-red-500'
+                                  : ''
                                 }`}>
                                 {
                                   ticket.status === 'open' ? 'پاسخ داده شده'
@@ -154,13 +162,16 @@ function UserTickets() {
             </>
           )
         }
+
         <UserMassageSection
           showMassageSection={showMassageSection}
           closeMassageSection={closeMassageSection}
           setTickets={setTickets}
           ticket={selectTicket}
+          bottomRef={bottomRef}
         />
       </div>
+
       <Toaster />
     </>
   )
