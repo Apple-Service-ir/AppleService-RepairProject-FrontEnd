@@ -13,12 +13,12 @@ const routes = [
   { path: '/', element: <Home /> },
   {
     path: '/order',
-    element: <PrivateRoute reDirectPath='/register'> <Order /> </PrivateRoute>
+    element: <PrivateRoute reDirectPath='/register' privateRole={''}> <Order /> </PrivateRoute>
   },
   { path: '/register', element: <Register /> },
   {
     path: '/dashboard',
-    element: <PrivateRoute reDirectPath='/register'> <UserDashboard /> </PrivateRoute>,
+    element: <PrivateRoute reDirectPath='/register' privateRole={''}> <UserDashboard /> </PrivateRoute>,
     children: [
       { path: '/dashboard/orders', element: <UserOrders /> },
       { path: '/dashboard/tickets', element: <UserTickets /> }
@@ -26,7 +26,7 @@ const routes = [
   },
   {
     path: '/admin',
-    element: <PrivateRoute reDirectPath={'/register'}> <AdminDashboard /> </PrivateRoute>,
+    element: <PrivateRoute reDirectPath={'/'} privateRole={'user'}> <AdminDashboard /> </PrivateRoute>,
     children: [
       { path: '/admin/home', element: <AdminHome /> },
       { path: '/admin/users', element: <AdminUsers /> },

@@ -22,8 +22,10 @@ function AdminUsers() {
   }, [authContext.userToken])
 
   return (
-    <div className='w-full h-full flex flex-col justify-center items-center'>
-      <div className="w-full rounded-xl overflow-x-scroll
+    <div className='w-full h-full flex flex-col items-center'>
+      <div className="bg-blue-200 w-full p-3 rounded-xl"></div>
+      <h1 className='w-full text-right text-xl sansbold mt-6'>لیست کاربران</h1>
+      <div className="w-full rounded-xl overflow-x-scroll mt-3
         lg:overflow-hidden">
         {
           users.length > 0 && (
