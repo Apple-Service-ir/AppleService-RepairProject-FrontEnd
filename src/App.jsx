@@ -68,6 +68,8 @@ function App() {
         (
           location.pathname !== '/register'
           && location.pathname !== '/admin'
+          && location.pathname !== '/admin/home'
+          && location.pathname !== '/admin/users'
         ) && <Header />
       }
       {router}
@@ -78,6 +80,8 @@ function App() {
           && location.pathname !== '/dashboard/orders'
           && location.pathname !== '/dashboard/tickets'
           && location.pathname !== '/admin'
+          && location.pathname !== '/admin/home'
+          && location.pathname !== '/admin/users'
         ) && <Footer />
       }
     </AuthContext.Provider>

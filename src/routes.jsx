@@ -6,6 +6,8 @@ import UserDashboard from "./pages/Dashboards/UserDashboard.jsx"
 import UserOrders from "./pages/Dashboards/UserOrders.jsx"
 import UserTickets from "./components/Dashboards/UserTickets.jsx"
 import AdminDashboard from "./pages/Dashboards/AdminDashboard.jsx"
+import AdminHome from "./pages/Dashboards/AdminHome.jsx"
+import AdminUsers from "./pages/Dashboards/AdminUsers.jsx"
 
 const routes = [
   { path: '/', element: <Home /> },
@@ -24,7 +26,11 @@ const routes = [
   },
   {
     path: '/admin',
-    element: <PrivateRoute reDirectPath={'/register'}> <AdminDashboard /> </PrivateRoute>
+    element: <PrivateRoute reDirectPath={'/register'}> <AdminDashboard /> </PrivateRoute>,
+    children: [
+      { path: '/admin/home', element: <AdminHome /> },
+      { path: '/admin/users', element: <AdminUsers /> },
+    ]
   }
 ]
 

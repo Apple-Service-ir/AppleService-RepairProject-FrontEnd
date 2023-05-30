@@ -121,7 +121,7 @@ input[type="number"] {
 
   .sidebar-link-active {
     @apply bg-white text-blue-500 w-full h-9 flex justify-between items-center gap-3
-      py-2 px-6 rounded-r-full cursor-pointer relative z-0;
+      py-2 px-6 rounded-r-full cursor-pointer relative z-0 duration-0;
   }
 
   .sidebar-circle-t {

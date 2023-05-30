@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 
 import SideBarLink from '../../components/SideBarLink/SideBarLink'
 
@@ -14,7 +14,7 @@ function AdminDashboard() {
         <ul className='w-full flex flex-col justify-center items-center gap-3
           mt-3 pr-3'>
           <SideBarLink
-            link={'/admin'}
+            link={'/admin/home'}
             title={'داشبورد'}
             svg={(
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="duration-0 w-6 h-6">
@@ -51,7 +51,7 @@ function AdminDashboard() {
           />
           <SideBarLink
             link={'/'}
-            title={'خروج'}
+            title={'خروج از پنل'}
             svg={(
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="duration-0 w-6 h-6">
                 <path className='duration-0' strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
@@ -63,7 +63,8 @@ function AdminDashboard() {
           </div>
         </ul>
       </div>
-      <div className="w-10/12 h-screen overflow-y-scroll p-3">
+      <div className="w-10/12 h-screen overflow-y-scroll p-6">
+        <Outlet />
       </div>
     </div>
   )
