@@ -27,18 +27,20 @@ function UserTickets() {
   }, [authContext])
 
   function submitTicketHandler() {
-    post('/tickets/new', {
-      token: authContext.userToken,
-      subject: ticketTitleRef.current.value.trim(),
-      text: ticketTextRef.current.value.trim()
-    }).then(response => {
-      if (response.data.ok) {
-        setTickets(response.data.tickets)
-        toast.success('تیکت با موفقیت ثبت شد!')
-        ticketTitleRef.current.value = ''
-        ticketTextRef.current.value = ''
-      } else toast.error(response.data.error)
-    })
+    if (ticketTitleRef.current.value.trim().length > 4 && ticketTextRef.current.value.trim().length > 4) {
+      post('/tickets/new', {
+        token: authContext.userToken,
+        subject: ticketTitleRef.current.value.trim(),
+        text: ticketTextRef.current.value.trim()
+      }).then(response => {
+        if (response.data.ok) {
+          setTickets(response.data.tickets)
+          toast.success('تیکت با موفقیت ثبت شد!')
+          ticketTitleRef.current.value = ''
+          ticketTextRef.current.value = ''
+        } else toast.error(response.data.error)
+      })
+    } else toast.error('لطفا فیلد هارا به درستی پر کنید!')
   }
 
   function closeMassageSection() {
