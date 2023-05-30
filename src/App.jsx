@@ -67,6 +67,7 @@ function App() {
       {
         (
           location.pathname !== '/register'
+          && location.pathname !== '/admin'
         ) && <Header />
       }
       {router}
@@ -76,6 +77,7 @@ function App() {
           && location.pathname !== '/dashboard'
           && location.pathname !== '/dashboard/orders'
           && location.pathname !== '/dashboard/tickets'
+          && location.pathname !== '/admin'
         ) && <Footer />
       }
     </AuthContext.Provider>
