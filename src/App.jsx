@@ -74,6 +74,8 @@ function App() {
         (
           location.pathname !== '/register'
           && location.pathname !== '/dashboard'
+          && location.pathname !== '/dashboard/orders'
+          && location.pathname !== '/dashboard/tickets'
         ) && <Footer />
       }
     </AuthContext.Provider>

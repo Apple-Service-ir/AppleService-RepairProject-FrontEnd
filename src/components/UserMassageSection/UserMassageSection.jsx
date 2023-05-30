@@ -47,8 +47,8 @@ function UserMassageSection(props) {
       flex flex-col justify-between items-center`}>
       <div className="bg-blue-500 w-full h-16 flex justify-between items-center rounded-t-xl px-6">
         <span className='text-white sansbold'>
-          <span className='ml-3'>#22035</span>
-          چگونه سفارشی ثبت کنم؟
+          <span className='ml-3'>#{ticket.id}</span>
+          {ticket.subject}
         </span>
         <button>
           <svg onClick={closeMassageSection}
