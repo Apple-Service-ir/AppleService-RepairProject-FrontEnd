@@ -43,6 +43,16 @@ function UserDashboradSideBar() {
         >
           تیکت پشتیبانی
         </NavLink>
+        {
+          ['admin', 'supporter'].includes(authContext.userInfo.role) && (
+            <NavLink
+              to='/admin'
+              className={link => link.isActive ? 'btn btn-white w-full' : 'btn btn-out-white w-full'}
+            >
+              داشبورد مدیریت
+            </NavLink>
+          )
+        }
       </div>
       <Link className='btn btn-danger w-full mt-9'
         onClick={authContext.logOut}>خروج از حساب</Link>
