@@ -8,6 +8,23 @@ import AuthContext from "./context/AuthContext"
 import { get, post } from "./utility"
 import { toast } from "react-hot-toast"
 
+const hideHeaderPathes = [
+  '/register',
+  '/admin',
+  '/admin/home',
+  '/admin/users'
+]
+
+const hideFooterPathes = [
+  '/register',
+  '/dashboard',
+  '/dashboard/orders',
+  '/dashboard/tickets',
+  '/admin',
+  '/admin/home',
+  '/admin/users'
+]
+
 function App() {
   const [userToken, setUserToken] = useState(null)
   const [isLogin, setIslogin] = useState(localStorage.getItem("e-service-token") ? true : false)
@@ -65,24 +82,13 @@ function App() {
       }}
     >
       {
-        (
-          location.pathname !== '/register'
-          && location.pathname !== '/admin'
-          && location.pathname !== '/admin/home'
-          && location.pathname !== '/admin/users'
-        ) && <Header />
+        !hideHeaderPathes.includes(location.pathname) && <Header />
       }
+
       {router}
+
       {
-        (
-          location.pathname !== '/register'
-          && location.pathname !== '/dashboard'
-          && location.pathname !== '/dashboard/orders'
-          && location.pathname !== '/dashboard/tickets'
-          && location.pathname !== '/admin'
-          && location.pathname !== '/admin/home'
-          && location.pathname !== '/admin/users'
-        ) && <Footer />
+        !hideFooterPathes.includes(location.pathname) && <Footer />
       }
     </AuthContext.Provider>
   )
