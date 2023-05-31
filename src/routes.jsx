@@ -28,7 +28,7 @@ const routes = [
     path: '/admin',
     element: <PrivateRoute reDirectPath={'/'} privateRole={'user'}> <AdminDashboard /> </PrivateRoute>,
     children: [
-      { path: '/admin/home', element: <AdminHome /> },
+      { path: '/admin', element: <AdminHome /> },
       { path: '/admin/users', element: <AdminUsers /> },
     ]
   }

@@ -14,7 +14,7 @@ function AdminDashboard() {
         <ul className='w-full flex flex-col justify-center items-center gap-3
           mt-3 pr-3'>
           <SideBarLink
-            link={'/admin/home'}
+            link={'/admin'}
             title={'داشبورد'}
             svg={(
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="duration-0 w-6 h-6">
@@ -23,7 +23,7 @@ function AdminDashboard() {
             )}
           />
           <SideBarLink
-            link={'/admin/users'}
+            link={'users'}
             title={'کاربران'}
             svg={(
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="duration-0 w-6 h-6">
@@ -32,7 +32,7 @@ function AdminDashboard() {
             )}
           />
           <SideBarLink
-            link={'/admin/orders'}
+            link={'orders'}
             title={'سفارشات'}
             svg={(
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="duration-0 w-6 h-6">
@@ -41,7 +41,7 @@ function AdminDashboard() {
             )}
           />
           <SideBarLink
-            link={'/admin/tickets'}
+            link={'tickets'}
             title={'تیکت ها'}
             svg={(
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="duration-0 w-6 h-6">

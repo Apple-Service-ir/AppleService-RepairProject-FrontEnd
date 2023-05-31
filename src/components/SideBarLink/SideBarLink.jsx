@@ -5,7 +5,11 @@ function SideBarLink({ link, title, svg }) {
   return (
     <NavLink
       to={link}
-      className={link => link.isActive ? 'sidebar-link-active' : 'sidebar-link'}
+      className={path =>
+        (path.isActive && location.pathname.endsWith(link))
+          ? 'sidebar-link-active'
+          : 'sidebar-link'
+      }
     >
       {title}
       {svg}
