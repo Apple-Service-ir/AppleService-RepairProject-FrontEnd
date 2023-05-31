@@ -1,10 +1,10 @@
 import React, { useRef, useState, useContext, useEffect } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 
-import AuthContext from './../../context/AuthContext'
-import Alert from '../Alert/Alert'
-import { get, post } from './../../utility'
-import UserMassageSection from '../UserMassageSection/UserMassageSection'
+import AuthContext from '../../context/AuthContext'
+import Alert from '../../components/Alert/Alert'
+import { get, post } from '../../utility'
+import UserMassageSection from '../../components/UserMassageSection/UserMassageSection'
 
 function UserTickets() {
   const authContext = useContext(AuthContext)

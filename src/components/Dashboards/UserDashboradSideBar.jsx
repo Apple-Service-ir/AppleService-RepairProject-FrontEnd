@@ -32,13 +32,13 @@ function UserDashboradSideBar() {
       </span>
       <div className="w-full flex flex-col justify-center items-center gap-3 mt-3">
         <NavLink
-          to='/dashboard/orders'
+          to='orders'
           className={link => link.isActive ? 'btn btn-white w-full' : 'btn btn-out-white w-full'}
         >
           سفارشات
         </NavLink>
         <NavLink
-          to='/dashboard/tickets'
+          to='tickets'
           className={link => link.isActive ? 'btn btn-white w-full' : 'btn btn-out-white w-full'}
         >
           تیکت پشتیبانی
