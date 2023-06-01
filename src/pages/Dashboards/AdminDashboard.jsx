@@ -64,7 +64,7 @@ function AdminDashboard() {
                 <path className='duration-0' strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
               </svg>
             )}
-            rank={['admin', 'supporter']}
+            rank={'all'}
           />
           <div className="w-full z-50 px-3">
             <button className='btn btn-danger w-full'>خروج از حساب</button>

@@ -5,7 +5,7 @@ import AuthContext from '../../context/AuthContext'
 function SideBarLink({ link, title, svg, rank }) {
   const authContext = useContext(AuthContext)
 
-  if (rank.includes(authContext.userInfo.role)) {
+  if (rank == "all" || rank.includes(authContext.userInfo.role)) {
     return (
       <NavLink
         to={link}
