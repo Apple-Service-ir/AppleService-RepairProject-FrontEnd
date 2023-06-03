@@ -13,18 +13,17 @@ function UserOrders() {
   useEffect(() => {
     authContext.userToken &&
       get(`/orders/log?token=${authContext.userToken}`).then((response) => {
-        response.data.ok && setOrders(response.data.orders)
+        setOrders(response.data.orders)
       })
   }, [authContext])
 
   function deleteOrder(orderId) {
     post('/orders/cancel', { orderId, token: authContext.userToken })
       .then(response => {
-        if (response.data.ok) {
-          console.log(response.data);
-          setOrders(response.data.orders)
-          toast.success("سفارش شما با موفقیت لغو شد")
-        } else toast.error(response.data.err)
+        setOrders(response.data.orders)
+        toast.success("سفارش شما با موفقیت لغو شد")
+      }).catch((err) => {
+        toast.error(err.data.err)
       })
   }
 

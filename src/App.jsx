@@ -43,13 +43,13 @@ function App() {
   const logOut = () => {
     post('/logout', { token: userToken })
       .then(response => {
-        if (response.data.ok) {
-          setUserToken(null)
-          setIslogin(false)
-          setUserInfo({})
-          localStorage.removeItem('e-service-token')
-          redirect('/')
-        } else toast.error(response.data.err)
+        setUserToken(null)
+        setIslogin(false)
+        setUserInfo({})
+        localStorage.removeItem('e-service-token')
+        redirect('/')
+      }).catch((err) => {
+        toast.error(err.data.err)
       })
   }
 
@@ -57,17 +57,14 @@ function App() {
     const localStorageData = localStorage.getItem('e-service-token')
     get(`/informations/get?token=${localStorageData}`)
       .then(response => {
-        if (response.data.ok) {
-          setIslogin(true)
-          setUserInfo(response.data.user)
-          setUserToken(localStorageData)
-        }
-        else {
-          setUserToken(null)
-          setIslogin(false)
-          setUserInfo({})
-          localStorage.removeItem('e-service-token')
-        }
+        setIslogin(true)
+        setUserInfo(response.data.user)
+        setUserToken(localStorageData)
+      }).catch(() => {
+        setUserToken(null)
+        setIslogin(false)
+        setUserInfo({})
+        localStorage.removeItem('e-service-token')
       })
   }, [])
 

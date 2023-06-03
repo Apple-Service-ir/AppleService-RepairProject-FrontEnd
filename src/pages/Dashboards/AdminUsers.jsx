@@ -13,10 +13,7 @@ function AdminUsers() {
     if (authContext.userToken) {
       get(`/admins/users/all?token=${authContext.userToken}`)
         .then(response => {
-          if (response.data.ok) {
-            setUsers(response.data.users)
-          }
-          console.log(response);
+          setUsers(response.data.users)
         })
     }
   }, [authContext.userToken])
@@ -57,8 +54,8 @@ function AdminUsers() {
                       <td className='tbody__tr__td w-2/12 text-sm'>
                         {
                           user.role === 'admin' ? 'ادمین'
-                          : user.role === 'supporter' ? 'پشتیبان'
-                          : 'کاربر'
+                            : user.role === 'supporter' ? 'پشتیبان'
+                              : 'کاربر'
                         }
                       </td>
                       <td className='tbody__tr__td w-2/12 text-sm'>{user.phone}</td>

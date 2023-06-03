@@ -22,7 +22,9 @@ const getMe = async () => {
   const userToken = localStorage.getItem('e-service-token')
   if (!userToken) return null
   const response = await get(`/informations/get?token=${userToken}`)
-  !response.data.ok && localStorage.removeItem('e-service-token')
+    .catch(() => {
+      localStorage.removeItem('e-service-token')
+    })
   return response.data.ok ? response.data.user : null
 }
 // ---

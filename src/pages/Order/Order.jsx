@@ -117,15 +117,15 @@ export default function Order() {
     formData.append('description', descRef.current.value)
     formData.append('picture', fileRef.current.files[0]);
     postForm('/orders/submit', formData).then(response => {
-      if (response.data.ok) {
-        setSelectDevice({})
-        setSelectPart({})
-        citiesRef.current.value = 'none'
-        nameFileRef.current.innerHTML = 'تصویر دستگاه خود را بارگذاری کنید'
-        addressRef.current.value = ''
-        descRef.current.value = ''
-        toast.success('سفارش شما با موفقیت ثبت شد')
-      } else toast.error(response.data.err)
+      setSelectDevice({})
+      setSelectPart({})
+      citiesRef.current.value = 'none'
+      nameFileRef.current.innerHTML = 'تصویر دستگاه خود را بارگذاری کنید'
+      addressRef.current.value = ''
+      descRef.current.value = ''
+      toast.success('سفارش شما با موفقیت ثبت شد')
+    }).catch(err => {
+      toast.error(err.data.err)
     })
   }
 

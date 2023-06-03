@@ -22,7 +22,7 @@ function UserTickets() {
     authContext.userToken &&
       get(`/tickets/all?token=${authContext.userToken}`)
         .then(response => {
-          response.data.ok && setTickets(response.data.tickets)
+          setTickets(response.data.tickets)
         })
   }, [authContext])
 
@@ -33,12 +33,12 @@ function UserTickets() {
         subject: ticketTitleRef.current.value.trim(),
         text: ticketTextRef.current.value.trim()
       }).then(response => {
-        if (response.data.ok) {
-          setTickets(response.data.tickets)
-          toast.success('تیکت با موفقیت ثبت شد!')
-          ticketTitleRef.current.value = ''
-          ticketTextRef.current.value = ''
-        } else toast.error(response.data.error)
+        setTickets(response.data.tickets)
+        toast.success('تیکت با موفقیت ثبت شد!')
+        ticketTitleRef.current.value = ''
+        ticketTextRef.current.value = ''
+      }).catch((err) => {
+        toast.error(err.data.error)
       })
     } else toast.error('لطفا فیلد هارا به درستی پر کنید!')
   }
