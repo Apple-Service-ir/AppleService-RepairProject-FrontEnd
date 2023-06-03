@@ -12,7 +12,8 @@ const hideHeaderPathes = [
   '/register',
   '/admin',
   '/admin/home',
-  '/admin/users'
+  '/admin/users',
+  '/admin/orders',
 ]
 
 const hideFooterPathes = [
@@ -22,7 +23,8 @@ const hideFooterPathes = [
   '/dashboard/tickets',
   '/admin',
   '/admin/home',
-  '/admin/users'
+  '/admin/users',
+  '/admin/orders',
 ]
 
 function App() {
@@ -55,20 +57,27 @@ function App() {
 
   useEffect(() => {
     const localStorageData = localStorage.getItem('e-service-token')
-    get(`/informations/get?token=${localStorageData}`)
-      .then(response => {
-        if (response.data.ok) {
-          setIslogin(true)
-          setUserInfo(response.data.user)
-          setUserToken(localStorageData)
-        }
-        else {
+    localStorageData &&
+      get(`/informations/get?token=${localStorageData}`)
+        .then(response => {
+          if (response.data.ok) {
+            setIslogin(true)
+            setUserInfo(response.data.user)
+            setUserToken(localStorageData)
+          }
+          else {
+            setUserToken(null)
+            setIslogin(false)
+            setUserInfo({})
+            localStorage.removeItem('e-service-token')
+          }
+        })
+        .catch(() => {
           setUserToken(null)
           setIslogin(false)
           setUserInfo({})
           localStorage.removeItem('e-service-token')
-        }
-      })
+        })
   }, [])
 
   return (

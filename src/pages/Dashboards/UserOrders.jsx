@@ -161,7 +161,7 @@ function UserOrders() {
                         return (
                           <tr key={order.id} className='tbody__tr'>
                             <td className='tbody__tr__td w-2/12'>
-                              <div className='w-full flex flex-wrap items-center gap-3 justify-center'>
+                              <div className='td__wrapper justify-center'>
                                 {
                                   order.status === 'done' ? (
                                     <button className='badge badge-blue select-text'>{order.id} #</button>

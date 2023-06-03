@@ -2,7 +2,9 @@ import React from 'react'
 
 function AdminHome() {
   return (
-    <div>AdminHome</div>
+    <div className='w-full h-full flex flex-col items-center'>
+      <div>AdminHome</div>
+    </div>
   )
 }
 
