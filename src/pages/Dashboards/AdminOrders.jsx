@@ -93,7 +93,115 @@ function AdminOrders() {
       {
         modal.show && createPortal(
           <PortalModal closeHandler={() => setModal({ show: false, order: {} })}>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia, nam?</p>
+            <ul className="w-96 max-h-[80vh] overflow-y-scroll">
+              <li className='w-full flex justify-center items-center rounded-xl'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-xl text-center">
+                  کد سفارش
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-xl">
+                  {modal.order.id} #
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-xl mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-xl text-center">
+                  وضعیت
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-xl">
+                  {
+                    modal.order.status === 'pending' ? 'در انتظار تعمیر'
+                      : modal.order.status === 'working' ? 'تایید شده'
+                        : modal.order.status === 'cancelled' ? 'لغو شده'
+                          : modal.order.status === 'done' ? 'انجام شده'
+                            : ''
+                  }
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-xl mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-xl text-center">
+                  کاربر
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-xl">
+                  {modal.order.user.firstName} {modal.order.user.lastName}
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-xl mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-xl text-center">
+                  تعمیر کننده
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-xl">
+                  {
+                    modal.order.repairMan ?
+                      `${modal.order.repairMan.firstName} ${modal.order.repairMan.firstName}`
+                      : '-'
+                  }
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-xl mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-xl text-center">
+                  دستگاه
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-xl">
+                  {modal.order.phoneName}
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-xl mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-xl text-center">
+                  قطعه
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-xl">
+                  {modal.order.partName}
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-xl mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-xl text-center">
+                  تاریخ
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-xl">
+                  {new Date(modal.order.createdAt).toLocaleDateString('fa-IR')}
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-xl mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-xl text-center">
+                  قیمت
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-xl">
+                  {
+                    modal.order.total ? (
+                      <>
+                        39,000,000
+                        <small className='italic opacity-75 mx-1'>تومان</small>
+                      </>
+                    ) : '-'
+                  }
+                </div>
+              </li>
+
+              <li className='w-full flex flex-col justify-center items-center rounded-xl mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-xl text-center">
+                  آدرس
+                </div>
+                <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-xl
+                  text-center">
+                  {modal.order.address}
+                </div>
+              </li>
+              <li className='w-full flex flex-col justify-center items-center rounded-xl mt-1 '>
+                <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-xl text-center">
+                  توضیحات
+                </div>
+                <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-xl
+                  text-center">
+                  {modal.order.description}
+                </div>
+              </li>
+            </ul>
           </PortalModal>,
           document.body
         )
