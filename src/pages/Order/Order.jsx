@@ -13,23 +13,9 @@ import TeaxtArea from '../../components/TextArea/TeaxtArea'
 export default function Order() {
   const authContext = useContext(AuthContext)
 
-  const [brands, setBranads] = useState([])
-  const [devices, setDevices] = useState([])
-  const [allDevices, setAllDevices] = useState([])
-  const [parts, setParts] = useState([])
-
-  // ---
-  const [modals, setModals] = useState({
-    brands: false,
-    devices: false,
-    parts: false,
-  })
-  // ---
-
-  const [selectDevice, setSelectDevice] = useState({})
-  const [selectPart, setSelectPart] = useState({})
-
-  const [cities, setCities] = useState([])
+  const [datas, setDatas] = useState({ all: [], brands: [], devices: [], parts: [], cities: [] })
+  const [selectedDatas, setSelectedDatas] = useState({ devices: {}, parts: {} })
+  const [modals, setModals] = useState({ brands: false, devices: false, parts: false })
 
   const deviceRef = useRef()
   const citiesRef = useRef()
@@ -41,80 +27,37 @@ export default function Order() {
 
   useEffect(() => {
     get('/list/devices').then(response => {
-      setBranads(response.data.brands)
       const mapped = response.data.phones.map(item => {
         return { id: item.id, value: `${item.brand} ${item.model}`, brand: item.brand }
       })
-      setAllDevices(mapped)
+      setDatas(prev => ({ ...prev, all: mapped }))
+      setDatas(prev => ({ ...prev, brands: response.data.brands }))
     })
 
     get('/list/parts').then(response => {
       const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
-      setParts(mapped)
+      setDatas(prev => ({ ...prev, parts: mapped }))
     })
 
     get('/list/cities').then(response => {
-      setCities(response.data)
+      setDatas(prev => ({ ...prev, cities: response.data }))
     })
   }, [])
 
   function postOrder() {
-    const orderValidation = [
-      {
-        element: deviceRef,
-        validation: !!selectDevice.id
-      },
-      {
-        element: deviceRef,
-        validation: !!selectPart.id
-      },
-      {
-        element: citiesRef,
-        validation: citiesRef.current.value !== 'none'
-      },
-      {
-        element: fileWrapperRef,
-        validation: !!fileRef.current.files[0]
-      },
-      {
-        element: addressRef,
-        validation: !!addressRef.current.value
-      },
-      {
-        element: descRef,
-        validation: !!descRef.current.value
-      },
-    ]
-
-    let orderStatus = true
-
-    orderValidation.forEach(item => {
-      if (!item.validation) {
-        item.element.current.classList.remove('border-slate-300', 'focus:border-slate-400', 'hover:border-slate-400')
-        item.element.current.classList.add('border-red-300', 'focus:border-red-400', 'hover:border-red-400')
-        orderStatus = false
-      } else {
-        item.element.current.classList.remove('border-red-300', 'focus:border-red-400', 'hover:border-red-400')
-        item.element.current.classList.add('border-slate-300', 'focus:border-slate-400', 'hover:border-slate-400')
-      }
-    })
-
-    if (!orderStatus) {
-      toast.error('لطفا فیلد هارا تکمیل کنید');
-      return
-    }
     const formData = new FormData()
     formData.append('token', authContext.userToken)
     formData.append('address', addressRef.current.value)
     formData.append('city', citiesRef.current.value)
-    formData.append('phoneId', selectDevice.id)
-    formData.append('partId', selectPart.id)
+    formData.append('phoneId', selectedDatas.devices.id)
+    formData.append('partId', selectedDatas.parts.id)
     formData.append('description', descRef.current.value)
     formData.append('picture', fileRef.current.files[0]);
+
     postForm('/orders/submit', formData).then(response => {
       if (response.data.ok) {
-        setSelectDevice({})
-        setSelectPart({})
+        setSelectedDatas(prev => ({ ...prev, devices: {} }))
+        setSelectedDatas(prev => ({ ...prev, parts: {} }))
         citiesRef.current.value = 'none'
         nameFileRef.current.innerHTML = 'تصویر دستگاه خود را بارگذاری کنید'
         addressRef.current.value = ''
@@ -135,7 +78,10 @@ export default function Order() {
             h-16 relative flex items-center rounded-xl text-sm sm:text-base p-3 select-none cursor-pointer
             hover:border-slate-400 sm:w-1/2'>
             {
-              selectDevice.value && selectPart.value ? `${selectDevice.value} - ${selectPart.value.split(' - ')[1]}` : 'مدل دستگاه خود را انتخاب کنید'
+              selectedDatas.devices.value
+                && selectedDatas.parts.value
+                ? `${selectedDatas.devices.value} - ${selectedDatas.parts.value.split(' - ')[1]}`
+                : 'مدل دستگاه خود را انتخاب کنید'
             }
             <div className='w-10 h-10 flex justify-center items-center absolute left-3 top-1/2 -translate-y-1/2'>
               <svg className="stroke-blue-500 w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -147,7 +93,7 @@ export default function Order() {
             selectRef={citiesRef}
             width='w-full sm:w-1/2'
             name='شهرتان را انتخاب کنید'
-            options={cities}
+            options={datas.cities}
             svg={(
               <svg className="stroke-blue-500 w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -208,14 +154,14 @@ export default function Order() {
                   برند را انتخاب کنید
                 </span>
                 {
-                  brands.map((item, index) => (
+                  datas.brands.map((item, index) => (
                     <li
                       key={index}
                       onClick={() => {
-                        setDevices(() => {
-                          const filtered = allDevices.filter(device => device.brand === item)
-                          return filtered
-                        })
+                        setDatas(prev => ({
+                          ...prev,
+                          devices: datas.all.filter(device => device.brand === item)
+                        }))
                         setModals({ brands: false, devices: true, parts: false })
                       }}
                       className='bg-slate-200 w-full p-3 mt-2 rounded-xl first:mt-0
@@ -243,11 +189,11 @@ export default function Order() {
                   دستگاه را انتخاب کنید
                 </span>
                 {
-                  devices.map(item => (
+                  datas.devices.map(item => (
                     <li
                       key={item.id}
                       onClick={() => {
-                        setSelectDevice(item)
+                        setSelectedDatas(prev => ({ ...prev, devices: item }))
                         setModals({ brands: false, devices: false, parts: true })
                       }}
                       className='bg-slate-200 w-full p-3 mt-2 rounded-xl first:mt-0
@@ -275,11 +221,11 @@ export default function Order() {
                   قطعه تعمیری را انتخاب کنید
                 </span>
                 {
-                  parts.map(item => (
+                  datas.parts.map(item => (
                     <li
                       key={item.id}
                       onClick={() => {
-                        setSelectPart(item);
+                        setSelectedDatas(prev => ({ ...prev, parts: item }))
                         setModals(prev => ({ ...prev, parts: false }))
                       }}
                       className='bg-slate-200 w-full p-3 mt-2 rounded-xl first:mt-0
