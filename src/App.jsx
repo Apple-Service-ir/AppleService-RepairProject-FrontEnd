@@ -8,23 +8,15 @@ import AuthContext from "./context/AuthContext"
 import { get, post } from "./utility"
 import { toast } from "react-hot-toast"
 
-const hideHeaderPathes = [
-  '/register',
-  '/admin',
-  '/admin/home',
-  '/admin/users',
-  '/admin/orders',
+const containingHeader = [
+  '/',
+  '/order',
+  '/dashboard'
 ]
 
-const hideFooterPathes = [
-  '/register',
-  '/dashboard',
-  '/dashboard/orders',
-  '/dashboard/tickets',
-  '/admin',
-  '/admin/home',
-  '/admin/users',
-  '/admin/orders',
+const containingFooter = [
+  '/',
+  '/order',
 ]
 
 function App() {
@@ -91,13 +83,13 @@ function App() {
       }}
     >
       {
-        !hideHeaderPathes.includes(location.pathname) && <Header />
+        containingHeader.includes(location.pathname) && <Header />
       }
 
       {router}
 
       {
-        !hideFooterPathes.includes(location.pathname) && <Footer />
+        containingFooter.includes(location.pathname) && <Footer />
       }
     </AuthContext.Provider>
   )
