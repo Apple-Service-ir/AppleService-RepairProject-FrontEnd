@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState, useContext } from 'react'
+import { createPortal } from 'react-dom';
 import toast, { Toaster } from 'react-hot-toast';
 
 import { get, postForm } from '../../utility';
 import AuthContext from './../../context/AuthContext'
 
-import Modal from '../../components/Modal/Modal'
+import PortalModal from './../../components/PortalModal/PortalModal'
 import FileInput from '../../components/FileInput/FileInput'
 import SelectBox from '../../components/SelectBox/SelectBox'
 import TeaxtArea from '../../components/TextArea/TeaxtArea'
@@ -17,9 +18,13 @@ export default function Order() {
   const [allDevices, setAllDevices] = useState([])
   const [parts, setParts] = useState([])
 
-  const [brandsModal, setBrandsModal] = useState(false)
-  const [deviceModal, setDeviceModal] = useState(false)
-  const [partsModal, setPartsModal] = useState(false)
+  // ---
+  const [modals, setModals] = useState({
+    brands: false,
+    devices: false,
+    parts: false,
+  })
+  // ---
 
   const [selectDevice, setSelectDevice] = useState({})
   const [selectPart, setSelectPart] = useState({})
@@ -52,16 +57,6 @@ export default function Order() {
       setCities(response.data)
     })
   }, [])
-
-  function showBrandsModal() {
-    setBrandsModal(true)
-  }
-
-  function closeAllModal() {
-    setBrandsModal(false)
-    setPartsModal(false)
-    setDeviceModal(false)
-  }
 
   function postOrder() {
     const orderValidation = [
@@ -135,7 +130,7 @@ export default function Order() {
         sm:px-0'>
         <div className="w-full flex flex-col justify-center items-center gap-3
           sm:flex-row">
-          <div ref={deviceRef} onClick={showBrandsModal}
+          <div ref={deviceRef} onClick={() => setModals(prev => ({ ...prev, brands: true }))}
             className='w-full bg-slate-200 text-blue-500 border-2 border-slate-300
             h-16 relative flex items-center rounded-xl text-sm sm:text-base p-3 select-none cursor-pointer
             hover:border-slate-400 sm:w-1/2'>
@@ -201,61 +196,104 @@ export default function Order() {
         <button className='btn btn-out-green w-1/2 mt-3
           sm:w-1/3' onClick={postOrder}>ثبت سفارش</button>
       </div>
+
       {
-        brandsModal &&
-        <Modal closeModal={closeAllModal} title='برند مورد نظرتان را انتخاب کنید'>
-          {
-            brands.map((item, index) => (
-              <div key={index} onClick={() => {
-                setDevices(() => {
-                  const filtered = allDevices.filter(device => device.brand === item)
-                  return filtered
-                })
-                closeAllModal();
-                setDeviceModal(true);
-              }}
-                className='bg-slate-200 shadow-sm shadow-slate-400 w-full p-3
-                rounded-md flex justify-center items-center cursor-pointer hover:bg-slate-300'>
-                {item}
-              </div>
-            ))
-          }
-        </Modal>
+        modals.brands && (
+          createPortal(
+            <PortalModal
+              closeHandler={() => setModals(prev => ({ ...prev, brands: false }))}
+            >
+              <ul className="bg-white w-96 max-h-[80vh] overflow-y-scroll p-3 rounded-xl">
+                <span className='w-full block text-center text-xl sansbold p-1'>
+                  برند را انتخاب کنید
+                </span>
+                {
+                  brands.map((item, index) => (
+                    <li
+                      key={index}
+                      onClick={() => {
+                        setDevices(() => {
+                          const filtered = allDevices.filter(device => device.brand === item)
+                          return filtered
+                        })
+                        setModals({ brands: false, devices: true, parts: false })
+                      }}
+                      className='bg-slate-200 w-full p-3 mt-2 rounded-xl first:mt-0
+                        flex justify-center items-center cursor-pointer hover:bg-slate-300'
+                    >
+                      {item}
+                    </li>
+                  ))
+                }
+              </ul>
+            </PortalModal>,
+            document.body
+          )
+        )
       }
+
       {
-        deviceModal &&
-        <Modal closeModal={closeAllModal} title='دستگاه های مورد نطرتان را انتخاب کنید'>
-          {
-            devices.map(item => (
-              <div key={item.id} onClick={() => {
-                setSelectDevice(item)
-                closeAllModal();
-                setPartsModal(true)
-              }}
-                className='bg-slate-200 shadow-sm shadow-slate-400 w-full p-3
-                rounded-md flex justify-center items-center cursor-pointer hover:bg-slate-300'>
-                {item.value}
-              </div>
-            ))
-          }
-        </Modal>
+        modals.devices && (
+          createPortal(
+            <PortalModal
+              closeHandler={() => setModals(prev => ({ ...prev, devices: false }))}
+            >
+              <ul className="bg-white w-96 max-h-[80vh] overflow-y-scroll p-3 rounded-xl">
+                <span className='w-full block text-center text-xl sansbold p-1'>
+                  دستگاه را انتخاب کنید
+                </span>
+                {
+                  devices.map(item => (
+                    <li
+                      key={item.id}
+                      onClick={() => {
+                        setSelectDevice(item)
+                        setModals({ brands: false, devices: false, parts: true })
+                      }}
+                      className='bg-slate-200 w-full p-3 mt-2 rounded-xl first:mt-0
+                        flex justify-center items-center cursor-pointer hover:bg-slate-300'
+                    >
+                      {item.value}
+                    </li>
+                  ))
+                }
+              </ul>
+            </PortalModal>,
+            document.body
+          )
+        )
       }
+
       {
-        partsModal &&
-        <Modal closeModal={closeAllModal} title='چه چیزی می خواهید تعمیر شود'>
-          {
-            parts.map(item => (
-              <div key={item.id} onClick={() => {
-                setSelectPart(item);
-                closeAllModal();
-              }}
-                className='bg-slate-200 shadow-sm shadow-slate-400 w-full p-3
-                    rounded-md flex justify-center items-center cursor-pointer hover:bg-slate-300'>
-                {item.value}
-              </div>
-            ))
-          }
-        </Modal>
+        modals.parts && (
+          createPortal(
+            <PortalModal
+              closeHandler={() => setModals(prev => ({ ...prev, parts: false }))}
+            >
+              <ul className="bg-white w-96 max-h-[80vh] overflow-y-scroll p-3 rounded-xl">
+                <span className='w-full block text-center text-xl sansbold p-1'>
+                  قطعه تعمیری را انتخاب کنید
+                </span>
+                {
+                  parts.map(item => (
+                    <li
+                      key={item.id}
+                      onClick={() => {
+                        setSelectPart(item);
+                        setModals(prev => ({ ...prev, parts: false }))
+                      }}
+                      className='bg-slate-200 w-full p-3 mt-2 rounded-xl first:mt-0
+                        flex justify-center items-center cursor-pointer hover:bg-slate-300'
+                    >
+                      {item.value}
+                    </li>
+                  ))
+                }
+              </ul>
+            </PortalModal>,
+            document.body
+          )
+        )
       }
       <Toaster />
     </>
