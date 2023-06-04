@@ -14,15 +14,15 @@ const routes = [
   { path: '/', element: <Home /> },
   {
     path: '/order',
-    element: <PrivateRoute reDirectPath='/register' privateRole={['isUserLoggedIn']}> <Order /> </PrivateRoute>
+    element: <PrivateRoute reDirectPath='/register' privateRole={'isUserLoggedIn'}> <Order /> </PrivateRoute>
   },
   {
     path: '/register',
-    element: <PrivateRoute reDirectPath='/' privateRole={['isUserNotLoggedIn']}> <Register /> </PrivateRoute>
+    element: <PrivateRoute reDirectPath='/' privateRole={'isUserNotLoggedIn'}> <Register /> </PrivateRoute>
   },
   {
     path: '/dashboard',
-    element: <PrivateRoute reDirectPath='/register' privateRole={['isUserLoggedIn']}> <UserDashboard /> </PrivateRoute>,
+    element: <PrivateRoute reDirectPath='/register' privateRole={'isUserLoggedIn'}> <UserDashboard /> </PrivateRoute>,
     children: [
       { path: '/dashboard/orders', element: <UserOrders /> },
       { path: '/dashboard/tickets', element: <UserTickets /> }
@@ -30,12 +30,18 @@ const routes = [
   },
   {
     path: '/admin',
-    element: <PrivateRoute reDirectPath={'/'} privateRole={['admin', 'supporter']}> <AdminDashboard /> </PrivateRoute>,
+    element:
+      <PrivateRoute
+        reDirectPath={'/'}
+        privateRole={'isAdminOrSupporter'}
+      >
+        <AdminDashboard />
+      </PrivateRoute>,
     children: [
       { path: '/admin', element: <AdminHome /> },
       {
         path: '/admin/users',
-        element: <PrivateRoute reDirectPath={'/admin'} privateRole={['admin']}> <AdminUsers /> </PrivateRoute>
+        element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminUsers /> </PrivateRoute>
       },
       { path: '/admin/orders', element: <AdminOrders /> }
     ]
