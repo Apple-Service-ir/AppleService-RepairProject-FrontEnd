@@ -1,5 +1,4 @@
 import { ServiceBox } from "../../components/ServiceBox/ServiceBox"
-import { HeroItem } from "../../components/HeroItem/HeroItem"
 import { HonorItem } from "../../components/HonorItem/HonorItem"
 import { QuestionItem } from "../../components/QuestionItem/QuestionItem"
 import { Link } from "react-router-dom"

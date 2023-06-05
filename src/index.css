@@ -178,7 +178,7 @@ input[type="number"] {
 
   .input {
     @apply border border-blue-500 text-blue-500 placeholder:text-blue-500
-    absolute top-0 left-0 w-full h-full pr-6 pl-16 rounded-full
+    absolute top-0 left-0 w-full h-full flex items-center pr-6 pl-16 rounded-full
     focus:outline-0 focus:ring-4 focus:ring-blue-200;
   }
 
