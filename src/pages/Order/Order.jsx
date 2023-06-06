@@ -121,7 +121,7 @@ export default function Order() {
               <option value="none">شهرتان را انتخاب کنید</option>
               {
                 datas.cities.map(city => (
-                  <option key={city.id} value={city.name}>{city.name}</option>
+                  <option key={city.id} value={city.id}>{city.name}</option>
                 ))
               }
             </select>
