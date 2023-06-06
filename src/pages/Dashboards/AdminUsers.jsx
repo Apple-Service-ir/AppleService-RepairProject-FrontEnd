@@ -25,9 +25,7 @@ function AdminUsers() {
     if (authContext.userToken) {
       get(`/admins/users/all?token=${authContext.userToken}`)
         .then(response => {
-          if (response.data.ok) {
-            setUsers(response.data.users)
-          }
+          setUsers(response.data.users)
         })
     }
   }, [authContext])

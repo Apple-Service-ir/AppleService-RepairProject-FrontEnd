@@ -57,10 +57,8 @@ export default function Order() {
         return
       }
     }
-
     postForm('/orders/submit', formData)
       .then(response => {
-        if (response.data.ok) {
           setSelectedDatas(prev => ({ ...prev, devices: {} }))
           setSelectedDatas(prev => ({ ...prev, parts: {} }))
           setForm({
@@ -70,7 +68,6 @@ export default function Order() {
             desc: { value: '', validation: false },
           })
           toast.success('سفارش شما با موفقیت ثبت شد')
-        }
       })
       .catch(error => toast.error(error.response.data.err))
   }

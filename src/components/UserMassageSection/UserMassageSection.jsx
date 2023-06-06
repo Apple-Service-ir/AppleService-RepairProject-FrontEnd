@@ -21,22 +21,22 @@ function UserMassageSection(props) {
           token: authContext.userToken
         }
       ).then(response => {
-        if (response.data.ok) {
 
-          setTickets((prev) => {
-            const mapedTickets = prev.map(ticket => {
-              if (ticket.id === ticketId) {
-                ticket.messages = response.data.messages
-                return ticket
-              }
+        setTickets((prev) => {
+          const mapedTickets = prev.map(ticket => {
+            if (ticket.id === ticketId) {
+              ticket.messages = response.data.messages
               return ticket
-            })
-
-            return mapedTickets
+            }
+            return ticket
           })
 
-          sendMessageRef.current.value = ''
-        } else toast.error(response.data.err)
+          return mapedTickets
+        })
+
+        sendMessageRef.current.value = ''
+      }).catch((err) => {
+        toast.error(err.data.err)
       })
     }
   }

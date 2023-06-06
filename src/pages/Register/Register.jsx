@@ -41,19 +41,18 @@ export default function Register() {
   function generateLoginOtp() {
     otpNumberRef.current.value = ''
     post('/auth?action=generate&mode=login', { phone: loginPhoneRef.current.value }).then(response => {
-      if (response.data.ok) {
-        toast.success(`کد تایید ارسال شد`)
-      } else {
-        toast(response.data.err, {
-          icon: (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
-              className="bg-yellow-300 stroke-white w-7 h-7 p-1 rounded-full">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-            </svg>
-          )
-        })
-      }
+      toast.success(`کد تایید ارسال شد`)
       response.data.nextPage && setFormPage('otpPage')
+    }).catch((err) => {
+      toast(err.data.err, {
+        icon: (
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
+            className="bg-yellow-300 stroke-white w-7 h-7 p-1 rounded-full">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        )
+      })
+      err.data.nextPage && setFormPage('otpPage')
     })
   }
 
@@ -70,19 +69,18 @@ export default function Register() {
     otpNumberRef.current.value = ''
 
     post('/auth?action=generate&mode=register', { phone: signinPhoneRef.current.value }).then(response => {
-      if (response.data.ok) {
-        toast.success(`کد تایید ارسال شد`)
-      } else {
-        toast(response.data.err, {
-          icon: (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
-              className="bg-yellow-300 stroke-white w-7 h-7 p-1 rounded-full">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-            </svg>
-          )
-        })
-      }
+      toast.success(`کد تایید ارسال شد`)
       response.data.nextPage && setFormPage('otpPage')
+    }).catch(err => {
+      toast(err.data.err, {
+        icon: (
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
+            className="bg-yellow-300 stroke-white w-7 h-7 p-1 rounded-full">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        )
+      })
+      err.data.nextPage && setFormPage('otpPage')
     })
   }
 
@@ -105,38 +103,34 @@ export default function Register() {
 
     if (otpNumberRef.current.value.length !== 4) return toast.error('لطفا کد را کامل وارد کنید!')
 
-    const response = await post(`/auth?action=submit&mode=${isLogin ? 'login' : 'register'}`, {
+    post(`/auth?action=submit&mode=${isLogin ? 'login' : 'register'}`, {
       code: otpNumberRef.current.value,
       phone: isLogin ? loginPhoneRef.current.value : signinPhoneRef.current.value,
       mode: isLogin ? 'login' : 'register'
-    })
-
-    if (response.data.ok) {
-
+    }).then(async (response) => {
       let token = response.data.token || null
       let userData = response.data.user || null
 
       if (!isLogin) {
-        const createdUser = await post(`/register`, {
+        await post(`/register`, {
           firstName: signinNameRef.current.value.trim(),
           lastName: signinLastNameRef.current.value.trim(),
           phone: signinPhoneRef.current.value,
           city: signinCityRef.current.value.trim()
+        }).then((response) => {
+          token = response.data.token
+          userData = response.data.user
+        }).catch(err => {
+          toast.error(err.data.err)
         })
-
-        if (createdUser.data.ok) {
-          token = createdUser.data.token
-          userData = createdUser.data.user
-        } else {
-          toast.error(createdUser.data.err)
-        }
-
       }
 
       authcontext.login(token, userData)
       navigate('/')
+    }).catch(err => {
+      toast.error(err.data.err)
+    })
 
-    } else toast.error(response.data.err)
   }
 
   return (
