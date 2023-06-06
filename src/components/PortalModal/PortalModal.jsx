@@ -3,7 +3,9 @@ import React from 'react'
 function PortalModal({ children, closeHandler }) {
   return (
     <div className='bg-black bg-opacity-25 backdrop-blur-sm
-      w-screen h-screen flex justify-center items-center overflow-hidden fixed top-0 left-0 z-50 show-modal'>
+      w-screen h-screen flex justify-center items-center px-3 overflow-hidden
+      fixed top-0 left-0 z-50 show-modal
+      sm:px-0'>
       <button
         className='bg-red-500 w-6 h-6 flex justify-center items-center rounded-full
         absolute top-3 right-3'

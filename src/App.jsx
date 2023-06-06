@@ -11,7 +11,9 @@ import { toast } from "react-hot-toast"
 const containingHeader = [
   '/',
   '/order',
-  '/dashboard'
+  '/dashboard',
+  '/dashboard/orders',
+  '/dashboard/tickets',
 ]
 
 const containingFooter = [
