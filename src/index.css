@@ -158,6 +158,14 @@ input[type="number"] {
     @apply bg-red-500 text-white;
   }
 
+  .badge-success {
+    @apply bg-green-500 text-white;
+  }
+
+  .badge-warning {
+    @apply bg-yellow-500 text-white;
+  }
+
   .tooltip {
     @apply bg-white text-black w-max text-xs
     px-3 py-0.5 rounded-full absolute -top-6 invisible opacity-0

@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 
+import { mainUrl } from "../../../config.json"
 import AuthContext from '../../context/AuthContext'
 import { get } from '../../utility'
 import PortalModal from '../../components/PortalModal/PortalModal'
@@ -14,6 +15,7 @@ function AdminOrders() {
   useEffect(() => {
     get(`/admins/orders/all?token=${authContext.userToken}`)
       .then(response => {
+        console.log(response);
         if (response.data.ok) {
           setOrders(response.data.orders)
         }
@@ -41,48 +43,50 @@ function AdminOrders() {
               <tbody className='tbody'>
                 {
                   orders.map(order => {
-                    if (order.status === 'done' || order.status === "cancelled") {
-                      return (
-                        <tr
-                          key={order.id}
-                          className='tbody__tr cursor-pointer'
-                          onClick={() => {
-                            setModal({ show: true, order: order })
-                          }}
-                        >
-                          <td className='tbody__tr__td w-2/12'>
-                            <div className='td__wrapper justify-center'>
-                              {
-                                order.status === 'done' ? (
-                                  <button className='badge badge-blue select-text'>{order.id} #</button>
-                                ) : (
-                                  <button className='badge badge-danger select-text'>{order.id} #</button>
-                                )
-                              }
-                            </div>
-                          </td>
-                          <td className='tbody__tr__td w-3/12 text-sm'>{order.phoneName}</td>
-                          <td className='tbody__tr__td w-3/12'>
-                            <div className="td__wrapper">
-                              <span className='text-xs'>{order.partName}</span>
-                            </div>
-                          </td>
-                          <td className='tbody__tr__td w-2/12 text-sm'>
+                    return (
+                      <tr
+                        key={order.id}
+                        className='tbody__tr cursor-pointer'
+                        onClick={() => {
+                          setModal({ show: true, order: order })
+                        }}
+                      >
+                        <td className='tbody__tr__td w-2/12'>
+                          <div className='td__wrapper justify-center'>
                             {
-                              order.total ? (
-                                <>
-                                  39,000,000
-                                  <small className='italic opacity-75 mx-1'>تومان</small>
-                                </>
-                              ) : '-'
+                              order.status === 'done' ? (
+                                <button className='badge badge-success select-text'>{order.id} #</button>
+                              ) : order.status === 'working' ? (
+                                <button className='badge badge-warning select-text'>{order.id} #</button>
+                              ) : order.status === 'pending' ? (
+                                <button className='badge badge-blue select-text'>{order.id} #</button>
+                              ) : order.status === 'cancelled' ? (
+                                <button className='badge badge-danger select-text'>{order.id} #</button>
+                              ) : ''
                             }
-                          </td>
-                          <td className='tbody__tr__td w-2/12 text-sm'>
-                            {new Date(order.createdAt).toLocaleDateString('fa-IR')}
-                          </td>
-                        </tr>
-                      )
-                    }
+                          </div>
+                        </td>
+                        <td className='tbody__tr__td w-3/12 text-sm'>{order.phoneName}</td>
+                        <td className='tbody__tr__td w-3/12'>
+                          <div className="td__wrapper">
+                            <span className='text-xs'>{order.partName}</span>
+                          </div>
+                        </td>
+                        <td className='tbody__tr__td w-2/12 text-sm'>
+                          {
+                            order.total ? (
+                              <>
+                                39,000,000
+                                <small className='italic opacity-75 mx-1'>تومان</small>
+                              </>
+                            ) : '-'
+                          }
+                        </td>
+                        <td className='tbody__tr__td w-2/12 text-sm'>
+                          {new Date(order.createdAt).toLocaleDateString('fa-IR')}
+                        </td>
+                      </tr>
+                    )
                   })
                 }
               </tbody>
@@ -93,7 +97,7 @@ function AdminOrders() {
       {
         modal.show && createPortal(
           <PortalModal closeHandler={() => setModal({ show: false, order: {} })}>
-            <ul className="w-96 max-h-[80vh] overflow-y-scroll">
+            <ul className="w-96 max-h-[80vh] overflow-y-scroll rounded-xl">
               <li className='w-full flex justify-center items-center rounded-xl'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-xl text-center">
                   کد سفارش
@@ -175,11 +179,24 @@ function AdminOrders() {
                   {
                     modal.order.total ? (
                       <>
-                        39,000,000
+                        {modal.order.total}
                         <small className='italic opacity-75 mx-1'>تومان</small>
                       </>
                     ) : '-'
                   }
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-xl mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-xl text-center">
+                  تصویر
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-xl">
+                  <a
+                    className='underline'
+                    href={`${mainUrl}/uploads/${modal.order.picture}`}
+                    target='_blank'
+                  >مشاهده</a>
                 </div>
               </li>
 
@@ -192,6 +209,7 @@ function AdminOrders() {
                   {modal.order.address}
                 </div>
               </li>
+
               <li className='w-full flex flex-col justify-center items-center rounded-xl mt-1 '>
                 <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-xl text-center">
                   توضیحات
