@@ -30,6 +30,7 @@ function AdminOrders() {
       id: orderId,
       status: currentStatus
     }
+
     post('/admins/orders/status', bodyRequest)
       .then(() => {
         setOrders(prev => {
@@ -47,6 +48,7 @@ function AdminOrders() {
 
           return newOrders
         })
+        toast.success('تغییر وضعیت با موفقیت انجام شد')
       })
       .catch(error => toast.error(error.response.data.err))
   }
