@@ -45,7 +45,7 @@ export default function Order() {
     const formData = new FormData()
     formData.append('token', authContext.userToken)
     formData.append('address', form.address.value)
-    formData.append('city', form.city.value)
+    formData.append('city', form.city.validation)
     formData.append('phoneId', selectedDatas.devices.id)
     formData.append('partId', selectedDatas.parts.id)
     formData.append('description', form.desc.value)
@@ -72,7 +72,7 @@ export default function Order() {
           toast.success('سفارش شما با موفقیت ثبت شد')
         }
       })
-      .catch(error => toast.error(error.data.err))
+      .catch(error => toast.error(error.response.data.err))
   }
 
   return (
