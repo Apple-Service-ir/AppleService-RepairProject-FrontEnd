@@ -45,7 +45,7 @@ function App() {
         localStorage.removeItem('e-service-token')
         redirect('/')
       }).catch((err) => {
-        toast.error(err.data.err)
+        toast.error(err.response.data.err)
       })
   }
 

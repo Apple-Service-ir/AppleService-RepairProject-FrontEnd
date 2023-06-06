@@ -36,7 +36,7 @@ function UserMassageSection(props) {
 
         sendMessageRef.current.value = ''
       }).catch((err) => {
-        toast.error(err.data.err)
+        toast.error(err.response.data.err)
       })
     }
   }

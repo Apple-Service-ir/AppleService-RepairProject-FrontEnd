@@ -38,7 +38,7 @@ function UserTickets() {
         ticketTitleRef.current.value = ''
         ticketTextRef.current.value = ''
       }).catch((err) => {
-        toast.error(err.data.error)
+        toast.error(err.response.data.error)
       })
     } else toast.error('لطفا فیلد هارا به درستی پر کنید!')
   }

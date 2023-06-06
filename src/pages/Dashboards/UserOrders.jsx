@@ -26,7 +26,7 @@ function UserOrders() {
         setOrders(response.data.orders)
         toast.success("سفارش شما با موفقیت لغو شد")
       }).catch((err) => {
-        toast.error(err.data.err)
+        toast.error(err.response.data.err)
       })
   }
 
