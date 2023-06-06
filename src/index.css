@@ -45,11 +45,6 @@ input[type="number"] {
     margin: 0;
   }
   
-  html {
-    overflow-x: hidden;
-    direction: rtl
-  }
-  
   * {
     @apply transition duration-200 scroll-smooth;
     font-family: "sans"
@@ -163,6 +158,14 @@ input[type="number"] {
     @apply bg-red-500 text-white;
   }
 
+  .badge-success {
+    @apply bg-green-500 text-white;
+  }
+
+  .badge-warning {
+    @apply bg-yellow-500 text-white;
+  }
+
   .tooltip {
     @apply bg-white text-black w-max text-xs
     px-3 py-0.5 rounded-full absolute -top-6 invisible opacity-0
@@ -183,7 +186,7 @@ input[type="number"] {
 
   .input {
     @apply border border-blue-500 text-blue-500 placeholder:text-blue-500
-    absolute top-0 left-0 w-full h-full pr-6 pl-16 rounded-full
+    absolute top-0 left-0 w-full h-full flex items-center pr-6 pl-16 rounded-full
     focus:outline-0 focus:ring-4 focus:ring-blue-200;
   }
 
@@ -260,6 +263,22 @@ input[type="number"] {
     to {
       opacity: 1;
       transform: scale(1) translateY(0);
+    }
+  }
+
+  .show-modal {
+    animation: show-modal 250ms 1 ease;
+  }
+
+  @keyframes show-modal {
+    from {
+      opacity: 0;
+      transform: scale(1.25, 2);
+    }
+    
+    to {
+      opacity: 1;
+      transform: scale(1);
     }
   }
 
