@@ -6,12 +6,14 @@ import { mainUrl } from "../../../config.json"
 import AuthContext from '../../context/AuthContext'
 import { get, post } from '../../utility'
 import PortalModal from '../../components/PortalModal/PortalModal'
+import { useRef } from 'react'
 
 function AdminOrders() {
   const authContext = useContext(AuthContext)
 
   const [orders, setOrders] = useState([])
   const [modal, setModal] = useState({ show: false, order: {} })
+  const orderDescRef = useRef()
 
   useEffect(() => {
     get(`/admins/orders/all?token=${authContext.userToken}`)
@@ -28,7 +30,8 @@ function AdminOrders() {
     const bodyRequest = {
       token: authContext.userToken,
       id: orderId,
-      status: currentStatus
+      status: currentStatus,
+      adminMessage: orderDescRef.current.value || null
     }
 
     post('/admins/orders/status', bodyRequest)
@@ -37,6 +40,7 @@ function AdminOrders() {
           const newOrders = prev.map(order => {
             if (order.id === orderId) {
               order.status = currentStatus
+              order.adminMessage = orderDescRef.current.value || null
               return order
             }
 
@@ -48,6 +52,7 @@ function AdminOrders() {
 
           return newOrders
         })
+        orderDescRef.current.value = ''
         toast.success('تغییر وضعیت با موفقیت انجام شد')
       })
       .catch(error => toast.error(error.response.data.err))
@@ -160,6 +165,7 @@ function AdminOrders() {
                   <textarea
                     className='textarea border-0 rounded-md focus:ring-0'
                     placeholder='توضیحات را وارد کنید'
+                    ref={orderDescRef}
                   >
                   </textarea>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-textarea">
@@ -270,12 +276,26 @@ function AdminOrders() {
                 </div>
               </li>
 
+              {
+                modal.order.adminMessage && (
+                  <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
+                    <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
+                      پیام شما
+                    </div>
+                    <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
+                      text-center break-all">
+                      {modal.order.adminMessage}
+                    </div>
+                  </li>
+                )
+              }
+
               <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
                   آدرس
                 </div>
                 <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
-                  text-center">
+                  text-center break-all">
                   {modal.order.address}
                 </div>
               </li>
@@ -285,7 +305,7 @@ function AdminOrders() {
                   توضیحات
                 </div>
                 <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
-                  text-center">
+                  text-center break-all">
                   {modal.order.description}
                 </div>
               </li>

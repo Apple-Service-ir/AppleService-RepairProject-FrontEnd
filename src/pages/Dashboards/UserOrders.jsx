@@ -76,6 +76,15 @@ function UserOrders() {
                       <span className='sansbold'>توضیحات:</span>
                       <p className='text-sm'>{order.description}</p>
                     </li>
+                    {
+                      order.adminMessage && (
+                        <li className={`border-blue-300 border-t-2 border-dashed w-full
+                          flex gap-3 p-3`}>
+                          <span className='sansbold'>پیام پشتیبانی:</span>
+                          <p className='text-sm'>{order.adminMessage}</p>
+                        </li>
+                      )
+                    }
                   </ul>
                   <button className='badge-btn badge-danger px-6'
                     onClick={() => deleteOrder(order.id)}>لغو سفارش</button>
@@ -116,6 +125,15 @@ function UserOrders() {
                       <span className='sansbold'>توضیحات:</span>
                       <p className='text-sm'>{order.description}</p>
                     </li>
+                    {
+                      order.adminMessage && (
+                        <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                          flex gap-3 p-3`}>
+                          <span className='sansbold'>پیام پشتیبانی:</span>
+                          <p className='text-sm'>{order.adminMessage}</p>
+                        </li>
+                      )
+                    }
                   </ul>
                 </div>
               )
@@ -183,8 +201,15 @@ function UserOrders() {
                                   <span className='text-xs'>{order.partName}</span>
                                 </div>
                               </td>
-                              <td className='tbody__tr__td w-2/12 text-sm'>39,000,000
-                                <small className='italic opacity-75 mx-1'>تومان</small>
+                              <td className='tbody__tr__td w-2/12 text-sm'>
+                                {
+                                  order.total ? (
+                                    <>
+                                      39,000,000
+                                      <small className='italic opacity-75 mx-1'>تومان</small>
+                                    </>
+                                  ) : '-'
+                                }
                               </td>
                               <td className='tbody__tr__td w-2/12 text-sm'>
                                 {new Date(order.createdAt).toLocaleDateString('fa-IR')}
@@ -302,12 +327,26 @@ function UserOrders() {
                 </div>
               </li>
 
+              {
+                modal.order.adminMessage && (
+                  <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
+                    <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
+                      پیام پشتیبانی
+                    </div>
+                    <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
+                      text-center break-all">
+                      {modal.order.adminMessage}
+                    </div>
+                  </li>
+                )
+              }
+
               <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
                   آدرس
                 </div>
                 <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
-                  text-center">
+                  text-center break-all">
                   {modal.order.address}
                 </div>
               </li>
@@ -317,7 +356,7 @@ function UserOrders() {
                   توضیحات
                 </div>
                 <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
-                  text-center">
+                  text-center break-all">
                   {modal.order.description}
                 </div>
               </li>
