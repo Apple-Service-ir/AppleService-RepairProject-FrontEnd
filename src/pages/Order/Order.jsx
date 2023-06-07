@@ -104,7 +104,7 @@ export default function Order() {
             sm:w-1/2'>
             <select
               className='select-box'
-              defaultValue={form.city.value}
+              value={form.city.value}
               onChange={event => {
                 setForm(prev => ({
                   ...prev,
