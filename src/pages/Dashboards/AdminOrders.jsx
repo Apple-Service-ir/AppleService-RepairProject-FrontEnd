@@ -18,11 +18,9 @@ function AdminOrders() {
   useEffect(() => {
     get(`/admins/orders/all?token=${authContext.userToken}`)
       .then(response => {
-        console.log(response);
         if (response.data.ok) {
           setOrders(response.data.orders)
         }
-        console.log(response.data);
       })
   }, [authContext])
 

@@ -48,7 +48,7 @@ function AdminUsers() {
     }
     post('/admins/users/create', bodyRequest)
       .then(response => {
-        console.log(response);
+
         setUsers(prev => [response.data.user, ...prev])
         setUserForm({
           firstName: { value: '', validation: false },
