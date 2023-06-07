@@ -2,20 +2,20 @@ import React, { useRef, useState, useContext, useEffect } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 
 import AuthContext from '../../context/AuthContext'
-import Alert from '../../components/Alert/Alert'
 import { get, post } from '../../utility'
-import UserMassageSection from '../../components/UserMassageSection/UserMassageSection'
+import PortalModal from '../../components/PortalModal/PortalModal'
+import Alert from '../../components/Alert/Alert'
+import MessageSection from '../../components/MessageSection/MessageSection'
 
 function UserTickets() {
   const authContext = useContext(AuthContext)
 
   const [tickets, setTickets] = useState([])
-  const [selectTicket, setSelectTicket] = useState([])
-
-  const ticketTitleRef = useRef()
-  const ticketTextRef = useRef()
-
-  const [showMassageSection, seTshowMassageSection] = useState(false)
+  const [ticketForm, setTicketForm] = useState({
+    subject: { value: '', validation: false },
+    text: { value: '', validation: false }
+  })
+  const [modal, setModal] = useState({ show: false, ticket: {} })
   const bottomRef = useRef()
 
   useEffect(() => {
@@ -26,62 +26,82 @@ function UserTickets() {
         })
   }, [authContext])
 
-  function submitTicketHandler() {
-    if (ticketTitleRef.current.value.trim().length > 4 && ticketTextRef.current.value.trim().length > 4) {
-      post('/tickets/new', {
-        token: authContext.userToken,
-        subject: ticketTitleRef.current.value.trim(),
-        text: ticketTextRef.current.value.trim()
-      }).then(response => {
-        setTickets(response.data.tickets)
-        toast.success('تیکت با موفقیت ثبت شد!')
-        ticketTitleRef.current.value = ''
-        ticketTextRef.current.value = ''
-      }).catch((err) => {
-        toast.error(err.response.data.error)
+  function submitTicketHandler(event) {
+    event.preventDefault()
+
+    for (const field in ticketForm) {
+      if (!ticketForm[field].validation) {
+        toast.error('لطفا فیلد هارا به درستی پر کنید!')
+        return
+      }
+    }
+
+    post('/tickets/new', {
+      token: authContext.userToken,
+      subject: ticketForm.subject.value,
+      text: ticketForm.text.value
+    }).then(response => {
+      setTickets(response.data.tickets)
+      setTicketForm({
+        subject: { value: '', validation: false },
+        text: { value: '', validation: false }
       })
-    } else toast.error('لطفا فیلد هارا به درستی پر کنید!')
+      toast.success('تیکت با موفقیت ثبت شد!')
+    }).catch((err) => {
+      toast.error(err.response.data.error)
+    })
   }
-
-  function closeMassageSection() {
-    seTshowMassageSection(false)
-  }
-
-  function openMessageHandler(ticket) {
-    seTshowMassageSection(true)
-    setSelectTicket(ticket)
-    setTimeout(() => {
-      bottomRef.current.scrollTop = bottomRef.current.scrollHeight
-    }, 0);
-  }
-
-  useEffect(() => {
-    bottomRef.current.scrollTop = bottomRef.current.scrollHeight
-  }, [tickets]);
 
   return (
     <>
       <div className='w-full flex flex-col justify-center items-center gap-3 relative'>
-        <div className="w-full flex flex-col justify-center items-center gap-3 p-3">
+        <form className="w-full flex flex-col justify-center items-center gap-3 p-3">
           <div className='w-full bg-input'>
             <input
               className='input'
               type="text"
               placeholder='عنوان تیکت'
-              ref={ticketTitleRef}
+              value={ticketForm.subject.value}
+              onChange={event => {
+                setTicketForm(prev => ({
+                  ...prev,
+                  subject: {
+                    value: event.target.value,
+                    validation: event.target.value.length >= 3
+                  }
+                }))
+              }}
             />
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z" />
             </svg>
           </div>
-
-
+          <div className='w-full bg-textarea'>
+            <textarea
+              className='textarea'
+              placeholder='متن خود را وارد کنید'
+              value={ticketForm.text.value}
+              onChange={event => {
+                setTicketForm(prev => ({
+                  ...prev,
+                  text: {
+                    value: event.target.value,
+                    validation: event.target.value.length >= 3
+                  }
+                }))
+              }}
+            >
+            </textarea>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-textarea">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+            </svg>
+          </div>
           <div className="w-full">
             <button className='btn btn-blue w-1/2
               sm:w-1/3'
               onClick={submitTicketHandler}>ثبت تیکت</button>
           </div>
-        </div>
+        </form>
 
         {
           tickets.length === 0 && (
@@ -101,8 +121,7 @@ function UserTickets() {
           tickets.length > 0 && (
             <>
               <h2 className='w-full text-right text-xl sansbold'>لیست تیکت ها</h2>
-              <div className="w-full rounded-xl overflow-x-scroll
-                lg:overflow-hidden">
+              <div className="w-full overflow-x-scroll">
                 <table className='table'>
                   <thead className='thead'>
                     <tr className='thead__tr'>
@@ -118,7 +137,9 @@ function UserTickets() {
                         <tr
                           key={ticket.id}
                           className='tbody__tr cursor-pointer'
-                          onClick={() => openMessageHandler(ticket)}
+                          onClick={() => {
+                            setModal({ show: true, ticket })
+                          }}
                         >
                           <td className='tbody__tr__td w-2/12'>
                             <div className='w-full flex flex-wrap items-center gap-3 justify-center'>
@@ -152,15 +173,25 @@ function UserTickets() {
             </>
           )
         }
-
-        <UserMassageSection
-          showMassageSection={showMassageSection}
-          closeMassageSection={closeMassageSection}
-          setTickets={setTickets}
-          ticket={selectTicket}
-          bottomRef={bottomRef}
-        />
       </div>
+
+      {
+        modal.show && (
+          <PortalModal
+            closeHandler={() => setModal({ show: false, ticket: {} })}
+          >
+            <div className="relative w-full h-[75vh]
+              sm:w-96 sm:h-[80vh]">
+              <MessageSection
+                setTickets={setTickets}
+                ticket={modal.ticket}
+                bottomRef={bottomRef}
+              >
+              </MessageSection>
+            </div>
+          </PortalModal>
+        )
+      }
 
       <Toaster />
     </>

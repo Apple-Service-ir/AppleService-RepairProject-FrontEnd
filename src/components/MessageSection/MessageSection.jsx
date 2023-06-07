@@ -20,7 +20,7 @@ function MessageSection({ setTickets, ticket, bottomRef }) {
           token: authcontext.userToken
         }
       ).then(response => {
-
+        bottomRef.current.scrollTop = bottomRef.current.scrollHeight + 100
         setTickets((prev) => {
           const mapedTickets = prev.map(ticket => {
             if (ticket.id === ticketId) {
@@ -45,7 +45,7 @@ function MessageSection({ setTickets, ticket, bottomRef }) {
       flex justify-center items-center'>
 
       <div className="bg-blue-500 w-full h-12 flex justify-between items-center
-        rounded-t-xl px-6 absolute top-0 left-0">
+        rounded-t-xl px-6 absolute top-0 left-0 z-50">
         <span className='text-white sansbold'>
           {ticket.subject}
         </span>
@@ -61,7 +61,7 @@ function MessageSection({ setTickets, ticket, bottomRef }) {
             ticket.messages.map(message => {
               return message.isSupport ? (
                 <div key={message.id} className="w-full flex justify-end p-1">
-                  <div className="bg-blue-200 w-max max-w-[80%] p-3 rounded-md relative">
+                  <div className="bg-blue-200 w-max max-w-[80%] p-3 rounded-md relative mt-5">
                     <span className='text-blue-500 text-xs absolute left-2 -top-5'>پشتیبان</span>
                     <p className='text-sm break-words
                       sm:text-base'>{message.text}</p>
@@ -94,7 +94,7 @@ function MessageSection({ setTickets, ticket, bottomRef }) {
         </button>
         <div className='w-full bg-input'>
           <input
-            className='input'
+            className='input rounded-xl'
             type="text"
             placeholder='تایپ کنید'
             ref={sendMessageRef}
