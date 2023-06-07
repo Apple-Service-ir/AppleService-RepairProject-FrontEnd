@@ -2,10 +2,16 @@ import React from 'react'
 
 function PortalModal({ children, closeHandler }) {
   return (
-    <div className='bg-black bg-opacity-25 backdrop-blur-sm
+    <div
+      className='bg-black bg-opacity-25 backdrop-blur-sm
       w-screen h-screen flex justify-center items-center px-3 overflow-hidden
       fixed top-0 left-0 z-50 show-modal
-      sm:px-0'>
+      sm:px-0'
+      data-close='portal-modal'
+      onClick={event => {
+        event.target.dataset.close === 'portal-modal' && closeHandler()
+      }}
+    >
       <button
         className='bg-red-500 w-6 h-6 flex justify-center items-center rounded-full
         absolute top-3 right-3'
