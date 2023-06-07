@@ -56,7 +56,7 @@ function AdminOrders() {
   return (
     <>
       <div className='w-full h-full flex flex-col items-center'>
-        <h1 className='w-full text-right text-xl sansbold mt-6'>لیست کاربران</h1>
+        <h1 className='w-full text-right text-xl sansbold mt-6'>لیست سفارشات</h1>
         <div className="w-full rounded-xl overflow-x-scroll mt-3
         lg:overflow-hidden">
           {
@@ -133,22 +133,22 @@ function AdminOrders() {
               <li className='w-full rounded-md
                 flex justify-center items-center gap-1'>
                 <button
-                  className='bg-red-500 text-white w-1/3 h-9 text-sm
-                    py-2 px-6 rounded-md shadow-2xl shadow-black'
+                  className='bg-white text-red-500 w-1/3 h-9 text-sm
+                    py-2 px-6 rounded-md hover:bg-red-500 hover:text-white'
                   onClick={() => changeStatus(modal.order.id, 'cancelled')}
                 >
                   لغو کردن
                 </button>
                 <button
-                  className='bg-yellow-500 text-white w-1/3 h-9 text-sm
-                    py-2 px-6 rounded-md shadow-2xl shadow-black'
+                  className='bg-white text-yellow-500 w-1/3 h-9 text-sm
+                    py-2 px-6 rounded-md hover:bg-yellow-500 hover:text-white'
                   onClick={() => changeStatus(modal.order.id, 'working')}
                 >
                   تایید کردن
                 </button>
                 <button
-                  className='bg-green-500 text-white w-1/3 h-9 text-sm
-                    py-2 px-6 rounded-md shadow-2xl shadow-black'
+                  className='bg-white text-green-500 w-1/3 h-9 text-sm
+                    py-2 px-6 rounded-md shadow-2xl hover:bg-green-500 hover:text-white'
                   onClick={() => changeStatus(modal.order.id, 'done')}
                 >
                   تمام شده
