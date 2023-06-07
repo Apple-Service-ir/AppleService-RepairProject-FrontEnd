@@ -171,7 +171,7 @@ export default function Order() {
                   ...prev,
                   address: {
                     value: event.target.value,
-                    validation: event.target.value.length > 16
+                    validation: event.target.value.length >= 3
                   }
                 }))
               }}
@@ -193,7 +193,7 @@ export default function Order() {
                   ...prev,
                   desc: {
                     value: event.target.value,
-                    validation: event.target.value.length > 16
+                    validation: event.target.value.length >= 3
                   }
                 }))
               }}
