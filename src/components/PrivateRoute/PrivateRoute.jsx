@@ -5,6 +5,7 @@ import AuthContext from '../../context/AuthContext'
 
 function PrivateRoute({ reDirectPath, children, privateRole }) {
   const authContext = useContext(AuthContext)
+  console.log(authContext)
 
   switch (privateRole) {
     case 'isUserLoggedIn': {
@@ -15,7 +16,7 @@ function PrivateRoute({ reDirectPath, children, privateRole }) {
       return authContext.isLogin ? <Navigate to={reDirectPath} /> : children
     }
 
-    case 'isAdminOrSupporter': {
+    case 'isSupporter': {
       return ['admin', 'supporter'].includes(authContext.userInfo.role) ? children : <Navigate to={reDirectPath} />
     }
 

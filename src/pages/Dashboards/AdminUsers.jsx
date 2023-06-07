@@ -166,11 +166,9 @@ function AdminUsers() {
         </form>
 
         <h1 className='w-full text-right text-xl sansbold mt-6'>لیست کاربران</h1>
-        <div className="w-full rounded-xl overflow-x-scroll mt-3
-        lg:overflow-hidden">
           {
             users.length > 0 && (
-              <table className='table'>
+              <table className='table mt-1'>
                 <thead className='thead'>
                   <tr className='thead__tr'>
                     <th className='thead__tr__th w-1/12'>ID</th>
@@ -217,7 +215,6 @@ function AdminUsers() {
               </table>
             )
           }
-        </div>
       </div>
 
       <Toaster />

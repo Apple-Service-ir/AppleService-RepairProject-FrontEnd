@@ -1,0 +1,78 @@
+import React, { useContext } from 'react'
+import { useEffect } from 'react'
+
+import AuthContext from '../../context/AuthContext'
+import { get } from '../../utility'
+import { useState } from 'react'
+
+function AdminTickets() {
+  const authContext = useContext(AuthContext)
+
+  const [tickets, setTickets] = useState([])
+
+  useEffect(() => {
+    get(`/tickets/all?admin=true&token=${authContext.userToken}`)
+      .then(response => {
+        setTickets(response.data.tickets)
+        console.log(response);
+      })
+  }, [])
+
+  return (
+    <div className='w-full h-full flex flex-col items-center overflow-y-scroll'>
+      <h1 className='w-full text-right text-xl sansbold'>لیست تیکت ها</h1>
+      {
+        tickets.length > 0 && (
+          <>
+            <table className='table'>
+              <thead className='thead mt-1'>
+                <tr className='thead__tr'>
+                  <th className='thead__tr__th w-2/12'>کد تیکت</th>
+                  <th className='thead__tr__th w-2/12'>وضعیت</th>
+                  <th className='thead__tr__th w-6/12'>موضوع تیکت</th>
+                  <th className='thead__tr__th w-2/12'>تاریخ</th>
+                </tr>
+              </thead>
+              <tbody className='tbody'>
+                {
+                  tickets.map(ticket => (
+                    <tr
+                      key={ticket.id}
+                      className='tbody__tr cursor-pointer'
+                    >
+                      <td className='tbody__tr__td w-2/12'>
+                        <div className='w-full flex flex-wrap items-center gap-3 justify-center'>
+                          <button className='badge badge-blue select-text'>{ticket.id} #</button>
+                        </div>
+                      </td>
+                      <td className='tbody__tr__td w-2/12'>
+                        <div className="td__wrapper">
+                          <span className={`text-xs ${ticket.status === 'open' ? 'text-green-500'
+                            : ticket.status === 'closed' ? 'text-red-500'
+                              : ''
+                            }`}>
+                            {
+                              ticket.status === 'open' ? 'پاسخ داده شده'
+                                : ticket.status === 'closed' ? 'بسته شده'
+                                  : 'در انتظار پاسخ'
+                            }
+                          </span>
+                        </div>
+                      </td>
+                      <td className='tbody__tr__td w-6/12 text-sm'>{ticket.subject}</td>
+                      <td className='tbody__tr__td w-2/12 text-sm'>
+                        {new Date(ticket.createdAt).toLocaleDateString('fa-IR')}
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </>
+        )
+      }
+    </div>
+  )
+}
+
+export default AdminTickets

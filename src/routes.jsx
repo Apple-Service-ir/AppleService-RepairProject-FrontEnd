@@ -10,6 +10,7 @@ import AdminDashboard from "./pages/Dashboards/AdminDashboard.jsx"
 import AdminHome from "./pages/Dashboards/AdminHome.jsx"
 import AdminUsers from "./pages/Dashboards/AdminUsers.jsx"
 import AdminOrders from "./pages/Dashboards/AdminOrders.jsx"
+import AdminTickets from "./pages/Dashboards/AdminTickets.jsx"
 
 const routes = [
   { path: '/', element: <Home /> },
@@ -35,7 +36,7 @@ const routes = [
     element:
       <PrivateRoute
         reDirectPath={'/'}
-        privateRole={'isAdminOrSupporter'}
+        privateRole={'isSupporter'}
       >
         <AdminDashboard />
       </PrivateRoute>,
@@ -45,7 +46,8 @@ const routes = [
         path: '/admin/users',
         element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminUsers /> </PrivateRoute>
       },
-      { path: '/admin/orders', element: <AdminOrders /> }
+      { path: '/admin/orders', element: <AdminOrders /> },
+      { path: '/admin/tickets', element: <AdminTickets /> },
     ]
   }
 ]
