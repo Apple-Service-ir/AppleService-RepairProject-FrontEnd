@@ -63,7 +63,7 @@ function AdminUsers() {
 
   return (
     <>
-      <div className='w-full h-full flex flex-col items-center overflow-y-scroll'>
+      <div className='w-full flex flex-col items-center'>
         <h1 className='w-full text-right text-xl sansbold'>ساخت کاربر</h1>
         <form className='w-full flex flex-col justify-center items-center gap-3 mt-3'>
           <div className="w-full flex justify-center items-center gap-3">

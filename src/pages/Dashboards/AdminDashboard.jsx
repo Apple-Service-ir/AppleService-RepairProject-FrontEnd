@@ -70,7 +70,7 @@ function AdminDashboard() {
           </div>
         </ul>
       </div>
-      <div className="w-10/12 h-screen p-6">
+      <div className="w-10/12 h-screen p-6 overflow-y-scroll">
         <Outlet />
       </div>
     </div>
