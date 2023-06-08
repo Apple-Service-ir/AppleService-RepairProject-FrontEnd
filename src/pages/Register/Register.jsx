@@ -28,10 +28,10 @@ export default function Register() {
   }, [])
 
   function generateAgainOtp() {
-    otpNumber.value = ''
     post(`/auth?action=generate&mode=${prevPage}`, { phone: form.phone.value })
-      .then(() => {
-        toast.success(`کد تایید مجدد ارسال شد`)
+    .then(() => {
+      toast.success(`کد تایید مجدد ارسال شد`)
+      setOtpNumber({ value: '', validation: false })
       }).catch(err => {
         toast(err.response.data.err, {
           icon: (
@@ -45,7 +45,7 @@ export default function Register() {
   }
 
   function generateLoginOtp() {
-    otpNumber.value = ''
+    setOtpNumber({ value: '', validation: false })
     post('/auth?action=generate&mode=login', { phone: form.phone.value }).then(response => {
       toast.success(`کد تایید ارسال شد`)
       response.data.nextPage && setFormPage('otpPage')
@@ -64,7 +64,7 @@ export default function Register() {
   }
 
   function generateRegisterOtp() {
-    otpNumber.value = ''
+    setOtpNumber({ value: '', validation: false })
     post('/auth?action=generate&mode=register', { phone: form.phone.value })
       .then(response => {
         toast.success(`کد تایید ارسال شد`)
@@ -112,7 +112,7 @@ export default function Register() {
     }).then(async (response) => {
       let token = response.data.token || null
       let userData = response.data.user || null
-      if (!isLogin) {
+      if (prevPage === 'register') {
         await post(`/register`, {
           firstName: form.firstName.value,
           lastName: form.lastName.value,
