@@ -50,7 +50,7 @@ export default function Register() {
       toast.success(`کد تایید ارسال شد`)
       response.data.nextPage && setFormPage('otpPage')
     }).catch((err) => {
-      setFormPage('signin')
+      setFormPage('register')
       toast(err.response.data.err, {
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
@@ -63,7 +63,7 @@ export default function Register() {
     })
   }
 
-  function generateSigninOtp() {
+  function generateRegisterOtp() {
     otpNumber.value = ''
     post('/auth?action=generate&mode=register', { phone: form.phone.value })
       .then(response => {
@@ -90,7 +90,7 @@ export default function Register() {
     }
   }
 
-  function submitSignin() {
+  function submitRegister() {
     for (const field in form) {
       if (!form[field].validation) {
         toast.error('لطفا فیلد هارا به درستی کامل کنید!')
@@ -98,19 +98,17 @@ export default function Register() {
       }
     }
 
-    setPrevPage('signin')
-    generateSigninOtp()
+    setPrevPage('register')
+    generateRegisterOtp()
   }
 
   function otpSubmit() {
-    const isLogin = prevPage === 'login'
-
     if (!otpNumber.validation) return toast.error('لطفا کد را کامل وارد کنید!')
 
-    post(`/auth?action=submit&mode=${isLogin ? 'login' : 'register'}`, {
+    post(`/auth?action=submit&mode=${prevPage}`, {
       code: otpNumber.value,
       phone: form.phone.value,
-      mode: isLogin ? 'login' : 'register'
+      mode: prevPage
     }).then(async (response) => {
       let token = response.data.token || null
       let userData = response.data.user || null
@@ -148,7 +146,7 @@ export default function Register() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
             </svg>
           </div>
-          <div className={`${formPage === 'signin' ? 'flex' : 'hidden'} bg-title title-blue show-up`}>
+          <div className={`${formPage === 'register' ? 'flex' : 'hidden'} bg-title title-blue show-up`}>
             ساخت حساب کاربری
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
@@ -200,11 +198,11 @@ export default function Register() {
           <span className='text-xs flex justify-center items-center gap-2 mt-1 show-up a-slow'>
             حساب کاربری ندارید؟
             <span className='text-blue-500 cursor-pointer select-none'
-              onClick={() => setFormPage('signin')}>ثبت نام کنید</span>
+              onClick={() => setFormPage('register')}>ثبت نام کنید</span>
           </span>
         </div>
 
-        <div className={`${formPage === 'signin' ? 'flex' : 'hidden'}
+        <div className={`${formPage === 'register' ? 'flex' : 'hidden'}
           w-full flex flex-col justify-center items-center gap-3 p-6 show-up`}>
           <div className='w-full bg-input'>
             <input
@@ -293,7 +291,7 @@ export default function Register() {
             </svg>
           </div>
           <button className='btn btn-blue w-full'
-            onClick={submitSignin}>ثبت نام</button>
+            onClick={submitRegister}>ثبت نام</button>
           <span className='text-xs flex justify-center items-center gap-2 mt-1 show-up a-slow'>
             حساب کاربری دارید؟
             <span className='text-blue-500 cursor-pointer select-none'
@@ -330,7 +328,7 @@ export default function Register() {
                   onClick={() => setFormPage('login')}>بازگشت به صفحه ورود</span>
               ) : (
                 <span className='text-blue-500 cursor-pointer select-none'
-                  onClick={() => setFormPage('signin')}>بازگشت به صفحه ثبت نام</span>
+                  onClick={() => setFormPage('register')}>بازگشت به صفحه ثبت نام</span>
               )
             }
           </span>
