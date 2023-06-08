@@ -58,16 +58,16 @@ export default function Order() {
       }
     }
     postForm('/orders/submit', formData)
-      .then(response => {
-          setSelectedDatas(prev => ({ ...prev, devices: {} }))
-          setSelectedDatas(prev => ({ ...prev, parts: {} }))
-          setForm({
-            city: { value: 'none', validation: false },
-            file: { value: null, fileName: 'تصویر دستگاه خود را بارگذاری کنید', validation: false },
-            address: { value: '', validation: false },
-            desc: { value: '', validation: false },
-          })
-          toast.success('سفارش شما با موفقیت ثبت شد')
+      .then(() => {
+        setSelectedDatas(prev => ({ ...prev, devices: {} }))
+        setSelectedDatas(prev => ({ ...prev, parts: {} }))
+        setForm({
+          city: { value: 'none', validation: false },
+          file: { value: null, fileName: 'تصویر دستگاه خود را بارگذاری کنید', validation: false },
+          address: { value: '', validation: false },
+          desc: { value: '', validation: false },
+        })
+        toast.success('سفارش شما با موفقیت ثبت شد')
       })
       .catch(error => toast.error(error.response.data.err))
   }
@@ -115,11 +115,24 @@ export default function Order() {
                 }))
               }}
             >
-              <option value="none">شهرتان را انتخاب کنید</option>
               {
-                datas.cities.map(city => (
-                  <option key={city.id} value={city.id}>{city.name}</option>
-                ))
+                datas.cities.map(city => {
+                  if (city.name === authContext.userInfo.city) {
+                    return (
+                      <option key={city.id} value={city.id}>{city.name}</option>
+                    )
+                  }
+                })
+              }
+
+              {
+                datas.cities.map(city => {
+                  if (city.name !== authContext.userInfo.city) {
+                    return (
+                      <option key={city.id} value={city.id}>{city.name}</option>
+                    )
+                  }
+                })
               }
             </select>
             <svg className="svg-input" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
