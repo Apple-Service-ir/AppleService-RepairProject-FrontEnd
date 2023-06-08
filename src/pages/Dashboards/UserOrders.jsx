@@ -161,7 +161,7 @@ function UserOrders() {
             />
           ) : (
             orders[0] && orders.find(order => order.status == "done" || order.status == "cancelled") && (
-              <div className="w-full overflow-x-scroll">
+              <div className="w-full overflow-x-auto rounded-xl">
                 <table className='table'>
                   <thead className='thead'>
                     <tr className='thead__tr'>

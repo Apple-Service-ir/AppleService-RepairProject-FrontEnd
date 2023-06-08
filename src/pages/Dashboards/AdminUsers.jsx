@@ -205,55 +205,57 @@ function AdminUsers() {
         <h1 className='w-full text-right text-xl sansbold mt-6'>لیست کاربران</h1>
         {
           users.length > 0 && (
-            <table className='table mt-1'>
-              <thead className='thead'>
-                <tr className='thead__tr'>
-                  <th className='thead__tr__th w-1/12'>ID</th>
-                  <th className='thead__tr__th w-3/12'>نام و نام خانوادگی</th>
-                  <th className='thead__tr__th w-2/12'>شهر</th>
-                  <th className='thead__tr__th w-2/12'>نقش</th>
-                  <th className='thead__tr__th w-2/12'>شماره</th>
-                  <th className='thead__tr__th w-1/12'>حذف</th>
-                </tr>
-              </thead>
-              <tbody className='tbody'>
-                {
-                  users.map(user => (
-                    <tr
-                      key={user.id}
-                      className='tbody__tr cursor-pointer'
-                    >
-                      <td className='tbody__tr__td w-1/12'>
-                        <div className='w-full flex flex-wrap items-center gap-3 justify-center'>
-                          <button className='badge badge-blue select-text'>{user.id} #</button>
-                        </div>
-                      </td>
-                      <td className='tbody__tr__td w-3/12'>{user.firstName} {user.lastName}</td>
-                      <td className='tbody__tr__td w-2/12 text-sm'>{user.city}</td>
-                      <td className='tbody__tr__td w-2/12 text-sm'>
-                        {
-                          user.role === 'admin' ? 'ادمین'
-                            : user.role === 'supporter' ? 'پشتیبان'
-                              : 'کاربر'
-                        }
-                      </td>
-                      <td className='tbody__tr__td w-2/12 text-sm'>{user.phone}</td>
-                      <td
-                        className='tbody__tr__td w-1/12 group'
-                        onClick={() => deleteUser(user.id)}
+            <div className="w-full overflow-x-auto rounded-xl mt-1">
+              <table className='table'>
+                <thead className='thead'>
+                  <tr className='thead__tr'>
+                    <th className='thead__tr__th w-1/12'>ID</th>
+                    <th className='thead__tr__th w-3/12'>نام و نام خانوادگی</th>
+                    <th className='thead__tr__th w-2/12'>شهر</th>
+                    <th className='thead__tr__th w-2/12'>نقش</th>
+                    <th className='thead__tr__th w-2/12'>شماره</th>
+                    <th className='thead__tr__th w-1/12'>حذف</th>
+                  </tr>
+                </thead>
+                <tbody className='tbody'>
+                  {
+                    users.map(user => (
+                      <tr
+                        key={user.id}
+                        className='tbody__tr cursor-pointer'
                       >
-                        <div className="td__wrapper justify-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-red-500 w-5 h-5
+                        <td className='tbody__tr__td w-1/12'>
+                          <div className='w-full flex flex-wrap items-center gap-3 justify-center'>
+                            <button className='badge badge-blue select-text'>{user.id} #</button>
+                          </div>
+                        </td>
+                        <td className='tbody__tr__td w-3/12'>{user.firstName} {user.lastName}</td>
+                        <td className='tbody__tr__td w-2/12 text-sm'>{user.city}</td>
+                        <td className='tbody__tr__td w-2/12 text-sm'>
+                          {
+                            user.role === 'admin' ? 'ادمین'
+                              : user.role === 'supporter' ? 'پشتیبان'
+                                : 'کاربر'
+                          }
+                        </td>
+                        <td className='tbody__tr__td w-2/12 text-sm'>{user.phone}</td>
+                        <td
+                          className='tbody__tr__td w-1/12 group'
+                          onClick={() => deleteUser(user.id)}
+                        >
+                          <div className="td__wrapper justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-red-500 w-5 h-5
                             group-hover:-translate-y-1">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                          </svg>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                }
-              </tbody>
-            </table>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                            </svg>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            </div>
           )
         }
       </div>

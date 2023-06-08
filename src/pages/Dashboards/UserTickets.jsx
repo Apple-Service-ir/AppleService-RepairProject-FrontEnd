@@ -121,7 +121,7 @@ function UserTickets() {
           tickets.length > 0 && (
             <>
               <h2 className='w-full text-right text-xl sansbold'>لیست تیکت ها</h2>
-              <div className="w-full overflow-x-scroll">
+              <div className="w-full overflow-x-auto rounded-xl">
                 <table className='table'>
                   <thead className='thead'>
                     <tr className='thead__tr'>
