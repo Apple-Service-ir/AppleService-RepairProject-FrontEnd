@@ -13,16 +13,12 @@ export default function Register() {
 
   const [formPage, setFormPage] = useState('login')
   const [prevPage, setPrevPage] = useState('login')
-
-  const mobileHomeRef = useRef()
-
-  const [signinForm, setSigninForm] = useState({
+  const [form, setForm] = useState({
     firstName: { value: '', validation: false },
     lastName: { value: '', validation: false },
     phone: { value: '', validation: false },
     city: { value: '', validation: false },
   })
-  const [loginPhone, setLoginPhone] = useState({ value: '', validation: false })
   const [otpNumber, setOtpNumber] = useState({ value: '', validation: false })
 
   useEffect(() => {
@@ -31,19 +27,30 @@ export default function Register() {
     })
   }, [])
 
-  useEffect(() => {
-    mobileHomeRef.current.classList.remove('show-up')
-    setTimeout(() => {
-      mobileHomeRef.current.classList.add('show-up')
-    }, 0);
-  }, [formPage])
+  function generateAgainOtp() {
+    otpNumber.value = ''
+    post(`/auth?action=generate&mode=${prevPage}`, { phone: form.phone.value })
+      .then(() => {
+        toast.success(`کد تایید مجدد ارسال شد`)
+      }).catch(err => {
+        toast(err.response.data.err, {
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
+              className="bg-yellow-300 stroke-white w-7 h-7 p-1 rounded-full">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          )
+        })
+      })
+  }
 
   function generateLoginOtp() {
     otpNumber.value = ''
-    post('/auth?action=generate&mode=login', { phone: loginPhone.value }).then(response => {
+    post('/auth?action=generate&mode=login', { phone: form.phone.value }).then(response => {
       toast.success(`کد تایید ارسال شد`)
       response.data.nextPage && setFormPage('otpPage')
     }).catch((err) => {
+      setFormPage('signin')
       toast(err.response.data.err, {
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
@@ -56,18 +63,9 @@ export default function Register() {
     })
   }
 
-  function submitLogin() {
-    if (loginPhone.validation) {
-      setPrevPage('login')
-      generateLoginOtp()
-    } else {
-      toast.error('لطفا شماره خود را به درستی وارد کنید!')
-    }
-  }
-
   function generateSigninOtp() {
     otpNumber.value = ''
-    post('/auth?action=generate&mode=register', { phone: signinForm.phone.value })
+    post('/auth?action=generate&mode=register', { phone: form.phone.value })
       .then(response => {
         toast.success(`کد تایید ارسال شد`)
         response.data.nextPage && setFormPage('otpPage')
@@ -80,13 +78,21 @@ export default function Register() {
             </svg>
           )
         })
-        err.response.data.nextPage && setFormPage('otpPage')
       })
   }
 
+  function submitLogin() {
+    if (form.phone.validation) {
+      setPrevPage('login')
+      generateLoginOtp()
+    } else {
+      toast.error('لطفا شماره خود را به درستی وارد کنید!')
+    }
+  }
+
   function submitSignin() {
-    for (const field in signinForm) {
-      if (!signinForm[field].validation) {
+    for (const field in form) {
+      if (!form[field].validation) {
         toast.error('لطفا فیلد هارا به درستی کامل کنید!')
         return
       }
@@ -103,17 +109,17 @@ export default function Register() {
 
     post(`/auth?action=submit&mode=${isLogin ? 'login' : 'register'}`, {
       code: otpNumber.value,
-      phone: isLogin ? loginPhone.value : signinForm.phone.value,
+      phone: form.phone.value,
       mode: isLogin ? 'login' : 'register'
     }).then(async (response) => {
       let token = response.data.token || null
       let userData = response.data.user || null
       if (!isLogin) {
         await post(`/register`, {
-          firstName: signinForm.firstName.value,
-          lastName: signinForm.lastName.value,
-          phone: signinForm.phone.value,
-          city: signinForm.city.value
+          firstName: form.firstName.value,
+          lastName: form.lastName.value,
+          phone: form.phone.value,
+          city: form.city.value
         }).then((response) => {
           token = response.data.token
           userData = response.data.user
@@ -158,7 +164,6 @@ export default function Register() {
             className={`border border-blue-500 w-11 h-11 flex justify-center items-center rounded-full      
             show-up
             md:hidden`}
-            ref={mobileHomeRef}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-blue-500 w-7 h-7">
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
@@ -175,12 +180,15 @@ export default function Register() {
               type="number"
               placeholder='09*********'
               min={0}
-              value={loginPhone.value}
+              value={form.phone.value}
               onChange={event => {
-                setLoginPhone({
-                  value: event.target.value.slice(0, 11),
-                  validation: (event.target.value.length === 11 && event.target.value.startsWith('09'))
-                })
+                setForm(prev => ({
+                  ...prev,
+                  phone: {
+                    value: event.target.value.slice(0, 11),
+                    validation: (event.target.value.length === 11 && event.target.value.startsWith('09'))
+                  }
+                }))
               }}
             />
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
@@ -203,9 +211,9 @@ export default function Register() {
               className='input'
               type="text"
               placeholder='نام'
-              value={signinForm.firstName.value}
+              value={form.firstName.value}
               onChange={event => {
-                setSigninForm(prev => ({
+                setForm(prev => ({
                   ...prev,
                   firstName: {
                     value: event.target.value,
@@ -223,9 +231,9 @@ export default function Register() {
               className='input'
               type="text"
               placeholder='نام خانوادگی'
-              value={signinForm.lastName.value}
+              value={form.lastName.value}
               onChange={event => {
-                setSigninForm(prev => ({
+                setForm(prev => ({
                   ...prev,
                   lastName: {
                     value: event.target.value,
@@ -244,9 +252,9 @@ export default function Register() {
               type="number"
               placeholder='09*********'
               min={0}
-              value={signinForm.value}
+              value={form.phone.value}
               onChange={event => {
-                setSigninForm(prev => ({
+                setForm(prev => ({
                   ...prev,
                   phone: {
                     value: event.target.value.slice(0, 11),
@@ -262,9 +270,9 @@ export default function Register() {
           <div className='w-full bg-input'>
             <select
               className='select-box'
-              value={signinForm.city.value}
+              value={form.city.value}
               onChange={event => {
-                setSigninForm(prev => ({
+                setForm(prev => ({
                   ...prev,
                   city: {
                     value: event.target.value,
@@ -330,7 +338,7 @@ export default function Register() {
             کدی دریافت نکردید؟
             <button
               className='text-blue-500 cursor-pointer select-none'
-              onClick={generateLoginOtp}
+              onClick={generateAgainOtp}
             >
               دریافت دوباره
             </button>
