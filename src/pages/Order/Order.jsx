@@ -15,7 +15,7 @@ export default function Order() {
   const [modals, setModals] = useState({ brands: false, devices: false, parts: false })
 
   const [form, setForm] = useState({
-    city: { value: 'none', validation: false },
+    city: { value: '', validation: true },
     file: { value: null, fileName: 'تصویر دستگاه خود را بارگذاری کنید', validation: false },
     address: { value: '', validation: false },
     desc: { value: '', validation: false },
@@ -35,13 +35,27 @@ export default function Order() {
       const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
       setDatas(prev => ({ ...prev, parts: mapped }))
     })
-
-    get('/list/cities').then(response => {
-      setDatas(prev => ({ ...prev, cities: response.data }))
-    })
   }, [])
 
+  useEffect(() => {
+    if (authContext.userInfo['city']) {
+      get('/list/cities').then(response => {
+        setForm(prev => ({
+          ...prev,
+          city: {
+            value: response.data.filter(city => city.name === authContext.userInfo.city)[0].id,
+            validation: true
+          }
+        }))
+        const firstCity = response.data.find(city => city.name === authContext.userInfo.city)
+        const otherCities = response.data.filter(city => city.name !== authContext.userInfo.city)
+        setDatas(prev => ({ ...prev, cities: [firstCity, ...otherCities] }))
+      })
+    }
+  }, [authContext.userInfo])
+
   function postOrder() {
+    console.log(form.city);
     const formData = new FormData()
     formData.append('token', authContext.userToken)
     formData.append('address', form.address.value)
@@ -110,29 +124,15 @@ export default function Order() {
                   ...prev,
                   city: {
                     value: event.target.value,
-                    validation: event.target.value !== 'none'
+                    validation: true
                   }
                 }))
               }}
             >
               {
-                datas.cities.map(city => {
-                  if (city.name === authContext.userInfo.city) {
-                    return (
-                      <option key={city.id} value={city.id}>{city.name}</option>
-                    )
-                  }
-                })
-              }
-
-              {
-                datas.cities.map(city => {
-                  if (city.name !== authContext.userInfo.city) {
-                    return (
-                      <option key={city.id} value={city.id}>{city.name}</option>
-                    )
-                  }
-                })
+                datas.cities.map(city => (
+                  <option key={city.id} value={city.id}>{city.name}</option>
+                ))
               }
             </select>
             <svg className="svg-input" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -149,7 +149,9 @@ export default function Order() {
               fileRef.current.click()
             }}
           >
-            {form.file.fileName}
+            <span className='truncate'>
+              {form.file.fileName}
+            </span>
             <input
               className='hidden'
               ref={fileRef}

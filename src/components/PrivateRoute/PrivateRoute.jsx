@@ -5,7 +5,6 @@ import AuthContext from '../../context/AuthContext'
 
 function PrivateRoute({ reDirectPath, children, privateRole }) {
   const authContext = useContext(AuthContext)
-  console.log(authContext)
 
   switch (privateRole) {
     case 'isUserLoggedIn': {

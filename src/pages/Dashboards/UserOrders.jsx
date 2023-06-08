@@ -146,24 +146,22 @@ function UserOrders() {
             <h2 className='w-full text-right text-xl sansbold'>لیست سفارشات تمام شده</h2>
           )
         }
-
-        <div className="w-full rounded-xl overflow-x-scroll
-        lg:overflow-hidden">
-          {
-            orders.length === 0 ? (
-              <Alert
-                theme={'danger'}
-                title={'شما هیچ سفارشی ندارید!'}
-                link={'/order'}
-                linkTitle={'ثبت سفارش'}
-                icon={(
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                  </svg>
-                )}
-              />
-            ) : (
-              orders[0] && orders.find(order => order.status == "done" || order.status == "cancelled") && (
+        {
+          orders.length === 0 ? (
+            <Alert
+              theme={'danger'}
+              title={'شما هیچ سفارشی ندارید!'}
+              link={'/order'}
+              linkTitle={'ثبت سفارش'}
+              icon={(
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+              )}
+            />
+          ) : (
+            orders[0] && orders.find(order => order.status == "done" || order.status == "cancelled") && (
+              <div className="w-full overflow-x-scroll">
                 <table className='table'>
                   <thead className='thead'>
                     <tr className='thead__tr'>
@@ -221,10 +219,10 @@ function UserOrders() {
                     }
                   </tbody>
                 </table>
-              )
+              </div>
             )
-          }
-        </div>
+          )
+        }
         <Toaster />
       </div >
 
