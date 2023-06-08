@@ -18,7 +18,6 @@ function AdminTickets() {
     get(`/tickets/all?admin=true&token=${authContext.userToken}`)
       .then(response => {
         setTickets(response.data.tickets)
-        console.log(response);
       })
   }, [])
 

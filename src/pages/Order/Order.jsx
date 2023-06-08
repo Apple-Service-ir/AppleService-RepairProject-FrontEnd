@@ -55,7 +55,6 @@ export default function Order() {
   }, [authContext.userInfo])
 
   function postOrder() {
-    console.log(form.city);
     const formData = new FormData()
     formData.append('token', authContext.userToken)
     formData.append('address', form.address.value)

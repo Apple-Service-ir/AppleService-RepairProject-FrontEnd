@@ -41,7 +41,6 @@ function UserTickets() {
       subject: ticketForm.subject.value,
       text: ticketForm.text.value
     }).then(response => {
-      console.log(response);
       setTickets(response.data.tickets)
       setTicketForm({
         subject: { value: '', validation: false },

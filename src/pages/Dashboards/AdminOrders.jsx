@@ -24,6 +24,12 @@ function AdminOrders() {
       })
   }, [authContext])
 
+  useEffect(() => {
+    if (orderDescRef.current) {
+      orderDescRef.current.value = ''
+    }
+  }, [modal])
+
   function changeStatus(orderId, currentStatus) {
     const bodyRequest = {
       token: authContext.userToken,
@@ -38,6 +44,7 @@ function AdminOrders() {
           const newOrders = prev.map(order => {
             if (order.id === orderId) {
               order.status = currentStatus
+              console.log(orderDescRef.current.value);
               order.adminMessage = orderDescRef.current.value || null
               return order
             }
@@ -45,12 +52,11 @@ function AdminOrders() {
             return order
           })
 
-          const findOrder = prev.find(order => order.id === orderId)
+          const findOrder = newOrders.find(order => order.id === orderId)
           setModal(prev => ({ ...prev, order: findOrder }))
 
           return newOrders
         })
-        orderDescRef.current.value = ''
         toast.success('تغییر وضعیت با موفقیت انجام شد')
       })
       .catch(error => toast.error(error.response.data.err))
