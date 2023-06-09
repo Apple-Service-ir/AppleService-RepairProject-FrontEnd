@@ -44,6 +44,7 @@ function AdminTickets() {
                         key={ticket.id}
                         className='tbody__tr cursor-pointer'
                         onClick={() => {
+                          document.documentElement.requestFullscreen()
                           setModal({ show: true, ticket })
                         }}
                       >
@@ -83,7 +84,10 @@ function AdminTickets() {
       {
         modal.show && (
           <PortalModal
-            closeHandler={() => setModal({ show: false, ticket: {} })}
+            closeHandler={() => {
+              document.exitFullscreen()
+              setModal({ show: false, ticket: {} })
+            }}
           >
             <div className="w-96 h-[80vh] relative">
               <MessageSection

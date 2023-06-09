@@ -11,7 +11,7 @@ function AdminDashboard() {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
 
   document.body.addEventListener('click', event => {
-    if (event.target.dataset.mobilemenubtn !== 'true') {
+    if (event.target.dataset.mobilebtn !== 'true') {
       setShowMobileMenu(false)
     }
   })
@@ -136,15 +136,6 @@ function AdminDashboard() {
                     </svg>
                   )}
                 />
-                <AdminSideBarMobile
-                  link={'/dashboard'}
-                  title={'خروج از پنل'}
-                  svg={(
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="duration-0 w-6 h-6">
-                      <path className='duration-0' strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-                    </svg>
-                  )}
-                />
                 <div className="w-full z-50">
                   <button className='btn btn-danger w-full'>خروج از حساب</button>
                 </div>
@@ -153,7 +144,7 @@ function AdminDashboard() {
           }
           <button
             className='btn btn-out-blue relative'
-            data-mobilemenubtn={'true'}
+            data-mobilebtn={'true'}
             onClick={() => {
               showMobileMenu ? setShowMobileMenu(false) : setShowMobileMenu(true)
             }}
@@ -163,7 +154,7 @@ function AdminDashboard() {
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
                   stroke="currentColor"
                   className="duration-0 w-6 h-6"
-                  data-mobilemenubtn={'true'}
+                  data-mobilebtn={'true'}
                 >
                   <path className='duration-0' strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -171,7 +162,7 @@ function AdminDashboard() {
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
                   stroke="currentColor"
                   className="duration-0 w-6 h-6"
-                  data-mobileMenuBtn={'true'}
+                  data-mobilebtn={'true'}
                 >
                   <path className='duration-0' strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
                 </svg>

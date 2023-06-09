@@ -138,6 +138,7 @@ function UserTickets() {
                           key={ticket.id}
                           className='tbody__tr cursor-pointer'
                           onClick={() => {
+                            document.documentElement.requestFullscreen()
                             setModal({ show: true, ticket })
                           }}
                         >
@@ -178,7 +179,10 @@ function UserTickets() {
       {
         modal.show && (
           <PortalModal
-            closeHandler={() => setModal({ show: false, ticket: {} })}
+            closeHandler={() => {
+              document.exitFullscreen()
+              setModal({ show: false, ticket: {} })
+            }}
           >
             <div className="relative w-full h-[75vh]
               sm:w-96 sm:h-[80vh]">

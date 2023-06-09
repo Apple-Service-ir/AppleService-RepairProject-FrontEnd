@@ -180,7 +180,10 @@ function UserOrders() {
                             <tr
                               key={order.id}
                               className='tbody__tr cursor-pointer'
-                              onClick={() => setModal({ show: true, order })}
+                              onClick={() => {
+                                document.documentElement.requestFullscreen()
+                                setModal({ show: true, order })
+                              }}
                             >
                               <td className='tbody__tr__td w-2/12'>
                                 <div className='td__wrapper justify-center'>
@@ -229,7 +232,10 @@ function UserOrders() {
       {
         modal.show && createPortal(
           <PortalModal
-            closeHandler={() => setModal({ show: false, order: {} })}
+            closeHandler={() => {
+              document.exitFullscreen()
+              setModal({ show: false, ticket: {} })
+            }}
           >
             <ul className="w-96 max-h-[80vh] overflow-y-scroll rounded-md">
               <li className='w-full flex justify-center items-center rounded-md'>
