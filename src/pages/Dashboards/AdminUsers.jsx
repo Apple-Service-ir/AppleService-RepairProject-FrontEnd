@@ -101,8 +101,10 @@ function AdminUsers() {
         {
           showUserForm && (
             <form className='w-full flex flex-col justify-center items-center gap-3 mt-3'>
-              <div className="w-full flex justify-center items-center gap-3">
-                <div className='w-1/2 bg-input'>
+              <div className="w-full flex flex-col justify-center items-center gap-3
+                sm:flex-row">
+                <div className='w-full bg-input
+                  sm:w-1/2'>
                   <input
                     className='input'
                     type="text"
@@ -122,7 +124,8 @@ function AdminUsers() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                   </svg>
                 </div>
-                <div className='w-1/2 bg-input'>
+                <div className='w-full bg-input
+                  sm:w-1/2'>
                   <input
                     className='input'
                     type="text"
@@ -143,8 +146,10 @@ function AdminUsers() {
                   </svg>
                 </div>
               </div>
-              <div className="w-full flex justify-center items-center gap-3">
-                <div className='w-1/2 bg-input'>
+              <div className="w-full flex flex-col justify-center items-center gap-3
+                sm:flex-row">
+                <div className='w-full bg-input
+                  sm:w-1/2'>
                   <input
                     className='input tracking-[0.25rem] text-right' dir='ltr'
                     type="number"
@@ -165,7 +170,8 @@ function AdminUsers() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
                   </svg>
                 </div>
-                <div className='w-1/2 bg-input'>
+                <div className='w-full bg-input
+                  sm:w-1/2'>
                   <select
                     className='select-box'
                     value={userForm.city.value}
@@ -192,7 +198,8 @@ function AdminUsers() {
                 </div>
               </div>
               <button
-                className='btn btn-blue w-1/2'
+                className='btn btn-blue w-full
+                  sm:w-1/2'
                 type='submit'
                 onClick={submitHandler}
               >
@@ -209,7 +216,7 @@ function AdminUsers() {
               <table className='table'>
                 <thead className='thead'>
                   <tr className='thead__tr'>
-                    <th className='thead__tr__th w-1/12'>ID</th>
+                    <th className='thead__tr__th w-2/12'>ID</th>
                     <th className='thead__tr__th w-3/12'>نام و نام خانوادگی</th>
                     <th className='thead__tr__th w-2/12'>شهر</th>
                     <th className='thead__tr__th w-2/12'>نقش</th>
@@ -224,7 +231,7 @@ function AdminUsers() {
                         key={user.id}
                         className='tbody__tr cursor-pointer'
                       >
-                        <td className='tbody__tr__td w-1/12'>
+                        <td className='tbody__tr__td w-2/12'>
                           <div className='w-full flex flex-wrap items-center gap-3 justify-center'>
                             <button className='badge badge-blue select-text'>{user.id} #</button>
                           </div>

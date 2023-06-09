@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
-function SideBarLink({ link, title, svg }) {
+function AdminSideBarLink({ link, title, svg }) {
   return (
     <NavLink
       to={link}
@@ -19,4 +19,4 @@ function SideBarLink({ link, title, svg }) {
   )
 }
 
-export default SideBarLink
+export default AdminSideBarLink

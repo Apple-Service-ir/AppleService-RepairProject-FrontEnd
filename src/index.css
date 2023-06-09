@@ -219,7 +219,7 @@ input[type="number"] {
   }
 
   .table {
-    @apply w-[750px] lg:w-full;
+    @apply w-[800px] lg:w-full;
   }
 
   .thead { 
@@ -235,7 +235,7 @@ input[type="number"] {
   }
 
   .thead__tr__th {
-    @apply font-light text-right px-3 py-1;
+    @apply font-light text-right p-3;
   }
 
   .tbody__tr {
