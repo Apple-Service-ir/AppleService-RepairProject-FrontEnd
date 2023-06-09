@@ -80,7 +80,7 @@ function MessageSection({ setTickets, ticket, bottomRef }) {
         }
       </div>
 
-      <div className="bg-white w-full h-16 flex justify-between items-center gap-3 p-3
+      <div className="bg-white w-full h-16 flex justify-between items-end gap-3 p-3
         rounded-b-xl absolute bottom-0 left-0">
         <button
           className='bg-blue-500 text-white w-16 h-12 rounded-full

@@ -24,7 +24,9 @@ const containingFooter = [
 function App() {
   const [userToken, setUserToken] = useState(null)
   const [isLogin, setIslogin] = useState(localStorage.getItem("e-service-token") ? true : false)
-  const [userInfo, setUserInfo] = useState({})
+  const [userInfo, setUserInfo] = useState(
+    localStorage.getItem("e-service-userInfo") ? JSON.parse(localStorage.getItem("e-service-userInfo")) : {}
+  )
 
   const router = useRoutes(routes)
   const redirect = useNavigate()
@@ -34,15 +36,17 @@ function App() {
     setIslogin(true)
     setUserInfo(info)
     localStorage.setItem('e-service-token', token)
+    localStorage.setItem('e-service-userInfo', JSON.stringify(info))
   }
 
   const logOut = () => {
     post('/logout', { token: userToken })
-      .then(response => {
+      .then(() => {
         setUserToken(null)
         setIslogin(false)
         setUserInfo({})
         localStorage.removeItem('e-service-token')
+        localStorage.removeItem('e-service-userInfo')
         redirect('/')
       }).catch((err) => {
         toast.error(err.response.data.err)
@@ -56,11 +60,13 @@ function App() {
         setIslogin(true)
         setUserInfo(response.data.user)
         setUserToken(localStorageData)
+        localStorage.setItem('e-service-userInfo', JSON.stringify(response.data.user))
       }).catch(() => {
         setUserToken(null)
         setIslogin(false)
         setUserInfo({})
         localStorage.removeItem('e-service-token')
+        localStorage.removeItem('e-service-userInfo')
       })
   }, [])
 
