@@ -16,12 +16,12 @@ function AdminOrders() {
   const orderDescRef = useRef()
 
   useEffect(() => {
-    get(`/admins/orders/all?token=${authContext.userToken}`)
-      .then(response => {
-        if (response.data.ok) {
+    if (authContext.userInfo) {
+      get(`/admins/orders/all?token=${authContext.userToken}`)
+        .then(response => {
           setOrders(response.data.orders)
-        }
-      })
+        })
+    }
   }, [authContext])
 
   useEffect(() => {

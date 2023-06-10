@@ -19,11 +19,12 @@ function UserTickets() {
   const bottomRef = useRef()
 
   useEffect(() => {
-    authContext.userToken &&
+    if (authContext.userInfo) {
       get(`/tickets/all?token=${authContext.userToken}`)
         .then(response => {
           setTickets(response.data.tickets)
         })
+    }
   }, [authContext])
 
   function submitTicketHandler(event) {
