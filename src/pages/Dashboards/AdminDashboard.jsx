@@ -81,7 +81,7 @@ function AdminDashboard() {
         </ul>
       </div>
 
-      <div className="w-12/12 h-full p-6 overflow-y-scroll
+      <div className="w-full h-full p-6 overflow-y-scroll
         sm:w-8/12 lg:w-10/12">
         <div className="w-full flex justify-between items-center mb-9 relative
           sm:hidden">
