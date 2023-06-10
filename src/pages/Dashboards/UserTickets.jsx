@@ -19,9 +19,10 @@ function UserTickets() {
   const bottomRef = useRef()
 
   useEffect(() => {
-    if (authContext.userInfo) {
+    if (authContext.userToken) {
       get(`/tickets/all?token=${authContext.userToken}`)
         .then(response => {
+          console.log(response);
           setTickets(response.data.tickets)
         })
     }
@@ -137,8 +138,12 @@ function UserTickets() {
                       tickets.map(ticket => (
                         <tr
                           key={ticket.id}
-                          className='tbody__tr cursor-pointer'
+                          className={`tbody__tr cursor-pointer
+                            ${ticket.status === 'closed' && 'opacity-50'}`}
                           onClick={() => {
+                            ticket.status === 'closed' && toast.error('این تیکت بسته شده است', {
+                              position: "bottom-center"
+                            })
                             document.documentElement.requestFullscreen()
                             setModal({ show: true, ticket })
                           }}
@@ -180,16 +185,16 @@ function UserTickets() {
       {
         modal.show && (
           <PortalModal
-            closeHandler={() => {
-              document.exitFullscreen()
-              setModal({ show: false, ticket: {} })
-            }}
+            closeHandler={() => setModal({ show: false, ticket: {} })}
           >
             <div className="relative w-full h-[75vh]
               sm:w-96 sm:h-[80vh]">
               <MessageSection
                 setTickets={setTickets}
-                ticket={modal.ticket}
+                currentTicket={modal.ticket}
+                setCurrentTicket={ticket => {
+                  setModal(prev => ({ ...prev, ticket }))
+                }}
                 bottomRef={bottomRef}
               >
               </MessageSection>

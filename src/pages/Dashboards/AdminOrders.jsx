@@ -86,10 +86,7 @@ function AdminOrders() {
                         <tr
                           key={order.id}
                           className='tbody__tr cursor-pointer'
-                          onClick={() => {
-                            document.documentElement.requestFullscreen()
-                            setModal({ show: true, order: order })
-                          }}
+                          onClick={() => setModal({ show: true, order: order })}
                         >
                           <td className='tbody__tr__td w-2/12'>
                             <div className='td__wrapper justify-center'>
@@ -137,10 +134,7 @@ function AdminOrders() {
       </div >
       {
         modal.show && createPortal(
-          <PortalModal closeHandler={() => {
-            document.exitFullscreen()
-            setModal({ show: false, order: {} })
-          }}>
+          <PortalModal closeHandler={() => setModal({ show: false, order: {} })}>
             <ul className="w-96 max-h-[80vh] overflow-y-scroll rounded-md">
               <li className='w-full rounded-md
                 flex justify-center items-center gap-1'>
