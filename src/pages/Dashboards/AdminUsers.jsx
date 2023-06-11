@@ -116,7 +116,7 @@ function AdminUsers() {
         </div>
         {
           showUserForm && (
-            <form className='w-full flex flex-col justify-center items-center gap-3 mt-3'>
+            <form className='w-full flex flex-col justify-center items-center gap-3 mt-3 show-fade'>
               <div className="w-full flex flex-col justify-center items-center gap-3
                 sm:flex-row">
                 <div className='w-full bg-input
