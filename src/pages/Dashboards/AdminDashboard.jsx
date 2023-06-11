@@ -24,8 +24,7 @@ function AdminDashboard() {
           <div className="bg-blue-400 w-28 h-28 rounded-full"></div>
           <span className='text-white'>{authContext.userInfo.firstName} {authContext.userInfo.lastName}</span>
         </div>
-        <ul className='w-full flex flex-col justify-center items-center gap-3
-          mt-3 pr-3'>
+        <ul className='w-full flex flex-col justify-center items-center gap-3 pr-3'>
           <AdminSideBarLink
             link={'/admin'}
             title={'داشبورد'}
@@ -104,8 +103,8 @@ function AdminDashboard() {
             showMobileMenu && (
               <ul className='bg-blue-500 shadow-xl shadow-[#00000035] w-72
                 flex flex-col justify-center items-center gap-3
-                p-3 rounded-xl absolute right-0 top-16 z-50 show-up'>
-                <span className='text-white flex justify-center items-center gap-1 my-3'>
+                p-6 rounded-xl absolute right-0 top-16 z-50 show-up'>
+                <span className='text-white flex justify-center items-center gap-1 my-1'>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-7 h-7 ml-1">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
@@ -156,7 +155,7 @@ function AdminDashboard() {
                   title={'دستگاه ها'}
                   svg={(
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="duration-0 w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                      <path className='duration-0' strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
                     </svg>
                   )}
                 />
@@ -165,7 +164,7 @@ function AdminDashboard() {
                   title={'قطعات'}
                   svg={(
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="duration-0 w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
+                      <path className='duration-0' strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
                     </svg>
                   )}
                 />

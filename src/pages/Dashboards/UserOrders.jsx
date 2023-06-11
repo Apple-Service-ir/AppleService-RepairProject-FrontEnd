@@ -32,7 +32,7 @@ function UserOrders() {
 
   return (
     <>
-      <div className='w-full flex flex-col justify-center items-center gap-6'>
+      <div className='w-full flex flex-col justify-center items-center gap-6 show-fade'>
         {
           orders.length > 0 && orders.map(order => {
             if (order.status === 'pending') {

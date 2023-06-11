@@ -64,7 +64,7 @@ function AdminOrders() {
 
   return (
     <>
-      <div className='w-full flex flex-col items-center'>
+      <div className='w-full flex flex-col items-center show-fade'>
         <h1 className='w-full text-right text-xl sansbold'>لیست سفارشات</h1>
         {
           orders.length > 0 && (

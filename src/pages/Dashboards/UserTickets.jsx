@@ -56,7 +56,7 @@ function UserTickets() {
 
   return (
     <>
-      <div className='w-full flex flex-col justify-center items-center gap-3 relative'>
+      <div className='w-full flex flex-col justify-center items-center gap-3 relative  show-fade'>
         <form className="w-full flex flex-col justify-center items-center gap-3 p-3">
           <div className='w-full bg-input'>
             <input

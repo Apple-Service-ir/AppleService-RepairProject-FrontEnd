@@ -2,7 +2,9 @@ import React from 'react'
 
 function UserHome() {
   return (
-    <div>UserHome</div>
+    <div className='w-full flex flex-col items-center show-fade'>
+      UserHome
+    </div>
   )
 }
 

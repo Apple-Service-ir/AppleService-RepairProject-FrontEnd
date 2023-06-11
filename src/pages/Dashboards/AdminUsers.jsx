@@ -93,7 +93,7 @@ function AdminUsers() {
 
   return (
     <>
-      <div className='w-full flex flex-col items-center'>
+      <div className='w-full flex flex-col items-center show-fade'>
         <div className="w-full">
           <button
             className='btn btn-blue'
