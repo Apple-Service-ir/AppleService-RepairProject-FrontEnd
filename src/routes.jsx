@@ -11,6 +11,8 @@ import AdminHome from "./pages/Dashboards/AdminHome.jsx"
 import AdminUsers from "./pages/Dashboards/AdminUsers.jsx"
 import AdminOrders from "./pages/Dashboards/AdminOrders.jsx"
 import AdminTickets from "./pages/Dashboards/AdminTickets.jsx"
+import AdminDevices from "./pages/Dashboards/AdminDevices.jsx"
+import AdminParts from "./pages/Dashboards/AdminParts.jsx"
 
 const routes = [
   { path: '/', element: <Home /> },
@@ -48,6 +50,8 @@ const routes = [
       },
       { path: '/admin/orders', element: <AdminOrders /> },
       { path: '/admin/tickets', element: <AdminTickets /> },
+      { path: '/admin/devices', element: <AdminDevices /> },
+      { path: '/admin/parts', element: <AdminParts /> },
     ]
   }
 ]

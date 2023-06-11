@@ -1,11 +1,11 @@
 import React from 'react'
 
-function AdminHome() {
+function AdminDevices() {
   return (
     <div className='w-full flex flex-col items-center'>
-      AdminHome
+      AdminDevices
     </div>
   )
 }
 
-export default AdminHome
+export default AdminDevices
