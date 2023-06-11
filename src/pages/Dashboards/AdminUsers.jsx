@@ -16,6 +16,13 @@ function AdminUsers() {
     lastName: { value: '', validation: false },
     phone: { value: '', validation: false },
     city: { value: '', validation: false },
+    role: {
+      value: 'user', validation: true, buttons: {
+        user: { value: 'user', checked: true },
+        supporter: { value: 'supporter', checked: false },
+        repairman: { value: 'repairman', checked: false },
+      }
+    }
   })
 
   useEffect(() => {
@@ -33,6 +40,7 @@ function AdminUsers() {
 
   function submitHandler(event) {
     event.preventDefault()
+
     for (const field in userForm) {
       if (!userForm[field].validation) {
         toast.error('لطفا فیلد هارا کامل پر کنید')
@@ -46,6 +54,7 @@ function AdminUsers() {
       lastName: userForm.lastName.value,
       phone: userForm.phone.value,
       city: userForm.city.value,
+      role: userForm.role.value
     }
     post('/admins/users/create', requestBody)
       .then(response => {
@@ -55,7 +64,14 @@ function AdminUsers() {
           firstName: { value: '', validation: false },
           lastName: { value: '', validation: false },
           phone: { value: '', validation: false },
-          city: { value: '', validation: false }
+          city: { value: '', validation: false },
+          role: {
+            value: 'user', validation: true, buttons: {
+              user: { value: 'user', checked: true },
+              supporter: { value: 'supporter', checked: false },
+              repairman: { value: 'repairman', checked: false },
+            }
+          }
         })
         toast.success('کاربر جدید با موفقیا ساخته شد')
       })
@@ -197,6 +213,71 @@ function AdminUsers() {
                   </svg>
                 </div>
               </div>
+              <div className="w-full flex justify-center items-center gap-1 my-3">
+                <label htmlFor="user">کاربر عادی</label>
+                <input
+                  className='ml-3'
+                  type="radio"
+                  id='user'
+                  name='user-rank'
+                  checked={userForm.role.buttons.user.checked}
+                  value={userForm.role.buttons.user.value}
+                  onChange={event => {
+                    setUserForm(prev => ({
+                      ...prev,
+                      role: {
+                        value: event.target.value, validation: true, buttons: {
+                          user: { ...prev.role.buttons.user, checked: true },
+                          supporter: { ...prev.role.buttons.supporter, checked: false },
+                          repairman: { ...prev.role.buttons.repairman, checked: false }
+                        }
+                      }
+                    }))
+                  }}
+                />
+                <label htmlFor="supporter">پشتیبان</label>
+                <input
+                  className='ml-3'
+                  type="radio"
+                  id='supporter'
+                  name='user-rank'
+                  checked={userForm.role.buttons.supporter.checked}
+                  value={userForm.role.buttons.supporter.value}
+                  onChange={event => {
+                    setUserForm(prev => ({
+                      ...prev,
+                      role: {
+                        value: event.target.value, validation: true, buttons: {
+                          user: { ...prev.role.buttons.user, checked: false },
+                          supporter: { ...prev.role.buttons.supporter, checked: true },
+                          repairman: { ...prev.role.buttons.repairman, checked: false }
+                        }
+                      }
+                    }))
+                  }}
+                />
+                <label htmlFor="repairman">تعمیر کننده</label>
+                <input
+                  className='ml-3'
+                  type="radio"
+                  id='repairman'
+                  name='user-rank'
+                  checked={userForm.role.buttons.repairman.checked}
+                  value={userForm.role.buttons.repairman.value}
+                  onChange={event => {
+                    setUserForm(prev => ({
+                      ...prev,
+                      role: {
+                        value: event.target.value, validation: true, buttons: {
+                          user: { ...prev.role.buttons.user, checked: false },
+                          supporter: { ...prev.role.buttons.supporter, checked: false },
+                          repairman: { ...prev.role.buttons.repairman, checked: true }
+                        }
+                      }
+                    }))
+                  }}
+                />
+              </div>
               <button
                 className='btn btn-blue w-full
                   sm:w-1/2'
@@ -242,7 +323,8 @@ function AdminUsers() {
                           {
                             user.role === 'admin' ? 'ادمین'
                               : user.role === 'supporter' ? 'پشتیبان'
-                                : 'کاربر'
+                                : user.role === 'repairman' ? 'تعمیر کار'
+                                  : 'کاربر'
                           }
                         </td>
                         <td className='tbody__tr__td w-2/12 text-sm'>{user.phone}</td>
