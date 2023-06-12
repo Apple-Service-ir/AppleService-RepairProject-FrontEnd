@@ -144,7 +144,6 @@ function UserTickets() {
                             ticket.status === 'closed' && toast.error('این تیکت بسته شده است', {
                               position: "bottom-center"
                             })
-                            document.documentElement.requestFullscreen()
                             setModal({ show: true, ticket })
                           }}
                         >
