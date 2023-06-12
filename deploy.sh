@@ -8,4 +8,4 @@ echo "Building application"
 npm run build
 
 echo "Deploying to server"
-scp -rpO -P 9011 dist/* wil1i@45.156.184.209:/var/www/wil1i.ir
+scp -rpO -P 9011 dist/* farzad@45.156.184.209:/var/www/wil1i.ir
