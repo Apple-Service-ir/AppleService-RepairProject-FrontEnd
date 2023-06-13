@@ -17,6 +17,7 @@ function AdminDevices() {
     newBrand: { value: '', validation: false }
   })
   const [showModal, setShowModal] = useState(false)
+  const [editDeviceModal, setEditDeviceModal] = useState({ show: false, id: null, brand: '', model: '' })
 
   useEffect(() => {
     if (authContext.userToken) {
@@ -69,6 +70,40 @@ function AdminDevices() {
         newBrand: { value: '', validation: false }
       }))
     }
+  }
+
+  const removeDevice = deviceId => {
+    const requestBody = {
+      token: authContext.userToken,
+      id: deviceId
+    }
+    post('/admins/devices/delete', requestBody)
+      .then(() => {
+        setDatas(prev => {
+          const newDevices = prev.devices.filter(device => device.id !== deviceId)
+          return { ...prev, devices: newDevices }
+        })
+        toast.success('دستگاه با موفقیت حذف شد')
+      })
+      .catch(error => toast.error(error.response.data.err))
+  }
+
+  const editDevice = () => {
+    if (editDeviceModal.brand.length < 1
+      || editDeviceModal.model.length < 1) return toast.error('لطفا فیلد هارا کامل کنید')
+
+    // ------------------ ERROR ----------------------
+    // const requestBody = {
+    //   token: authContext.userToken,
+    //   id: editDeviceModal.id,
+    //   brand: editDeviceModal.brand,
+    //   model: editDeviceModal.model
+    // }
+    // post('/admins/devices/edit', requestBody)
+    //   .then(response => {
+    //     console.log(response)
+    //   })
+    // ------------------ ERROR ----------------------
   }
 
   return (
@@ -179,6 +214,11 @@ function AdminDevices() {
                         <td className='tbody__tr__td w-4/12 text-sm'>{device.model}</td>
                         <td
                           className='tbody__tr__td w-1/12 group cursor-pointer'
+                          onClick={() => {
+                            setEditDeviceModal(
+                              { show: true, id: device.id, brand: device.brand, model: device.model }
+                            )
+                          }}
                         >
                           <div className="td__wrapper justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-blue-500 w-5 h-5
@@ -189,6 +229,7 @@ function AdminDevices() {
                         </td>
                         <td
                           className='tbody__tr__td w-1/12 group cursor-pointer'
+                          onClick={() => removeDevice(device.id)}
                         >
                           <div className="td__wrapper justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-red-500 w-5 h-5
@@ -275,6 +316,55 @@ function AdminDevices() {
                   اصافه کردن برند جدید
                 </button>
               </div>
+            </div>
+          </PortalModal>
+        )
+      }
+
+      {
+        editDeviceModal.show && (
+          <PortalModal
+            closeHandler={() => setEditDeviceModal({ show: false, brand: '', model: '' })}
+          >
+            <div className="bg-white w-96 flex flex-col justify-center items-center gap-3 p-3 rounded-xl">
+              <div className='w-full bg-input'>
+                <input
+                  className='input'
+                  type="text"
+                  placeholder='برند جدید'
+                  value={editDeviceModal.brand}
+                  onChange={event => {
+                    setEditDeviceModal(prev => (
+                      { ...prev, brand: event.target.value }
+                    ))
+                  }}
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                </svg>
+              </div>
+              <div className='w-full bg-input'>
+                <input
+                  className='input'
+                  type="text"
+                  placeholder='مدل جدید'
+                  value={editDeviceModal.model}
+                  onChange={event => {
+                    setEditDeviceModal(prev => (
+                      { ...prev, model: event.target.value }
+                    ))
+                  }}
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                </svg>
+              </div>
+              <button
+                className="btn btn-blue w-full"
+                onClick={editDevice}
+              >
+                ثبت تغییر
+              </button>
             </div>
           </PortalModal>
         )
