@@ -17,22 +17,9 @@ const postForm = async (url, formData) => {
   })
 }
 
-// getMe
-const getMe = async () => {
-  const userToken = localStorage.getItem('e-service-token')
-  if (!userToken) return null
-  const response = await get(`/informations/get?token=${userToken}`)
-    .catch(() => {
-      localStorage.removeItem('e-service-token')
-    })
-  return response.data.ok ? response.data.user : null
-}
-// ---
-
 export {
   mainUrl,
   get,
   post,
-  postForm,
-  getMe
+  postForm
 }
