@@ -310,7 +310,7 @@ function AdminUsers() {
                     users.map(user => (
                       <tr
                         key={user.id}
-                        className='tbody__tr cursor-pointer'
+                        className='tbody__tr'
                       >
                         <td className='tbody__tr__td w-2/12'>
                           <div className='w-full flex flex-wrap items-center gap-3 justify-center'>
@@ -329,7 +329,7 @@ function AdminUsers() {
                         </td>
                         <td className='tbody__tr__td w-2/12 text-sm'>{user.phone}</td>
                         <td
-                          className='tbody__tr__td w-1/12 group'
+                          className='tbody__tr__td w-1/12 group cursor-pointer'
                           onClick={() => deleteUser(user.id)}
                         >
                           <div className="td__wrapper justify-center">
