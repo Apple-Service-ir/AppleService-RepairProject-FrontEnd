@@ -133,7 +133,7 @@ function AdminOrders() {
         }
       </div >
       {
-        modal.show && createPortal(
+        modal.show && (
           <PortalModal closeHandler={() => setModal({ show: false, order: {} })}>
             <ul className="w-96 max-h-[80vh] overflow-y-scroll rounded-md">
               <li className='w-full rounded-md
@@ -311,8 +311,7 @@ function AdminOrders() {
                 </div>
               </li>
             </ul>
-          </PortalModal>,
-          document.body
+          </PortalModal>
         )
       }
 

@@ -225,100 +225,91 @@ export default function Order() {
 
       {
         modals.brands && (
-          createPortal(
-            <PortalModal
-              closeHandler={() => setModals(prev => ({ ...prev, brands: false }))}
-            >
-              <ul className="bg-white w-96 max-h-[80vh] overflow-y-scroll p-3 rounded-xl">
-                <span className='w-full block text-center text-xl sansbold p-1'>
-                  برند را انتخاب کنید
-                </span>
-                {
-                  datas.brands.map((item, index) => (
-                    <li
-                      key={index}
-                      onClick={() => {
-                        setDatas(prev => ({
-                          ...prev,
-                          devices: datas.all.filter(device => device.brand === item)
-                        }))
-                        setModals({ brands: false, devices: true, parts: false })
-                      }}
-                      className='bg-slate-200 w-full p-3 mt-2 rounded-xl first:mt-0
+          <PortalModal
+            closeHandler={() => setModals(prev => ({ ...prev, brands: false }))}
+          >
+            <ul className="bg-white w-96 max-h-[80vh] overflow-y-scroll p-3 rounded-xl">
+              <span className='w-full block text-center text-xl sansbold p-1'>
+                برند را انتخاب کنید
+              </span>
+              {
+                datas.brands.map((item, index) => (
+                  <li
+                    key={index}
+                    onClick={() => {
+                      setDatas(prev => ({
+                        ...prev,
+                        devices: datas.all.filter(device => device.brand === item)
+                      }))
+                      setModals({ brands: false, devices: true, parts: false })
+                    }}
+                    className='bg-slate-200 w-full p-3 mt-2 rounded-xl first:mt-0
                         flex justify-center items-center cursor-pointer hover:bg-slate-300'
-                    >
-                      {item}
-                    </li>
-                  ))
-                }
-              </ul>
-            </PortalModal>,
-            document.body
-          )
+                  >
+                    {item}
+                  </li>
+                ))
+              }
+            </ul>
+          </PortalModal>
         )
       }
 
       {
         modals.devices && (
-          createPortal(
-            <PortalModal
-              closeHandler={() => setModals(prev => ({ ...prev, devices: false }))}
-            >
-              <ul className="bg-white w-96 max-h-[80vh] overflow-y-scroll p-3 rounded-xl">
-                <span className='w-full block text-center text-xl sansbold p-1'>
-                  دستگاه را انتخاب کنید
-                </span>
-                {
-                  datas.devices.map(item => (
-                    <li
-                      key={item.id}
-                      onClick={() => {
-                        setSelectedDatas(prev => ({ ...prev, devices: item }))
-                        setModals({ brands: false, devices: false, parts: true })
-                      }}
-                      className='bg-slate-200 w-full p-3 mt-2 rounded-xl first:mt-0
+          <PortalModal
+            closeHandler={() => setModals(prev => ({ ...prev, devices: false }))}
+          >
+            <ul className="bg-white w-96 max-h-[80vh] overflow-y-scroll p-3 rounded-xl">
+              <span className='w-full block text-center text-xl sansbold p-1'>
+                دستگاه را انتخاب کنید
+              </span>
+              {
+                datas.devices.map(item => (
+                  <li
+                    key={item.id}
+                    onClick={() => {
+                      setSelectedDatas(prev => ({ ...prev, devices: item }))
+                      setModals({ brands: false, devices: false, parts: true })
+                    }}
+                    className='bg-slate-200 w-full p-3 mt-2 rounded-xl first:mt-0
                         flex justify-center items-center cursor-pointer hover:bg-slate-300'
-                    >
-                      {item.value}
-                    </li>
-                  ))
-                }
-              </ul>
-            </PortalModal>,
-            document.body
-          )
+                  >
+                    {item.value}
+                  </li>
+                ))
+              }
+            </ul>
+          </PortalModal>
         )
       }
 
       {
         modals.parts && (
-          createPortal(
-            <PortalModal
-              closeHandler={() => setModals(prev => ({ ...prev, parts: false }))}
-            >
-              <ul className="bg-white w-96 max-h-[80vh] overflow-y-scroll p-3 rounded-xl">
-                <span className='w-full block text-center text-xl sansbold p-1'>
-                  قطعه تعمیری را انتخاب کنید
-                </span>
-                {
-                  datas.parts.map(item => (
-                    <li
-                      key={item.id}
-                      onClick={() => {
-                        setSelectedDatas(prev => ({ ...prev, parts: item }))
-                        setModals(prev => ({ ...prev, parts: false }))
-                      }}
-                      className='bg-slate-200 w-full p-3 mt-2 rounded-xl first:mt-0
+          <PortalModal
+            closeHandler={() => setModals(prev => ({ ...prev, parts: false }))}
+          >
+            <ul className="bg-white w-96 max-h-[80vh] overflow-y-scroll p-3 rounded-xl">
+              <span className='w-full block text-center text-xl sansbold p-1'>
+                قطعه تعمیری را انتخاب کنید
+              </span>
+              {
+                datas.parts.map(item => (
+                  <li
+                    key={item.id}
+                    onClick={() => {
+                      setSelectedDatas(prev => ({ ...prev, parts: item }))
+                      setModals(prev => ({ ...prev, parts: false }))
+                    }}
+                    className='bg-slate-200 w-full p-3 mt-2 rounded-xl first:mt-0
                         flex justify-center items-center cursor-pointer hover:bg-slate-300'
-                    >
-                      {item.value}
-                    </li>
-                  ))
-                }
-              </ul>
-            </PortalModal>,
-            document.body
-          )
+                  >
+                    {item.value}
+                  </li>
+                ))
+              }
+            </ul>
+          </PortalModal>
         )
       }
       <Toaster />

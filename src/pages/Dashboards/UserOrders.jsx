@@ -227,7 +227,7 @@ function UserOrders() {
       </div >
 
       {
-        modal.show && createPortal(
+        modal.show && (
           <PortalModal closeHandler={() => setModal({ show: false, order: {} })}>
             <ul className="w-96 max-h-[80vh] overflow-y-scroll rounded-md">
               <li className='w-full flex justify-center items-center rounded-md'>
@@ -357,8 +357,7 @@ function UserOrders() {
                 </div>
               </li>
             </ul>
-          </PortalModal>,
-          document.body
+          </PortalModal>
         )
       }
     </>
