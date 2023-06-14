@@ -21,17 +21,21 @@ function AdminDevices() {
 
   useEffect(() => {
     if (authContext.userToken) {
-      get('/list/devices')
-        .then(response => {
-          setDatas(prev => ({
-            ...prev,
-            brands: response.data.brands,
-            devices: response.data.phones,
-          }))
-        })
-        .catch(error => toast.error(error.response.data.err))
+      getDatas()
     }
   }, [authContext])
+
+  const getDatas = () => {
+    get('/list/devices')
+      .then(response => {
+        setDatas(prev => ({
+          ...prev,
+          brands: response.data.brands,
+          devices: response.data.phones,
+        }))
+      })
+      .catch(error => toast.error(error.response.data.err))
+  }
 
   const submitHandler = event => {
     event.preventDefault()
@@ -79,10 +83,7 @@ function AdminDevices() {
     }
     post('/admins/devices/delete', requestBody)
       .then(() => {
-        setDatas(prev => {
-          const newDevices = prev.devices.filter(device => device.id !== deviceId)
-          return { ...prev, devices: newDevices }
-        })
+        getDatas()
         toast.success('دستگاه با موفقیت حذف شد')
       })
       .catch(error => toast.error(error.response.data.err))
@@ -92,18 +93,19 @@ function AdminDevices() {
     if (editDeviceModal.brand.length < 1
       || editDeviceModal.model.length < 1) return toast.error('لطفا فیلد هارا کامل کنید')
 
-    // ------------------ ERROR ----------------------
-    // const requestBody = {
-    //   token: authContext.userToken,
-    //   id: editDeviceModal.id,
-    //   brand: editDeviceModal.brand,
-    //   model: editDeviceModal.model
-    // }
-    // post('/admins/devices/edit', requestBody)
-    //   .then(response => {
-    //     console.log(response)
-    //   })
-    // ------------------ ERROR ----------------------
+    const requestBody = {
+      token: authContext.userToken,
+      id: editDeviceModal.id,
+      data: { brand: editDeviceModal.brand, model: editDeviceModal.model },
+    }
+    post('/admins/devices/edit', requestBody)
+      .then(() => {
+        getDatas()
+        setEditDeviceModal(
+          { show: false, id: null, brand: '', model: '' }
+        )
+        toast.success('دستگاه با موفقیت ویرایش شد')
+      })
   }
 
   return (
@@ -250,10 +252,11 @@ function AdminDevices() {
 
       {
         showModal && (
-          <PortalModal closeHandler={() => {
-            setDeviceForm(prev => ({ ...prev, newBrand: { value: '', validation: false } }))
-            setShowModal(false)
-          }}>
+          <PortalModal
+            closeHandler={() => {
+              setDeviceForm(prev => ({ ...prev, newBrand: { value: '', validation: false } }))
+              setShowModal(false)
+            }}>
             <div className="bg-white w-96 max-h-[80vh] p-3 rounded-xl">
               <span className='w-full block text-center text-xl sansbold p-1'>
                 برند را انتخاب کنید
