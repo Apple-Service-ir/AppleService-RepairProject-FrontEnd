@@ -329,7 +329,7 @@ function AdminDevices() {
           <PortalModal
             closeHandler={() => setEditDeviceModal({ show: false, brand: '', model: '' })}
           >
-            <div className="bg-white w-96 flex flex-col justify-center items-center gap-3 p-3 rounded-xl">
+            <form className="bg-white w-96 flex flex-col justify-center items-center gap-3 p-3 rounded-xl">
               <div className='w-full bg-input'>
                 <input
                   className='input'
@@ -368,7 +368,7 @@ function AdminDevices() {
               >
                 ثبت تغییر
               </button>
-            </div>
+            </form>
           </PortalModal>
         )
       }

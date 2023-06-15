@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState, useContext } from 'react'
-import { createPortal } from 'react-dom';
 import toast, { Toaster } from 'react-hot-toast';
 
 import { get, postForm } from '../../utility';
 import AuthContext from './../../context/AuthContext'
-
 import PortalModal from './../../components/PortalModal/PortalModal'
+import defaultCity from '../../utils/defaultCity';
 
 export default function Order() {
   const authContext = useContext(AuthContext)
@@ -40,16 +39,15 @@ export default function Order() {
   useEffect(() => {
     if (authContext.userInfo['city']) {
       get('/list/cities').then(response => {
+        const getDefaultCity = defaultCity(response.data)
         setForm(prev => ({
           ...prev,
           city: {
-            value: response.data.filter(city => city.name === authContext.userInfo.city)[0].id,
+            value: getDefaultCity[0].id,
             validation: true
           }
         }))
-        const firstCity = response.data.find(city => city.name === authContext.userInfo.city)
-        const otherCities = response.data.filter(city => city.name !== authContext.userInfo.city)
-        setDatas(prev => ({ ...prev, cities: [firstCity, ...otherCities] }))
+        setDatas(prev => ({ ...prev, cities: getDefaultCity[1] }))
       })
     }
   }, [authContext.userInfo])
@@ -74,12 +72,12 @@ export default function Order() {
       .then(() => {
         setSelectedDatas(prev => ({ ...prev, devices: {} }))
         setSelectedDatas(prev => ({ ...prev, parts: {} }))
-        setForm({
-          city: { value: 'none', validation: false },
+        setForm(prev => ({
+          ...prev,
           file: { value: null, fileName: 'تصویر دستگاه خود را بارگذاری کنید', validation: false },
           address: { value: '', validation: false },
           desc: { value: '', validation: false },
-        })
+        }))
         toast.success('سفارش شما با موفقیت ثبت شد')
       })
       .catch(error => toast.error(error.response.data.err))
