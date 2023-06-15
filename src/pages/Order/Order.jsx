@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState, useContext } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 
-import { get, postForm } from '../../utility';
 import AuthContext from './../../context/AuthContext'
+import useGetCities from './../../Hooks/useGetCities'
+import { get, postForm } from '../../utility';
 import PortalModal from './../../components/PortalModal/PortalModal'
-import defaultCity from '../../utils/defaultCity';
 
 export default function Order() {
   const authContext = useContext(AuthContext)
 
-  const [datas, setDatas] = useState({ all: [], brands: [], devices: [], parts: [], cities: [] })
+  const [defaultCity, allCities] = useGetCities()
+  const [datas, setDatas] = useState({ all: [], brands: [], devices: [], parts: [] })
   const [selectedDatas, setSelectedDatas] = useState({ devices: {}, parts: {} })
   const [modals, setModals] = useState({ brands: false, devices: false, parts: false })
 
@@ -36,27 +37,11 @@ export default function Order() {
     })
   }, [])
 
-  useEffect(() => {
-    if (authContext.userInfo['city']) {
-      get('/list/cities').then(response => {
-        const getDefaultCity = defaultCity(response.data)
-        setForm(prev => ({
-          ...prev,
-          city: {
-            value: getDefaultCity[0].id,
-            validation: true
-          }
-        }))
-        setDatas(prev => ({ ...prev, cities: getDefaultCity[1] }))
-      })
-    }
-  }, [authContext.userInfo])
-
   function postOrder() {
     const formData = new FormData()
     formData.append('token', authContext.userToken)
     formData.append('address', form.address.value)
-    formData.append('city', form.city.value)
+    formData.append('city', form.city.value || defaultCity.id)
     formData.append('phoneId', selectedDatas.devices.id)
     formData.append('partId', selectedDatas.parts.id)
     formData.append('description', form.desc.value)
@@ -127,7 +112,7 @@ export default function Order() {
               }}
             >
               {
-                datas.cities.map(city => (
+                allCities.map(city => (
                   <option key={city.id} value={city.id}>{city.name}</option>
                 ))
               }

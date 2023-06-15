@@ -1,23 +1,23 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
+import { toast, Toaster } from 'react-hot-toast'
 
 import AuthContext from '../../context/AuthContext'
-import { get } from '../../utility'
+import useGetCities from './../../Hooks/useGetCities'
 import AdminSideBarLink from '../../components/Dashboard/AdminSideBarLink'
 import AdminSideBarMobile from '../../components/Dashboard/AdminMobileSideBarLink'
 import PortalModal from './../../components/PortalModal/PortalModal'
-import defaultCity from '../../utils/defaultCity'
 
 function AdminDashboard() {
   const authContext = useContext(AuthContext)
 
-  const [cities, setCities] = useState([])
+  const [defaultCity, allCities] = useGetCities()
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showEditInformationModal, setShowEditInformationModal] = useState(false)
-  const [editInformation, setEditInformation] = useState({
+  const [editInformationForm, setEditInformationForm] = useState({
     firstName: { value: '', validation: false },
     lastName: { value: '', validation: false },
-    city: { value: '', validation: false },
+    city: { value: '', validation: true },
   })
 
   document.body.addEventListener('click', event => {
@@ -26,20 +26,22 @@ function AdminDashboard() {
     }
   })
 
-  useEffect(() => {
-    get('/list/cities')
-      .then(response => {
-        const getDefaultCity = defaultCity(response.data)
-        setEditInformation(prev => ({
-          ...prev,
-          city: {
-            value: getDefaultCity[0].id,
-            validation: true
-          }
-        }))
-        setCities(getDefaultCity[1])
-      })
-  }, [])
+  const changeUserInformationHandler = event => {
+    event.preventDefault()
+
+    for (const field in editInformationForm) {
+      if (!editInformationForm[field].validation) {
+        return toast.error('لطفا فیلد هارا کامل کنید')
+      }
+    }
+
+    const requestBody = {
+      token: authContext.userToken,
+      firstName: editInformationForm.firstName.value,
+      lastName: editInformationForm.lastName.value,
+      city: editInformationForm.city.value || defaultCity.id
+    }
+  }
 
   return (
     <>
@@ -259,9 +261,9 @@ function AdminDashboard() {
                   className='input'
                   type="text"
                   placeholder='نام جدید'
-                  value={editInformation.firstName.value}
+                  value={editInformationForm.firstName.value}
                   onChange={event => {
-                    setEditInformation(prev => ({
+                    setEditInformationForm(prev => ({
                       ...prev,
                       firstName: {
                         value: event.target.value,
@@ -279,9 +281,9 @@ function AdminDashboard() {
                   className='input'
                   type="text"
                   placeholder='نام خانوادگی جدید'
-                  value={editInformation.lastName.value}
+                  value={editInformationForm.lastName.value}
                   onChange={event => {
-                    setEditInformation(prev => ({
+                    setEditInformationForm(prev => ({
                       ...prev,
                       lastName: {
                         value: event.target.value,
@@ -297,11 +299,11 @@ function AdminDashboard() {
               <div className='w-full bg-input'>
                 <select
                   className='select-box'
-                  value={editInformation.firstName.value}
+                  value={editInformationForm.city.value}
                   onChange={event => {
-                    setEditInformation(prev => ({
+                    setEditInformationForm(prev => ({
                       ...prev,
-                      firstName: {
+                      city: {
                         value: event.target.value,
                         validation: true,
                       }
@@ -309,7 +311,7 @@ function AdminDashboard() {
                   }}
                 >
                   {
-                    cities.map(city => (
+                    allCities.map(city => (
                       <option key={city.id} value={city.id}>{city.name}</option>
                     ))
                   }
@@ -320,6 +322,7 @@ function AdminDashboard() {
               </div>
               <button
                 className="btn btn-blue w-full"
+                onClick={changeUserInformationHandler}
               >
                 ثبت تغییر
               </button>
@@ -327,6 +330,8 @@ function AdminDashboard() {
           </PortalModal>
         )
       }
+
+      <Toaster />
     </>
   )
 }
