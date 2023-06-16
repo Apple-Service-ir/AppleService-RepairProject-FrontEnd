@@ -89,7 +89,9 @@ function AdminDevices() {
       .catch(error => toast.error(error.response.data.err))
   }
 
-  const editDevice = () => {
+  const editDevice = event => {
+    event.preventDefault()
+
     if (editDeviceModal.brand.length < 1
       || editDeviceModal.model.length < 1) return toast.error('لطفا فیلد هارا کامل کنید')
 
@@ -189,7 +191,7 @@ function AdminDevices() {
         <h1 className='w-full text-right text-xl sansbold mt-6'>لیست دستگاه ها</h1>
         {
           datas.devices.length > 0 && (
-            <div className="w-full overflow-x-auto rounded-xl mt-1">
+            <div className="w-full overflow-x-auto rounded-xl mt-3">
               <table className='table'>
                 <thead className='thead'>
                   <tr className='thead__tr'>
