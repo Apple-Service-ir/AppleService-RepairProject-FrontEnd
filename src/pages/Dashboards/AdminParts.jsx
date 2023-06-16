@@ -31,8 +31,7 @@ function AdminParts() {
     post('/admins/parts/create', requestBody)
       .then(response => {
         setParts(prev => [response.data.part, ...prev])
-        console.log(response)
-        toast.success('قطعه با موفقیت اضافه شد')
+         toast.success('قطعه با موفقیت اضافه شد')
       })
       .catch(error => toast.error(error.response.data.err))
   }
@@ -44,7 +43,6 @@ function AdminParts() {
     }
     post('/admins/parts/delete', requestBody)
       .then((r) => {
-        console.log(r);
         setParts(prev => {
           return prev.filter(part => part.id !== partId)
         })
