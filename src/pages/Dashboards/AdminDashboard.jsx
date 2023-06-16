@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { toast, Toaster } from 'react-hot-toast'
 
@@ -7,6 +7,9 @@ import useGetCities from './../../Hooks/useGetCities'
 import AdminSideBarLink from '../../components/Dashboard/AdminSideBarLink'
 import AdminSideBarMobile from '../../components/Dashboard/AdminMobileSideBarLink'
 import PortalModal from './../../components/PortalModal/PortalModal'
+import { post } from '../../utility'
+
+const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
 
 function AdminDashboard() {
   const authContext = useContext(AuthContext)
@@ -15,10 +18,13 @@ function AdminDashboard() {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showEditInformationModal, setShowEditInformationModal] = useState(false)
   const [editInformationForm, setEditInformationForm] = useState({
-    firstName: { value: '', validation: false },
-    lastName: { value: '', validation: false },
+    profile: { file: userInfo.profile, validation: true },
+    firstName: { value: userInfo.firstName, validation: true },
+    lastName: { value: userInfo.lastName, validation: true },
     city: { value: '', validation: true },
   })
+  const [profileUrl, setProfileUrl] = useState('')
+  const profileRef = useRef()
 
   document.body.addEventListener('click', event => {
     if (event.target.dataset.mobilebtn !== 'true') {
@@ -29,18 +35,29 @@ function AdminDashboard() {
   const changeUserInformationHandler = event => {
     event.preventDefault()
 
-    for (const field in editInformationForm) {
-      if (!editInformationForm[field].validation) {
-        return toast.error('لطفا فیلد هارا کامل کنید')
-      }
-    }
+    for (const field in editInformationForm)
+      if (!editInformationForm[field].validation) return toast.error('لطفا فیلد ها را کامل کنید')
 
     const requestBody = {
       token: authContext.userToken,
-      firstName: editInformationForm.firstName.value,
-      lastName: editInformationForm.lastName.value,
-      city: editInformationForm.city.value || defaultCity.id
+      data: {
+        firstName: editInformationForm.firstName.value,
+        lastName: editInformationForm.lastName.value,
+        city: editInformationForm.city.value || defaultCity.id
+      }
     }
+    post('/informations/edit', requestBody)
+      .then(response => {
+        console.log(response)
+      })
+  }
+
+  const readUrl = file => {
+    const reader = new FileReader()
+    reader.addEventListener('load', event => {
+      setProfileUrl(event.target.result)
+    })
+    reader.readAsDataURL(file)
   }
 
   return (
@@ -256,6 +273,45 @@ function AdminDashboard() {
             closeHandler={() => setShowEditInformationModal(false)}
           >
             <form className='bg-white w-96 flex flex-col justify-center items-center gap-3 p-3 rounded-xl'>
+              <div
+                className={`${!editInformationForm.profile.validation && 'border-blue-500 border-dashed border-2'}
+                bg-blue-100 w-32 h-32 flex justify-center items-center rounded-full cursor-pointer relative`}
+                onClick={() => {
+                  profileRef.current.click()
+                }}
+                title='عکس پروفایل'
+              >
+                {
+                  editInformationForm.profile.file && (
+                    <img
+                      className='w-full h-full rounded-full
+                        absolute top-0 left-0 object-cover object-top show-fade'
+                      src={profileUrl}
+                      alt="admin profile"
+                    />
+                  )
+                }
+                <input
+                  className='hidden'
+                  type="file"
+                  ref={profileRef}
+                  onChange={event => {
+                    readUrl(event.target.files[0])
+                    console.log(profileUrl);
+                    setEditInformationForm(prev => ({
+                      ...prev,
+                      profile: {
+                        file: event.target.files[0],
+                        validation: !!event.target.files[0]
+                      }
+                    }))
+                  }}
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
+                  className="stroke-blue-500 w-9 h-9">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                </svg>
+              </div>
               <div className='w-full bg-input'>
                 <input
                   className='input'
