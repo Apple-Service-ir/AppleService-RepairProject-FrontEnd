@@ -107,7 +107,7 @@ function AdminDevices() {
           { show: false, id: null, brand: '', model: '' }
         )
         toast.success('دستگاه با موفقیت ویرایش شد')
-      })
+      }).catch(error => { toast.error(error.response.data.err) })
   }
 
   return (

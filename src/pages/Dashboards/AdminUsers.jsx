@@ -111,7 +111,9 @@ function AdminUsers() {
     }))
 
     postForm("/informations/edit", requestForm).then((res) => {
-      console.log(res)
+      toast.success("با موفقیت انجام شد.")
+    }).catch((error) => {
+      toast.error(error.response.data.err)
     })
   }
 
