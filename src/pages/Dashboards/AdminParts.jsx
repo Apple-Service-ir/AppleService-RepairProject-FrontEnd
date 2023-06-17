@@ -23,7 +23,14 @@ function AdminParts() {
   const addPartHandler = event => {
     event.preventDefault()
 
+    const englishWords = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm']
+    const persianWords = ['ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', 'خ', 'ح', 'ج', 'چ', 'ش', 'س', 'ی', 'ب', 'ل', 'ا', 'ت', 'ن', 'م', 'ک', 'گ', 'ظ', 'ط', 'ز', 'ر', 'ذ', 'د', 'ئ', 'و', 'ۀ', 'آ', 'ة', 'ي', 'ؤ', 'إ', 'أ', 'ء']
+
     if (!partName.validation) return toast.error('لطفا فیلد را کامل کنید')
+    if (!partName.value.includes("-")) return toast.error('نام قطعه باید دارای اسم فارسی و انگلیسی باشد. همچنین اسم را با " - " جداسازی نمایید')
+    if (!partName.value.includes(" - ")) setPartName({ ...partName, value: partName.value.replace("-", " - ") })
+    if (!englishWords.includes(partName.value.split(" - ")[0][0].toLowerCase()) || !persianWords.includes(partName.value.split(" - ")[1][0])) return toast.error("ابتدا اسم قطعه به انگلیسی و سپس به فارسی وارد نمایید")
+
     const requestBody = {
       token: authContext.userToken,
       name: partName.value
@@ -31,7 +38,7 @@ function AdminParts() {
     post('/admins/parts/create', requestBody)
       .then(response => {
         setParts(prev => [response.data.part, ...prev])
-         toast.success('قطعه با موفقیت اضافه شد')
+        toast.success('قطعه با موفقیت اضافه شد')
       })
       .catch(error => toast.error(error.response.data.err))
   }
