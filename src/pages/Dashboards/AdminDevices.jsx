@@ -40,6 +40,10 @@ function AdminDevices() {
   const submitHandler = event => {
     event.preventDefault()
     if (deviceForm.selectBrand.validation && deviceForm.model.validation) {
+
+      const devicesMap = datas.devices.map(d => d.model.toLowerCase())
+      if (devicesMap.includes(deviceForm.model.value.toLowerCase())) return toast.error("مدل وارد شده از قبل ثبت شده است.")
+
       const requestBody = {
         token: authContext.userToken,
         brand: deviceForm.selectBrand.value,
@@ -65,6 +69,9 @@ function AdminDevices() {
 
   const createNewBrand = () => {
     if (deviceForm.newBrand.validation) {
+      const lowerCaseBrands = datas.brands.map(b => b.toLowerCase())
+      if (lowerCaseBrands.includes(deviceForm.newBrand.value.toLowerCase())) return toast.error("برند وارد شده از قبل ساخته شده است.")
+
       setDatas(prev => {
         const newBrands = [deviceForm.newBrand.value, ...prev.brands]
         return { ...prev, brands: newBrands }
@@ -141,7 +148,7 @@ function AdminDevices() {
                 <div className='w-full bg-input
                   sm:w-1/2'>
                   <div
-                    className='input cursor-pointer'
+                    className='input cursor-pointer ltr'
                     type="text"
                     onClick={() => (setShowModal(true))}
                   >
@@ -158,6 +165,7 @@ function AdminDevices() {
                   sm:w-1/2'>
                   <input
                     className='input'
+                    dir='ltr'
                     type="text"
                     placeholder='مدل'
                     value={deviceForm.model.value}
@@ -214,8 +222,8 @@ function AdminDevices() {
                             <button className='badge badge-blue select-text'>{device.id} #</button>
                           </div>
                         </td>
-                        <td className='tbody__tr__td w-4/12'>{device.brand}</td>
-                        <td className='tbody__tr__td w-4/12 text-sm'>{device.model}</td>
+                        <td className='tbody__tr__td w-4/12 ltr text-right'>{device.brand}</td>
+                        <td className='tbody__tr__td w-4/12 text-sm ltr text-right'>{device.model}</td>
                         <td
                           className='tbody__tr__td w-1/12 group cursor-pointer'
                           onClick={() => {

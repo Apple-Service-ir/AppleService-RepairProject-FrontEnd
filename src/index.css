@@ -85,6 +85,10 @@ input[type="number"] {
     @apply h-12 flex justify-center items-center gap-3 py-2 px-6 rounded-full border cursor-pointer;
   }
 
+  .ltr {
+    direction: ltr
+  }
+
   .btn-out-white {
     @apply text-white border-white border hover:bg-white hover:text-blue-500 hover:ring-4 hover:ring-white hover:ring-opacity-50;
   }
