@@ -7,7 +7,8 @@ import useGetCities from './../../Hooks/useGetCities'
 import AdminSideBarLink from '../../components/Dashboard/AdminSideBarLink'
 import AdminSideBarMobile from '../../components/Dashboard/AdminMobileSideBarLink'
 import PortalModal from './../../components/PortalModal/PortalModal'
-import { post } from '../../utility'
+import { post, postForm } from '../../utility'
+import config from '../../../config.json'
 
 const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
 
@@ -38,18 +39,18 @@ function AdminDashboard() {
     for (const field in editInformationForm)
       if (!editInformationForm[field].validation) return toast.error('لطفا فیلد ها را کامل کنید')
 
-    const requestBody = {
-      token: authContext.userToken,
-      data: {
-        firstName: editInformationForm.firstName.value,
-        lastName: editInformationForm.lastName.value,
-        city: editInformationForm.city.value || defaultCity.id
-      }
-    }
-    post('/informations/edit', requestBody)
-      .then(response => {
-        console.log(response)
-      })
+    const requestForm = new FormData()
+    requestForm.append('token', authContext.userToken)
+    requestForm.append('picture', editInformationForm.profile.file)
+    requestForm.append('data', {
+      firstName: editInformationForm.firstName.value,
+      lastName: editInformationForm.lastName.value,
+      city: editInformationForm.city.value || defaultCity.id
+    })
+
+    postForm("/informations/edit", requestForm).then((res) => {
+      console.log(res)
+    })
   }
 
   const readUrl = file => {
@@ -66,7 +67,11 @@ function AdminDashboard() {
         <div className="bg-blue-500 w-4/12 h-full hidden flex-col items-center gap-3
         sm:flex lg:w-2/12">
           <div className="flex flex-col justify-center items-center gap-3 p-3">
-            <div className="bg-blue-400 w-28 h-28 rounded-full"></div>
+            <div className="bg-blue-400 w-28 h-28 rounded-full">
+              {authContext.userInfo.profile && (
+                <img className='h-full object-cover rounded-full' src={config.mainUrl.replace("/api", "") + `/uploads/` + authContext.userInfo.profile} />
+              )}
+            </div>
             <span className='text-white flex justify-center items-center gap-1'>
               <div
                 className='w-5 h-5 group cursor-pointer'
@@ -282,11 +287,11 @@ function AdminDashboard() {
                 title='عکس پروفایل'
               >
                 {
-                  editInformationForm.profile.file && (
+                  (editInformationForm.profile.file || authContext.userInfo.profile) && (
                     <img
                       className='w-full h-full rounded-full
                         absolute top-0 left-0 object-cover object-top show-fade'
-                      src={profileUrl}
+                      src={profileUrl || config.mainUrl.replace("/api", "") + `/uploads/` + authContext.userInfo.profile}
                       alt="admin profile"
                     />
                   )
