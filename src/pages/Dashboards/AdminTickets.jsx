@@ -62,7 +62,7 @@ function AdminTickets() {
                     <th className='thead__tr__th w-2/12'>وضعیت</th>
                     <th className='thead__tr__th w-4/12'>موضوع تیکت</th>
                     <th className='thead__tr__th w-2/12'>تاریخ</th>
-                    <th className='thead__tr__th w-2/12'>تاریخ</th>
+                    <th className='thead__tr__th w-2/12'>بستن تیکت</th>
                   </tr>
                 </thead>
                 <tbody className='tbody'>
