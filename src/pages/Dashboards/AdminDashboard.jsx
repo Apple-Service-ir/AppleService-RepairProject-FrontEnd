@@ -7,7 +7,7 @@ import useGetCities from './../../Hooks/useGetCities'
 import AdminSideBarLink from '../../components/Dashboard/AdminSideBarLink'
 import AdminSideBarMobile from '../../components/Dashboard/AdminMobileSideBarLink'
 import PortalModal from './../../components/PortalModal/PortalModal'
-import { post, postForm } from '../../utility'
+import { postForm } from '../../utility'
 import config from '../../../config.json'
 
 const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
@@ -42,11 +42,11 @@ function AdminDashboard() {
     const requestForm = new FormData()
     requestForm.append('token', authContext.userToken)
     requestForm.append('picture', editInformationForm.profile.file)
-    requestForm.append('data', {
+    requestForm.append('data', JSON.stringify({
       firstName: editInformationForm.firstName.value,
       lastName: editInformationForm.lastName.value,
       city: editInformationForm.city.value || defaultCity.id
-    })
+    }))
 
     postForm("/informations/edit", requestForm).then((res) => {
       console.log(res)
@@ -302,7 +302,6 @@ function AdminDashboard() {
                   ref={profileRef}
                   onChange={event => {
                     readUrl(event.target.files[0])
-                    console.log(profileUrl);
                     setEditInformationForm(prev => ({
                       ...prev,
                       profile: {
