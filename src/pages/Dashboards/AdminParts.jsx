@@ -3,6 +3,7 @@ import { toast, Toaster } from 'react-hot-toast'
 
 import AuthContext from '../../context/AuthContext'
 import { get, post } from '../../utility'
+import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 
 function AdminParts() {
@@ -141,7 +142,7 @@ function AdminParts() {
 
         <h1 className='w-full text-right text-xl sansbold mt-6'>لیست قطعات</h1>
         {
-          parts.length > 0 && (
+          parts.length > 0 ? (
             <div className="w-full overflow-x-auto rounded-xl mt-3">
               <table className='table'>
                 <thead className='thead'>
@@ -196,6 +197,16 @@ function AdminParts() {
                 </tbody>
               </table>
             </div>
+          ) : (
+            <Alert
+              theme={'danger'}
+              title={'قطعه ای ثبت نشده است.'}
+              icon={(
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+              )}
+            />
           )
         }
       </div>

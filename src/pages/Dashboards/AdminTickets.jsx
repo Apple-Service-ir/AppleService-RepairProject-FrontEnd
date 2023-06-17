@@ -4,6 +4,7 @@ import { Toaster, toast } from 'react-hot-toast'
 import AuthContext from '../../context/AuthContext'
 import { get, post } from '../../utility'
 import PortalModal from '../../components/PortalModal/PortalModal'
+import Alert from '../../components/Alert/Alert'
 import MessageSection from '../../components/MessageSection/MessageSection'
 
 function AdminTickets() {
@@ -53,7 +54,7 @@ function AdminTickets() {
       <div className='w-full flex flex-col items-center show-fade'>
         <h1 className='w-full text-right text-xl sansbold'>لیست تیکت ها</h1>
         {
-          tickets.length > 0 && (
+          tickets.length > 0 ? (
             <div className='w-full overflow-x-auto rounded-xl mt-1'>
               <table className='table'>
                 <thead className='thead mt-1'>
@@ -120,6 +121,16 @@ function AdminTickets() {
                 </tbody>
               </table>
             </div>
+          ) : (
+            <Alert
+              theme={'danger'}
+              title={'تیکت ای ثبت نشده است.'}
+              icon={(
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+              )}
+            />
           )
         }
       </div >

@@ -46,12 +46,12 @@ const routes = [
       { path: '/admin', element: <AdminHome /> },
       {
         path: '/admin/users',
-        element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminUsers /> </PrivateRoute>
+        element: <AdminUsers />
       },
       { path: '/admin/orders', element: <AdminOrders /> },
       { path: '/admin/tickets', element: <AdminTickets /> },
-      { path: '/admin/devices', element: <AdminDevices /> },
-      { path: '/admin/parts', element: <AdminParts /> },
+      { path: '/admin/devices', element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminDevices /> </PrivateRoute> },
+      { path: '/admin/parts', element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminParts /> </PrivateRoute> },
     ]
   }
 ]
