@@ -13,6 +13,7 @@ export default function Register() {
 
   const [formPage, setFormPage] = useState('login')
   const [prevPage, setPrevPage] = useState('login')
+  const otpRef = useRef()
   const [form, setForm] = useState({
     firstName: { value: '', validation: false },
     lastName: { value: '', validation: false },
@@ -26,6 +27,11 @@ export default function Register() {
       setCities(response.data)
     })
   }, [])
+
+  useEffect(() => {
+    console.log("test");
+    formPage == "otpPage" && otpRef.current.focus()
+  }, [formPage])
 
   function generateAgainOtp() {
     post(`/auth?action=generate&mode=${prevPage}`, { phone: form.phone.value })
@@ -309,6 +315,7 @@ export default function Register() {
               type="number"
               placeholder='کد 4 رقمی را وارد کنید'
               min={0}
+              ref={otpRef}
               value={otpNumber.value}
               onChange={event => {
                 setOtpNumber({
