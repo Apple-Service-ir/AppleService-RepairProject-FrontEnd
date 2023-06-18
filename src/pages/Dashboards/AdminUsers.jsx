@@ -494,7 +494,7 @@ function AdminUsers() {
                     <img
                       className='w-full h-full rounded-full
                           absolute top-0 left-0 object-cover object-top show-fade'
-                      src={config.mainUrl.replace("/api", "") + '/uploads/' + editInformationForm.profile.file}
+                      src={profileUrl || config.mainUrl.replace("/api", "") + '/uploads/' + editInformationForm.profile.file}
                       alt="admin profile"
                     />
                   )

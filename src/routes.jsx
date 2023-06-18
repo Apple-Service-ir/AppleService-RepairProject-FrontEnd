@@ -13,6 +13,7 @@ import AdminOrders from "./pages/Dashboards/AdminOrders.jsx"
 import AdminTickets from "./pages/Dashboards/AdminTickets.jsx"
 import AdminDevices from "./pages/Dashboards/AdminDevices.jsx"
 import AdminParts from "./pages/Dashboards/AdminParts.jsx"
+import AdminCities from "./pages/Dashboards/AdminCities.jsx"
 
 const routes = [
   { path: '/', element: <Home /> },
@@ -52,6 +53,7 @@ const routes = [
       { path: '/admin/tickets', element: <AdminTickets /> },
       { path: '/admin/devices', element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminDevices /> </PrivateRoute> },
       { path: '/admin/parts', element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminParts /> </PrivateRoute> },
+      { path: '/admin/cities', element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminCities /> </PrivateRoute> },
     ]
   }
 ]
