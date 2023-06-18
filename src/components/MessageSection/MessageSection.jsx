@@ -51,7 +51,7 @@ function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef
           {currentTicket.subject}
         </span>
         {
-          currentTicket.clientId == authcontext.userInfo.id ? (
+          currentTicket.clientId == authcontext.userInfo.id && currentTicket.status != "closed" ? (
             <div className='flex items-center'>
               <button onClick={closeTicketHandler} className='ml-3 text-xs btn btn-danger p-1 rounded-md h-8'>بستن تیکت</button>
               <span className='text-white sansbold'>{currentTicket.id} #</span>
