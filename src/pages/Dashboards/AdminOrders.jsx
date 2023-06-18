@@ -215,7 +215,11 @@ function AdminOrders() {
                   کاربر
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {modal.order.user.firstName} {modal.order.user.lastName}
+                {
+                    modal.order.user ?
+                      `${modal.order.user.firstName} ${modal.order.user.lastName}`
+                      : '-'
+                  }
                 </div>
               </li>
 
@@ -226,7 +230,7 @@ function AdminOrders() {
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                   {
                     modal.order.repairMan ?
-                      `${modal.order.repairMan.firstName} ${modal.order.repairMan.firstName}`
+                      `${modal.order.repairMan.firstName} ${modal.order.repairMan.lastName}`
                       : '-'
                   }
                 </div>
