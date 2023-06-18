@@ -283,6 +283,7 @@ function AdminUsers() {
                     className='input tracking-[0.25rem] text-right' dir='ltr'
                     type="number"
                     placeholder='09*********'
+                    inputMode='decimal'
                     min={0}
                     value={userForm.phone.value}
                     onChange={event => {
@@ -314,7 +315,7 @@ function AdminUsers() {
                       }))
                     }}
                   >
-                    <option value="none">شهرتان را انتخاب کنید</option>
+                    <option value="none">شهر را انتخاب کنید</option>
                     {
                       cities.map(city => (
                         <option key={city.id} value={city.id}>{city.name}</option>

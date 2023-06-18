@@ -175,6 +175,7 @@ export default function Register() {
             <input
               className='input tracking-[0.25rem] text-right'
               dir='ltr'
+              inputMode='decimal'
               type="number"
               placeholder='09*********'
               min={0}
@@ -249,6 +250,7 @@ export default function Register() {
               className='input tracking-[0.25rem] text-right' dir='ltr'
               type="number"
               placeholder='09*********'
+              inputMode='decimal'
               min={0}
               value={form.phone.value}
               onChange={event => {
