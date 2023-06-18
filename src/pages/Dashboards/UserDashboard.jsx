@@ -1,10 +1,40 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Outlet, Link, NavLink } from 'react-router-dom'
+import { post } from '../../utility'
 
+import PortalModal from '../../components/PortalModal/PortalModal'
 import AuthContext from '../../context/AuthContext'
+import useGetCities from './../../Hooks/useGetCities'
 
 function UserDashboard() {
   const authContext = useContext(AuthContext)
+
+  const [defaultCity, allCities] = useGetCities()
+  const [showEditInformationModal, setShowEditInformationModal] = useState(false)
+
+  const [editInformationForm, setEditInformationForm] = useState({
+    firstName: { value: authContext.userInfo.firstName, validation: true },
+    lastName: { value: authContext.userInfo.lastName, validation: true },
+    city: { value: authContext.userInfo.city, validation: true },
+  })
+
+  const changeUserInformationHandler = event => {
+    event.preventDefault()
+
+    for (const field in editInformationForm)
+      if (!editInformationForm[field].validation) return toast.error('لطفا فیلد ها را کامل کنید')
+
+    post("/informations/edit", {
+      token: authContext.userToken,
+      data: JSON.stringify({
+        firstName: editInformationForm.firstName.value,
+        lastName: editInformationForm.lastName.value,
+        city: editInformationForm.city.value || defaultCity.id
+      })
+    }).then((res) => {
+      toast.success("اطلاعات شما با موفقیت بروز شد.")
+    })
+  }
 
   return (
     <div className='w-screen flex flex-col
@@ -19,11 +49,11 @@ function UserDashboard() {
           </svg>
           <span className='text-white border-blue-400 border-b w-full text-center text-xl sansbold
             tracking-wide flex justify-center items-center gap-3 py-1'>
-            <Link>
+            <div className='w-5 h-5 group cursor-pointer' onClick={() => setShowEditInformationModal(true)}>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-white w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
               </svg>
-            </Link>
+            </div>
             {authContext.userInfo.firstName} {authContext.userInfo.lastName}
           </span>
           <div className="w-full flex flex-col justify-center items-center gap-3 mt-3">
@@ -56,6 +86,125 @@ function UserDashboard() {
       </div>
       <div className="w-full rounded-xl p-6 relative
         lg:w-9/12 lg:pr-3">{<Outlet />}</div>
+
+      {
+        showEditInformationModal && (
+          <PortalModal
+            closeHandler={() => setShowEditInformationModal(false)}
+          >
+            <form className='bg-white w-96 flex flex-col justify-center items-center gap-3 p-3 rounded-xl'>
+              {/* <div
+                className={`${!editInformationForm.profile.validation && 'border-blue-500 border-dashed border-2'}
+                bg-blue-100 w-32 h-32 flex justify-center items-center rounded-full cursor-pointer relative`}
+                onClick={() => {
+                  profileRef.current.click()
+                }}
+                title='عکس پروفایل'
+              >
+                {
+                  (editInformationForm.profile.file || authContext.userInfo.profile) && (
+                    <img
+                      className='w-full h-full rounded-full
+                        absolute top-0 left-0 object-cover object-top show-fade'
+                      src={profileUrl || config.mainUrl.replace("/api", "") + `/uploads/` + authContext.userInfo.profile}
+                      alt="admin profile"
+                    />
+                  )
+                }
+                <input
+                  className='hidden'
+                  type="file"
+                  ref={profileRef}
+                  onChange={event => {
+                    readUrl(event.target.files[0])
+                    setEditInformationForm(prev => ({
+                      ...prev,
+                      profile: {
+                        file: event.target.files[0],
+                        validation: !!event.target.files[0]
+                      }
+                    }))
+                  }}
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
+                  className="stroke-blue-500 w-9 h-9">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                </svg>
+              </div> */}
+              <div className='w-full bg-input'>
+                <input
+                  className='input'
+                  type="text"
+                  placeholder='نام جدید'
+                  value={editInformationForm.firstName.value}
+                  onChange={event => {
+                    setEditInformationForm(prev => ({
+                      ...prev,
+                      firstName: {
+                        value: event.target.value,
+                        validation: event.target.value.length >= 3,
+                      }
+                    }))
+                  }}
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+              </div>
+              <div className='w-full bg-input'>
+                <input
+                  className='input'
+                  type="text"
+                  placeholder='نام خانوادگی جدید'
+                  value={editInformationForm.lastName.value}
+                  onChange={event => {
+                    setEditInformationForm(prev => ({
+                      ...prev,
+                      lastName: {
+                        value: event.target.value,
+                        validation: event.target.value.length >= 3,
+                      }
+                    }))
+                  }}
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                </svg>
+              </div>
+              <div className='w-full bg-input'>
+                <select
+                  className='select-box'
+                  value={editInformationForm.city.value}
+                  onChange={event => {
+                    setEditInformationForm(prev => ({
+                      ...prev,
+                      city: {
+                        value: event.target.value,
+                        validation: true,
+                      }
+                    }))
+                  }}
+                >
+                  {
+                    allCities.map(city => (
+                      <option key={city.id} value={city.id}>{city.name}</option>
+                    ))
+                  }
+                </select>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
+                </svg>
+              </div>
+              <button
+                className="btn btn-blue w-full"
+                onClick={changeUserInformationHandler}
+              >
+                ثبت تغییر
+              </button>
+            </form>
+          </PortalModal>
+        )
+      }
     </div>
   )
 }

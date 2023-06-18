@@ -49,7 +49,7 @@ function AdminDashboard() {
     }))
 
     postForm("/informations/edit", requestForm).then((res) => {
-      console.log(res)
+      toast.success("اطلاعات شما با موفقیت بروز شد.")
     })
   }
 
