@@ -15,6 +15,10 @@ function AdminTickets() {
   const bottomRef = useRef()
 
   useEffect(() => {
+    document.title = "تیکت ها - داشبورد مدیریت اپل سرویس"
+  }, [])
+
+  useEffect(() => {
     if (authContext.userToken) {
       get(`/tickets/all?admin=true&token=${authContext.userToken}`)
         .then(response => {

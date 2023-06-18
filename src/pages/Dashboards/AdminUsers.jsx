@@ -42,6 +42,10 @@ function AdminUsers() {
   })
 
   useEffect(() => {
+    document.title = "کاربران - داشبورد مدیریت اپل سرویس"
+  }, [])
+
+  useEffect(() => {
     get('/list/cities').then(response => {
       setCities(response.data)
     })

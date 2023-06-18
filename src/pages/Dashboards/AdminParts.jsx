@@ -16,6 +16,8 @@ function AdminParts() {
   const [editPartName, setEdirPartName] = useState({ value: '', validation: false })
 
   useEffect(() => {
+    document.title = "مدیریت قطعات - داشبورد مدیریت اپل سرویس"
+
     get('/list/parts')
       .then(response => setParts(response.data))
       .catch(error => toast.error(error.response.data.err))

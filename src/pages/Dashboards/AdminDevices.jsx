@@ -21,6 +21,10 @@ function AdminDevices() {
   const [editDeviceModal, setEditDeviceModal] = useState({ show: false, id: null, brand: '', model: '' })
 
   useEffect(() => {
+    document.title = "مدیریت دستگاه ها - داشبورد مدیریت اپل سرویس"
+  }, [])
+
+  useEffect(() => {
     if (authContext.userToken) {
       getDatas()
     }

@@ -19,6 +19,10 @@ function UserTickets() {
   const bottomRef = useRef()
 
   useEffect(() => {
+    document.title = "تیکت ها - داشبورد اپل سرویس"
+  }, [])
+
+  useEffect(() => {
     if (authContext.userToken) {
       get(`/tickets/all?token=${authContext.userToken}`)
         .then(response => {

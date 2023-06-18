@@ -16,6 +16,8 @@ function AdminCities() {
   const [editCityName, setEditCityName] = useState({ value: '', validation: false })
 
   useEffect(() => {
+    document.title = "مدیریت شهر ها - داشبورد مدیریت اپل سرویس"
+
     get('/list/cities')
       .then(response => setCities(response.data))
       .catch(error => toast.error(error.response.data.err))

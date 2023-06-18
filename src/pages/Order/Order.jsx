@@ -23,6 +23,8 @@ export default function Order() {
   const fileRef = useRef()
 
   useEffect(() => {
+    document.title = "ثبت سفارش - اپل سرویس"
+
     get('/list/devices').then(response => {
       const mapped = response.data.phones.map(item => {
         return { id: item.id, value: `${item.brand} ${item.model}`, brand: item.brand }

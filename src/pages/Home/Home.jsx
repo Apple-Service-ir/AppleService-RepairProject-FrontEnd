@@ -1,9 +1,14 @@
+import React, {useEffect} from 'react'
 import { ServiceBox } from "../../components/ServiceBox/ServiceBox"
 import { HonorItem } from "../../components/HonorItem/HonorItem"
 import { QuestionItem } from "../../components/QuestionItem/QuestionItem"
 import { Link } from "react-router-dom"
 
 export default function Home() {
+  useEffect(() => {
+    document.title = "سرویس تعمیر گوشی در محل - اپل سرویس"
+  }, [])
+
   return (
     <>
       <div className="bg-blue-500 w-screen flex flex-col items-center pb-24">

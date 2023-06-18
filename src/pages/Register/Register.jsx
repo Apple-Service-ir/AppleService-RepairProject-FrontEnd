@@ -23,21 +23,39 @@ export default function Register() {
   const [otpNumber, setOtpNumber] = useState({ value: '', validation: false })
 
   useEffect(() => {
+    document.title = "ورود - اپل سرویس"
+
     get('/list/cities').then(response => {
       setCities(response.data)
     })
   }, [])
 
   useEffect(() => {
-    console.log("test");
-    formPage == "otpPage" && otpRef.current.focus()
+    switch (formPage) {
+      case "otpPage":
+        document.title = "کد تایید - اپل سرویس"
+        otpRef.current.focus()
+        break;
+
+      case "register":
+        document.title = "ثبت نام - اپل سرویس"
+        break;
+
+      case "login":
+        document.title = "ورود - اپل سرویس"
+        break;
+
+      default:
+        document.title = "ورود - اپل سرویس"
+        break;
+    }
   }, [formPage])
 
   function generateAgainOtp() {
     post(`/auth?action=generate&mode=${prevPage}`, { phone: form.phone.value })
-    .then(() => {
-      toast.success(`کد تایید مجدد ارسال شد`)
-      setOtpNumber({ value: '', validation: false })
+      .then(() => {
+        toast.success(`کد تایید مجدد ارسال شد`)
+        setOtpNumber({ value: '', validation: false })
       }).catch(err => {
         toast(err.response.data.err, {
           icon: (

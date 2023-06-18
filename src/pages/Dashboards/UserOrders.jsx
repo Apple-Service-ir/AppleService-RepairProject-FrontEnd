@@ -14,6 +14,10 @@ function UserOrders() {
   const [modal, setModal] = useState({ show: false, order: {} })
 
   useEffect(() => {
+    document.title = "سفارشات - داشبورد اپل سرویس"
+  }, [])
+
+  useEffect(() => {
     authContext.userToken &&
       get(`/orders/log?token=${authContext.userToken}`).then((response) => {
         setOrders(response.data.orders)

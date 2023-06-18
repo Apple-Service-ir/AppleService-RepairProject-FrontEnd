@@ -17,6 +17,10 @@ function AdminOrders() {
   const orderDescRef = useRef()
 
   useEffect(() => {
+    document.title = "سفارشات - داشبورد مدیریت اپل سرویس"
+  }, [])
+
+  useEffect(() => {
     if (authContext.userInfo) {
       get(`/admins/orders/all?token=${authContext.userToken}`)
         .then(response => {
@@ -215,7 +219,7 @@ function AdminOrders() {
                   کاربر
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                {
+                  {
                     modal.order.user ?
                       `${modal.order.user.firstName} ${modal.order.user.lastName}`
                       : '-'
