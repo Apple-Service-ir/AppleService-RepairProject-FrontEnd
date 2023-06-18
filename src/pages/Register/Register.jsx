@@ -316,6 +316,7 @@ export default function Register() {
               placeholder='کد 4 رقمی را وارد کنید'
               min={0}
               ref={otpRef}
+              autoComplete='one-time-code'
               value={otpNumber.value}
               onChange={event => {
                 setOtpNumber({
