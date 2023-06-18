@@ -78,11 +78,10 @@ input[type="number"] {
     content: "";
     border : 15px solid transparent;
     border-right-color: rgb(187 247 208);
-    border-radius: 10px;
     position: absolute;
     right: 0;
     bottom: 0;
-    transform: rotateZ(90deg) translateY(-30%);
+    transform: rotateZ(95deg) translateY(-20%);
   }
 
   .chat-l{
@@ -93,11 +92,10 @@ input[type="number"] {
     content: "";
     border : 15px solid transparent;
     border-right-color: rgb(191 219 254);
-    border-radius: 10px;
     position: absolute;
     left: 0;
     bottom: 0;
-    transform: rotateZ(90deg) translateY(30%);
+    transform: rotateZ(95deg) translateY(20%);
   }
 
   .header__navlink,
