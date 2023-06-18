@@ -63,7 +63,7 @@ function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef
             currentTicket.messages.map(message => {
               return message.isSupport ? (
                 <div key={message.id} className="w-full flex justify-end p-1">
-                  <div className="bg-blue-200 w-max max-w-[80%] p-3 rounded-md relative mt-5">
+                  <div className="bg-blue-200 w-max max-w-[80%] p-3 relative mt-5 chat-l">
                     <span className='text-blue-500 text-xs absolute left-2 -top-5'>پشتیبان</span>
                     <p className='text-sm break-words
                       sm:text-base'>{message.text}</p>
@@ -71,7 +71,7 @@ function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef
                 </div>
               ) : (
                 <div key={message.id} className="w-full p-1">
-                  <div className="bg-green-200 w-max max-w-[80%] p-3 rounded-md">
+                  <div className="bg-green-200 w-max max-w-[80%] p-3 relative chat-r">
                     <p className='text-sm break-words
                       sm:text-base'>{message.text}</p>
                   </div>
