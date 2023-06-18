@@ -11,7 +11,6 @@ function UserDashboard() {
 
   const [defaultCity, allCities] = useGetCities()
   const [showEditInformationModal, setShowEditInformationModal] = useState(false)
-
   const [editInformationForm, setEditInformationForm] = useState({
     firstName: { value: authContext.userInfo.firstName, validation: true },
     lastName: { value: authContext.userInfo.lastName, validation: true },

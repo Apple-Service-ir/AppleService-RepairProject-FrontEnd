@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 
-import AuthContext from '../../context/AuthContext'
 import { get, post } from '../../utility'
+import AuthContext from '../../context/AuthContext'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 
@@ -31,8 +31,7 @@ function AdminCities() {
     if (!cityName.validation) return toast.error('لطفا فیلد را کامل کنید')
     if (englishWords.includes(cityName.value)) return toast.error('اسم شهر باید فقط حروف فارسی باشد.')
 
-    const mappedCities = cities.map(city => city.name)
-    if (mappedCities.includes(cityName.value)) return toast.error("این شهر از قبل ثبت شده است.")
+    if (cities.map(city => city.name).includes(cityName.value)) return toast.error("این شهر از قبل ثبت شده است.")
 
     const requestBody = {
       token: authContext.userToken,
@@ -73,9 +72,7 @@ function AdminCities() {
       .then(() => {
         setCities(prev => {
           const newCities = prev.map(city => {
-            if (city.id === modal.city.id) {
-              city.name = editCityName.value
-            }
+            if (city.id === modal.city.id) city.name = editCityName.value
             return city
           })
           return newCities

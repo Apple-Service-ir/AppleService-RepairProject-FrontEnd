@@ -7,20 +7,21 @@ import AuthContext from '../../context/AuthContext';
 
 export default function Register() {
   const authcontext = useContext(AuthContext)
+
   const navigate = useNavigate()
 
   const [cities, setCities] = useState([])
-
   const [formPage, setFormPage] = useState('login')
   const [prevPage, setPrevPage] = useState('login')
-  const otpRef = useRef()
+  const [otpNumber, setOtpNumber] = useState({ value: '', validation: false })
   const [form, setForm] = useState({
     firstName: { value: '', validation: false },
     lastName: { value: '', validation: false },
     phone: { value: '', validation: false },
     city: { value: '', validation: false },
   })
-  const [otpNumber, setOtpNumber] = useState({ value: '', validation: false })
+
+  const otpRef = useRef()
 
   useEffect(() => {
     document.title = "ورود - اپل سرویس"
@@ -109,18 +110,12 @@ export default function Register() {
     if (form.phone.validation) {
       setPrevPage('login')
       generateLoginOtp()
-    } else {
-      toast.error('لطفا شماره خود را به درستی وارد کنید!')
-    }
+    } else toast.error('لطفا شماره خود را به درستی وارد کنید!')
   }
 
   function submitRegister() {
-    for (const field in form) {
-      if (!form[field].validation) {
-        toast.error('لطفا فیلد هارا به درستی کامل کنید!')
-        return
-      }
-    }
+    for (const field in form)
+      if (!form[field].validation) return toast.error('لطفا فیلد هارا به درستی کامل کنید!')
 
     setPrevPage('register')
     generateRegisterOtp()
@@ -136,6 +131,7 @@ export default function Register() {
     }).then(async (response) => {
       let token = response.data.token || null
       let userData = response.data.user || null
+
       if (prevPage === 'register') {
         await post(`/register`, {
           firstName: form.firstName.value,

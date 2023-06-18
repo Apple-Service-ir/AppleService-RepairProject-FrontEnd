@@ -1,55 +1,47 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { createPortal } from 'react-dom'
 import { Toaster, toast } from 'react-hot-toast'
 
 import { mainUrl } from "../../../config.json"
+import { get, post } from '../../utility'
+import { useRef } from 'react'
 import AuthContext from '../../context/AuthContext'
 import Alert from '../../components/Alert/Alert'
-import { get, post } from '../../utility'
 import PortalModal from '../../components/PortalModal/PortalModal'
-import { useRef } from 'react'
 
 function AdminOrders() {
   const authContext = useContext(AuthContext)
 
   const [orders, setOrders] = useState([])
   const [modal, setModal] = useState({ show: false, order: {} })
+
   const orderDescRef = useRef()
 
-  useEffect(() => {
-    document.title = "سفارشات - داشبورد مدیریت اپل سرویس"
-  }, [])
+  useEffect(() => { document.title = "سفارشات - داشبورد مدیریت اپل سرویس" }, [])
 
   useEffect(() => {
-    if (authContext.userInfo) {
-      get(`/admins/orders/all?token=${authContext.userToken}`)
-        .then(response => {
-          setOrders(response.data.orders)
-        })
-    }
+    authContext.userInfo && get(`/admins/orders/all?token=${authContext.userToken}`)
+      .then(response => {
+        setOrders(response.data.orders)
+      })
   }, [authContext])
 
   useEffect(() => {
-    if (orderDescRef.current) {
-      orderDescRef.current.value = ''
-    }
+    if (orderDescRef.current) orderDescRef.current.value = ''
   }, [modal])
 
   function changeStatus(orderId, currentStatus) {
-    const bodyRequest = {
+
+    post('/admins/orders/status', {
       token: authContext.userToken,
       id: orderId,
       status: currentStatus,
       adminMessage: orderDescRef.current.value || null
-    }
-
-    post('/admins/orders/status', bodyRequest)
+    })
       .then(() => {
         setOrders(prev => {
           const newOrders = prev.map(order => {
             if (order.id === orderId) {
               order.status = currentStatus
-              console.log(orderDescRef.current.value);
               order.adminMessage = orderDescRef.current.value || null
               return order
             }
@@ -57,8 +49,7 @@ function AdminOrders() {
             return order
           })
 
-          const findOrder = newOrders.find(order => order.id === orderId)
-          setModal(prev => ({ ...prev, order: findOrder }))
+          setModal(prev => ({ ...prev, order: newOrders.find(order => order.id === orderId) }))
 
           return newOrders
         })

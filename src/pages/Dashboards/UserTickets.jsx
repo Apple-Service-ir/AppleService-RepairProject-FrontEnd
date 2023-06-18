@@ -1,8 +1,8 @@
 import React, { useRef, useState, useContext, useEffect } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 
-import AuthContext from '../../context/AuthContext'
 import { get, post } from '../../utility'
+import AuthContext from '../../context/AuthContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import Alert from '../../components/Alert/Alert'
 import MessageSection from '../../components/MessageSection/MessageSection'
@@ -11,11 +11,12 @@ function UserTickets() {
   const authContext = useContext(AuthContext)
 
   const [tickets, setTickets] = useState([])
+  const [modal, setModal] = useState({ show: false, ticket: {} })
   const [ticketForm, setTicketForm] = useState({
     subject: { value: '', validation: false },
     text: { value: '', validation: false }
   })
-  const [modal, setModal] = useState({ show: false, ticket: {} })
+
   const bottomRef = useRef()
 
   useEffect(() => {
@@ -23,24 +24,18 @@ function UserTickets() {
   }, [])
 
   useEffect(() => {
-    if (authContext.userToken) {
-      get(`/tickets/all?token=${authContext.userToken}`)
-        .then(response => {
-          console.log(response);
-          setTickets(response.data.tickets)
-        })
-    }
+    authContext.userToken && get(`/tickets/all?token=${authContext.userToken}`)
+      .then(response => {
+        console.log(response);
+        setTickets(response.data.tickets)
+      })
   }, [authContext])
 
   function submitTicketHandler(event) {
     event.preventDefault()
 
-    for (const field in ticketForm) {
-      if (!ticketForm[field].validation) {
-        toast.error('لطفا فیلد هارا به درستی پر کنید!')
-        return
-      }
-    }
+    for (const field in ticketForm)
+      if (!ticketForm[field].validation) return toast.error('لطفا فیلد هارا به درستی پر کنید!')
 
     post('/tickets/new', {
       token: authContext.userToken,

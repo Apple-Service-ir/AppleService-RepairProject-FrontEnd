@@ -3,13 +3,14 @@ import { createPortal } from 'react-dom'
 import { toast, Toaster } from 'react-hot-toast'
 
 import { mainUrl } from "../../../config.json"
-import AuthContext from './../../context/AuthContext'
 import { get, post } from '../../utility'
+import AuthContext from './../../context/AuthContext'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 
 function UserOrders() {
   const authContext = useContext(AuthContext)
+
   const [orders, setOrders] = useState([])
   const [modal, setModal] = useState({ show: false, order: {} })
 
@@ -18,8 +19,8 @@ function UserOrders() {
   }, [])
 
   useEffect(() => {
-    authContext.userToken &&
-      get(`/orders/log?token=${authContext.userToken}`).then((response) => {
+    authContext.userToken && get(`/orders/log?token=${authContext.userToken}`)
+      .then((response) => {
         setOrders(response.data.orders)
       })
   }, [authContext])

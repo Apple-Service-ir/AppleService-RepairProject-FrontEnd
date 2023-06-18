@@ -4,9 +4,9 @@ import { routes } from "./routes"
 import { Header } from "./components/Header/Header"
 import Footer from "./components/Footer/Footer"
 
-import AuthContext from "./context/AuthContext"
 import { get, post } from "./utility"
 import { toast } from "react-hot-toast"
+import AuthContext from "./context/AuthContext"
 
 const containingHeader = [
   '/',

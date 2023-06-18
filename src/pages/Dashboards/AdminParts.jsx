@@ -34,11 +34,10 @@ function AdminParts() {
     if (!partName.value.includes(" - ")) setPartName({ ...partName, value: partName.value.replace("-", " - ") })
     if (!englishWords.includes(partName.value.split(" - ")[0][0].toLowerCase()) || !persianWords.includes(partName.value.split(" - ")[1][0])) return toast.error("ابتدا اسم قطعه به انگلیسی و سپس به فارسی وارد نمایید")
 
-    const requestBody = {
+    post('/admins/parts/create', {
       token: authContext.userToken,
       name: partName.value
-    }
-    post('/admins/parts/create', requestBody)
+    })
       .then(response => {
         setParts(prev => [response.data.part, ...prev])
         toast.success('قطعه با موفقیت اضافه شد')
@@ -47,11 +46,10 @@ function AdminParts() {
   }
 
   const removePartHandler = partId => {
-    const requestBody = {
+    post('/admins/parts/delete', {
       token: authContext.userToken,
       id: partId
-    }
-    post('/admins/parts/delete', requestBody)
+    })
       .then((r) => {
         setParts(prev => {
           return prev.filter(part => part.id !== partId)
@@ -63,19 +61,18 @@ function AdminParts() {
 
   const editPartNameHandler = event => {
     event.preventDefault()
+
     if (!editPartName.validation) return toast.error('لطفا فیلد را کامل کنید')
-    const requestBody = {
+
+    post('/admins/parts/edit', {
       token: authContext.userToken,
       id: modal.part.id,
       data: { name: editPartName.value },
-    }
-    post('/admins/parts/edit', requestBody)
+    })
       .then(() => {
         setParts(prev => {
           const newParts = prev.map(part => {
-            if (part.id === modal.part.id) {
-              part.name = editPartName.value
-            }
+            if (part.id === modal.part.id) part.name = editPartName.value
             return part
           })
           return newParts

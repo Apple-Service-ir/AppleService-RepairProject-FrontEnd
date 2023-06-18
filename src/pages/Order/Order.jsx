@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState, useContext } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 
+import { get, postForm } from '../../utility';
 import AuthContext from './../../context/AuthContext'
 import useGetCities from './../../Hooks/useGetCities'
-import { get, postForm } from '../../utility';
 import PortalModal from './../../components/PortalModal/PortalModal'
 
 export default function Order() {
@@ -13,13 +13,13 @@ export default function Order() {
   const [datas, setDatas] = useState({ all: [], brands: [], devices: [], parts: [] })
   const [selectedDatas, setSelectedDatas] = useState({ devices: {}, parts: {} })
   const [modals, setModals] = useState({ brands: false, devices: false, parts: false })
-
   const [form, setForm] = useState({
     city: { value: '', validation: true },
     file: { value: null, fileName: 'تصویر دستگاه خود را بارگذاری کنید', validation: false },
     address: { value: '', validation: false },
     desc: { value: '', validation: false },
   })
+
   const fileRef = useRef()
 
   useEffect(() => {
@@ -29,8 +29,7 @@ export default function Order() {
       const mapped = response.data.phones.map(item => {
         return { id: item.id, value: `${item.brand} ${item.model}`, brand: item.brand }
       })
-      setDatas(prev => ({ ...prev, all: mapped }))
-      setDatas(prev => ({ ...prev, brands: response.data.brands }))
+      setDatas(prev => ({ ...prev, all: mapped, brands: response.data.brands }))
     })
 
     get('/list/parts').then(response => {
@@ -49,16 +48,12 @@ export default function Order() {
     formData.append('description', form.desc.value)
     formData.append('picture', form.file.value);
 
-    for (const field in form) {
-      if (!form[field].validation) {
-        toast.error('لطفا فیلد هارا به درستی وارد کنید')
-        return
-      }
-    }
+    for (const field in form)
+      if (!form[field].validation) return toast.error('لطفا فیلد هارا به درستی وارد کنید')
+
     postForm('/orders/submit', formData)
       .then(() => {
-        setSelectedDatas(prev => ({ ...prev, devices: {} }))
-        setSelectedDatas(prev => ({ ...prev, parts: {} }))
+        setSelectedDatas(prev => ({ ...prev, devices: {}, parts: {} }))
         setForm(prev => ({
           ...prev,
           file: { value: null, fileName: 'تصویر دستگاه خود را بارگذاری کنید', validation: false },

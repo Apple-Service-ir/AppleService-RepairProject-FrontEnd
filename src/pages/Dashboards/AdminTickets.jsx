@@ -1,8 +1,8 @@
 import React, { useContext, useState, useRef, useEffect } from 'react'
 import { Toaster, toast } from 'react-hot-toast'
 
-import AuthContext from '../../context/AuthContext'
 import { get, post } from '../../utility'
+import AuthContext from '../../context/AuthContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import Alert from '../../components/Alert/Alert'
 import MessageSection from '../../components/MessageSection/MessageSection'
@@ -12,6 +12,7 @@ function AdminTickets() {
 
   const [tickets, setTickets] = useState([])
   const [modal, setModal] = useState({ shwo: false, ticket: {} })
+
   const bottomRef = useRef()
 
   useEffect(() => {
@@ -19,23 +20,20 @@ function AdminTickets() {
   }, [])
 
   useEffect(() => {
-    if (authContext.userToken) {
-      get(`/tickets/all?admin=true&token=${authContext.userToken}`)
-        .then(response => {
-          setTickets(response.data.tickets)
-        })
-    }
+    authContext.userToken && get(`/tickets/all?admin=true&token=${authContext.userToken}`)
+      .then(response => {
+        setTickets(response.data.tickets)
+      })
   }, [authContext])
 
   const closeTicket = (event, ticket) => {
     event.stopPropagation()
 
     if (ticket.status !== 'closed') {
-      const requestBody = {
+      post('/tickets/close', {
         token: authContext.userToken,
         ticketId: ticket.id
-      }
-      post('/tickets/close', requestBody)
+      })
         .then(() => {
           setTickets(prev => {
             const filteredTickets = prev.map(item => {

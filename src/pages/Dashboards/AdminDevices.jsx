@@ -1,33 +1,31 @@
 import React, { useState, useEffect, useContext } from 'react'
 
+import { get, post } from '../../utility'
+import { toast, Toaster } from 'react-hot-toast'
 import AuthContext from './../../context/AuthContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import Alert from '../../components/Alert/Alert'
-import { get, post } from '../../utility'
-import { toast, Toaster } from 'react-hot-toast'
 
 function AdminDevices() {
   const authContext = useContext(AuthContext)
 
   const [showDeviceForm, setShowDeviceForm] = useState(false)
 
+  const [showModal, setShowModal] = useState(false)
+  const [editDeviceModal, setEditDeviceModal] = useState({ show: false, id: null, brand: '', model: '' })
   const [datas, setDatas] = useState({ brands: [], devices: [] })
   const [deviceForm, setDeviceForm] = useState({
     model: { value: '', validation: false },
     selectBrand: { value: '', validation: false },
     newBrand: { value: '', validation: false }
   })
-  const [showModal, setShowModal] = useState(false)
-  const [editDeviceModal, setEditDeviceModal] = useState({ show: false, id: null, brand: '', model: '' })
 
   useEffect(() => {
     document.title = "مدیریت دستگاه ها - داشبورد مدیریت اپل سرویس"
   }, [])
 
   useEffect(() => {
-    if (authContext.userToken) {
-      getDatas()
-    }
+    authContext.userToken && getDatas()
   }, [authContext])
 
   const getDatas = () => {
@@ -49,12 +47,11 @@ function AdminDevices() {
       const devicesMap = datas.devices.map(d => d.model.toLowerCase())
       if (devicesMap.includes(deviceForm.model.value.toLowerCase())) return toast.error("مدل وارد شده از قبل ثبت شده است.")
 
-      const requestBody = {
+      post('/admins/devices/create', {
         token: authContext.userToken,
         brand: deviceForm.selectBrand.value,
         model: deviceForm.model.value
-      }
-      post('/admins/devices/create', requestBody)
+      })
         .then(response => {
           setDatas(prev => ({
             ...prev,
@@ -74,12 +71,10 @@ function AdminDevices() {
 
   const createNewBrand = () => {
     if (deviceForm.newBrand.validation) {
-      const lowerCaseBrands = datas.brands.map(b => b.toLowerCase())
-      if (lowerCaseBrands.includes(deviceForm.newBrand.value.toLowerCase())) return toast.error("برند وارد شده از قبل ساخته شده است.")
+      if (datas.brands.map(b => b.toLowerCase()).includes(deviceForm.newBrand.value.toLowerCase())) return toast.error("برند وارد شده از قبل ساخته شده است.")
 
       setDatas(prev => {
-        const newBrands = [deviceForm.newBrand.value, ...prev.brands]
-        return { ...prev, brands: newBrands }
+        return { ...prev, brands: [deviceForm.newBrand.value, ...prev.brands] }
       })
       setDeviceForm(prev => ({
         ...prev,
@@ -104,20 +99,16 @@ function AdminDevices() {
   const editDevice = event => {
     event.preventDefault()
 
-    if (editDeviceModal.brand.length < 1
-      || editDeviceModal.model.length < 1) return toast.error('لطفا فیلد هارا کامل کنید')
+    if (editDeviceModal.brand.length < 1 || editDeviceModal.model.length < 1) return toast.error('لطفا فیلد هارا کامل کنید')
 
-    const requestBody = {
+    post('/admins/devices/edit', {
       token: authContext.userToken,
       id: editDeviceModal.id,
       data: { brand: editDeviceModal.brand, model: editDeviceModal.model },
-    }
-    post('/admins/devices/edit', requestBody)
+    })
       .then(() => {
         getDatas()
-        setEditDeviceModal(
-          { show: false, id: null, brand: '', model: '' }
-        )
+        setEditDeviceModal({ show: false, id: null, brand: '', model: '' })
         toast.success('دستگاه با موفقیت ویرایش شد')
       }).catch(error => { toast.error(error.response.data.err) })
   }

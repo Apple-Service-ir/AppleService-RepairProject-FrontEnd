@@ -2,12 +2,12 @@ import React, { useContext, useRef, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { toast, Toaster } from 'react-hot-toast'
 
+import { postForm } from '../../utility'
 import AuthContext from '../../context/AuthContext'
 import useGetCities from './../../Hooks/useGetCities'
 import AdminSideBarLink from '../../components/Dashboard/AdminSideBarLink'
 import AdminSideBarMobile from '../../components/Dashboard/AdminMobileSideBarLink'
 import PortalModal from './../../components/PortalModal/PortalModal'
-import { postForm } from '../../utility'
 import config from '../../../config.json'
 
 const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
@@ -18,20 +18,17 @@ function AdminDashboard() {
   const [defaultCity, allCities] = useGetCities()
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showEditInformationModal, setShowEditInformationModal] = useState(false)
+  const [profileUrl, setProfileUrl] = useState('')
   const [editInformationForm, setEditInformationForm] = useState({
     profile: { file: userInfo.profile, validation: true },
     firstName: { value: userInfo.firstName, validation: true },
     lastName: { value: userInfo.lastName, validation: true },
     city: { value: '', validation: true },
   })
-  const [profileUrl, setProfileUrl] = useState('')
+
   const profileRef = useRef()
 
-  document.body.addEventListener('click', event => {
-    if (event.target.dataset.mobilebtn !== 'true') {
-      setShowMobileMenu(false)
-    }
-  })
+  document.body.addEventListener('click', event => { event.target.dataset.mobilebtn !== 'true' && setShowMobileMenu(false) })
 
   const changeUserInformationHandler = event => {
     event.preventDefault()

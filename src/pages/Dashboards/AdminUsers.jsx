@@ -1,22 +1,21 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
+import { get, post, postForm } from './../../utility'
+import { toast, Toaster } from 'react-hot-toast'
 import AuthContext from './../../context/AuthContext'
 import Alert from '../../components/Alert/Alert'
-import { get, post, postForm } from './../../utility'
 import useGetCities from './../../Hooks/useGetCities'
 import PortalModal from './../../components/PortalModal/PortalModal'
-import { toast, Toaster } from 'react-hot-toast'
 import config from '../../../config.json'
 
 function AdminUsers() {
   const authContext = useContext(AuthContext)
 
-  const [cities, setCities] = useState([])
   const [defaultCity, allCities] = useGetCities()
+  const [cities, setCities] = useState([])
   const [users, setUsers] = useState([])
   const [showUserForm, setShowUserForm] = useState(false)
   const [profileUrl, setProfileUrl] = useState('')
-  const profileRef = useRef()
   const [showEditInformationModal, setShowEditInformationModal] = useState({ show: false, id: null })
   const [userForm, setUserForm] = useState({
     firstName: { value: '', validation: false },
@@ -31,7 +30,6 @@ function AdminUsers() {
       }
     }
   })
-
   const [editInformationForm, setEditInformationForm] = useState({
     id: { value: '', validation: true },
     profile: { file: '', validation: true },
@@ -40,6 +38,8 @@ function AdminUsers() {
     phone: { value: '', validation: true },
     city: { value: '', validation: true },
   })
+
+  const profileRef = useRef()
 
   useEffect(() => {
     document.title = "کاربران - داشبورد مدیریت اپل سرویس"
@@ -50,33 +50,26 @@ function AdminUsers() {
       setCities(response.data)
     })
 
-    if (authContext.userToken) {
-      get(`/admins/users/all?token=${authContext.userToken}`)
-        .then(response => {
-          setUsers(response.data.users)
-        })
-    }
+    authContext.userToken && get(`/admins/users/all?token=${authContext.userToken}`)
+      .then(response => {
+        setUsers(response.data.users)
+      })
   }, [authContext])
 
   function submitHandler(event) {
     event.preventDefault()
 
-    for (const field in userForm) {
-      if (!userForm[field].validation) {
-        toast.error('لطفا فیلد هارا کامل پر کنید')
-        return
-      }
-    }
+    for (const field in userForm)
+      if (!userForm[field].validation) return toast.error('لطفا فیلد هارا کامل پر کنید')
 
-    const requestBody = {
+    post('/admins/users/create', {
       token: authContext.userToken,
       firstName: userForm.firstName.value,
       lastName: userForm.lastName.value,
       phone: userForm.phone.value,
       city: userForm.city.value,
       role: userForm.role.value
-    }
-    post('/admins/users/create', requestBody)
+    })
       .then(response => {
 
         setUsers(prev => [response.data.user, ...prev])
@@ -152,9 +145,7 @@ function AdminUsers() {
   const removeUserFromTable = (arr, id) => {
     const objWithIdIndex = arr.findIndex((obj) => obj.id === id);
 
-    if (objWithIdIndex > -1) {
-      arr.splice(objWithIdIndex, 1);
-    }
+    objWithIdIndex > -1 && arr.splice(objWithIdIndex, 1);
 
     return arr;
   }
@@ -162,12 +153,10 @@ function AdminUsers() {
   const deleteUserInformationHandler = (event) => {
     event.preventDefault()
 
-    const requestBody = {
+    post("/admins/users/delete", {
       token: authContext.userToken,
       id: editInformationForm.id.value
-    }
-
-    post("/admins/users/delete", requestBody).then((res) => {
+    }).then((res) => {
       removeUserFromTable(users, editInformationForm.id.value)
 
       setUserForm({
