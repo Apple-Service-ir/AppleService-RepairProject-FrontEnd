@@ -2,8 +2,9 @@ import React, { useContext, useRef, useEffect } from 'react'
 
 import AuthContext from '../../context/AuthContext'
 import { post } from '../../utility'
+import { toast, Toaster } from 'react-hot-toast'
 
-function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef }) {
+function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef, closeTicketHandler }) {
   const authcontext = useContext(AuthContext)
   const sendMessageRef = useRef()
 
@@ -20,7 +21,6 @@ function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef
           token: authcontext.userToken
         }
       ).then(response => {
-        console.log(response);
         bottomRef.current.scrollTop = bottomRef.current.scrollHeight + 100
         setTickets((prev) => {
           const mapedTickets = prev.map(ticket => {
@@ -50,7 +50,17 @@ function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef
         <span className='text-white sansbold'>
           {currentTicket.subject}
         </span>
-        <span className='text-white sansbold'>{currentTicket.id} #</span>
+        {
+          currentTicket.clientId == authcontext.userInfo.id ? (
+            <div className='flex items-center'>
+              <button onClick={closeTicketHandler} className='ml-3 text-xs btn btn-danger p-1 rounded-md h-8'>بستن تیکت</button>
+              <span className='text-white sansbold'>{currentTicket.id} #</span>
+            </div>
+          ) : (
+            <span className='text-white sansbold'>{currentTicket.id} #</span>
+          )
+        }
+
       </div>
 
       <div
@@ -108,6 +118,7 @@ function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef
         )
       }
 
+      <Toaster />
     </div>
   )
 }

@@ -54,6 +54,18 @@ function UserTickets() {
     })
   }
 
+  const closeTicketHandler = () => {
+    post("/tickets/close", {
+      token: authContext.userToken,
+      id: modal.ticket.id
+    }).then(() => {
+      setModal({ show: false, ticket: {} })
+      toast.success("تیکت با موفقیت بسته شد.")
+    }).catch((e) => {
+      toast.error(e.response.data.err)
+    })
+  }
+
   return (
     <>
       <div className='w-full flex flex-col justify-center items-center gap-3 relative  show-fade'>
@@ -191,6 +203,7 @@ function UserTickets() {
               <MessageSection
                 setTickets={setTickets}
                 currentTicket={modal.ticket}
+                closeTicketHandler={closeTicketHandler}
                 setCurrentTicket={ticket => {
                   setModal(prev => ({ ...prev, ticket }))
                 }}
