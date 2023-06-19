@@ -58,6 +58,14 @@ function UserTickets() {
       token: authContext.userToken,
       id: modal.ticket.id
     }).then(() => {
+      setTickets(prev => {
+        const filteredTickets = prev.map(item => {
+          if (item.id === modal.ticket.id) item.status = 'closed'
+          return item
+        })
+
+        return filteredTickets
+      })
       setModal({ show: false, ticket: {} })
       toast.success("تیکت با موفقیت بسته شد.")
     }).catch((e) => {

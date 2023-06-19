@@ -37,10 +37,7 @@ function AdminTickets() {
         .then(() => {
           setTickets(prev => {
             const filteredTickets = prev.map(item => {
-              if (item.id === ticket.id) {
-                item.status = 'closed'
-                return item
-              }
+              if (item.id === ticket.id) item.status = 'closed'
               return item
             })
 
