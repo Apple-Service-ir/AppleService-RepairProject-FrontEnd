@@ -9,6 +9,7 @@ import AdminSideBarLink from '../../components/Dashboard/AdminSideBarLink'
 import AdminSideBarMobile from '../../components/Dashboard/AdminMobileSideBarLink'
 import PortalModal from './../../components/PortalModal/PortalModal'
 import config from '../../../config.json'
+import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
 
 const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
 
@@ -25,17 +26,21 @@ function AdminDashboard() {
     lastName: { value: userInfo.lastName, validation: true },
     city: { value: '', validation: true },
   })
+  const [submitEditLoading, setSubmitEditLoading] = useState(false)
 
   const profileRef = useRef()
 
   document.body.addEventListener('click', event => { event.target.dataset.mobilebtn !== 'true' && setShowMobileMenu(false) })
 
-  const changeUserInformationHandler = event => {
+  const changeUserInformationHandler = async event => {
+    setSubmitEditLoading(true)
     event.preventDefault()
-    setShowEditInformationModal(false)
 
     for (const field in editInformationForm)
-      if (!editInformationForm[field].validation) return toast.error('لطفا فیلد ها را کامل کنید')
+      if (!editInformationForm[field].validation) {
+        setSubmitEditLoading(false)
+        return toast.error('لطفا فیلد ها را کامل کنید')
+      }
 
     const requestForm = new FormData()
     requestForm.append('token', authContext.userToken)
@@ -46,7 +51,7 @@ function AdminDashboard() {
       city: editInformationForm.city.value || defaultCity.id
     }))
 
-    postForm("/informations/edit", requestForm).
+    await postForm("/informations/edit", requestForm).
       then(response => {
         console.log(response)
         authContext.setUserInfoHandler(response.data.user)
@@ -56,6 +61,9 @@ function AdminDashboard() {
         toast.success("اطلاعات شما با موفقیت بروز شد.")
       })
       .catch(error => toast.error(error.response.data.err))
+
+    setShowEditInformationModal(false)
+    setSubmitEditLoading(false)
   }
 
   const readUrl = file => {
@@ -429,12 +437,13 @@ function AdminDashboard() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
                 </svg>
               </div>
-              <button
-                className="btn btn-blue w-full"
-                onClick={changeUserInformationHandler}
+              <SubmitBtn
+                customClass={'w-full'}
+                clickHandler={changeUserInformationHandler}
+                isLoading={submitEditLoading}
               >
                 ثبت تغییر
-              </button>
+              </SubmitBtn>
             </form>
           </PortalModal>
         )

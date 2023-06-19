@@ -5,7 +5,6 @@ import { get, postForm } from '../../utility';
 import AuthContext from './../../context/AuthContext'
 import useGetCities from './../../Hooks/useGetCities'
 import PortalModal from './../../components/PortalModal/PortalModal'
-import Loader from '../../components/Loader/Loader';
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn';
 
 export default function Order() {

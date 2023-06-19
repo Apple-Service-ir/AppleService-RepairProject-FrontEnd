@@ -12,7 +12,7 @@ function SubmitBtn(props) {
       disabled={isLoading}
     >
       {
-        isLoading ? <Loader color={'bg-white'} /> : children
+        isLoading ? <Loader before={'before:bg-white'} /> : children
       }
     </button>
   )

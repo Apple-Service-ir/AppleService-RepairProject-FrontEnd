@@ -6,7 +6,6 @@ import AuthContext from '../../context/AuthContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import Alert from '../../components/Alert/Alert'
 import MessageSection from '../../components/MessageSection/MessageSection'
-import Loader from '../../components/Loader/Loader'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
 
 function UserTickets() {
