@@ -32,6 +32,7 @@ function App() {
   const redirect = useNavigate()
 
   const login = (token, info) => {
+    // ! CITY MUST BE A NAME
     setUserToken(token)
     setIslogin(true)
     setUserInfo(info)
@@ -54,9 +55,10 @@ function App() {
   }
 
   useEffect(() => {
-    const localStorageData = localStorage.getItem('e-service-token')
-    get(`/informations/get?token=${localStorageData}`)
+    const localStorageToken = localStorage.getItem('e-service-token')
+    get(`/informations/get?token=${localStorageToken}`)
       .then(response => {
+        // ! CITY MUST BE A NAME
         setIslogin(true)
         setUserInfo(response.data.user)
         setUserToken(response.data.token)
