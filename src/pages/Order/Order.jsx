@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState, useContext } from 'react'
+import React, { useEffect, useRef, useState, useContext, useTransition } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 
 import { get, postForm } from '../../utility';
 import AuthContext from './../../context/AuthContext'
 import useGetCities from './../../Hooks/useGetCities'
 import PortalModal from './../../components/PortalModal/PortalModal'
+import Loader from '../../components/Loader/Loader';
 
 export default function Order() {
   const authContext = useContext(AuthContext)
@@ -19,8 +20,10 @@ export default function Order() {
     address: { value: '', validation: false },
     desc: { value: '', validation: false },
   })
+  const [submitLoading, setSubmitLoading] = useState(false)
 
   const fileRef = useRef()
+
 
   useEffect(() => {
     document.title = "ثبت سفارش - اپل سرویس"
@@ -38,7 +41,9 @@ export default function Order() {
     })
   }, [])
 
-  function postOrder() {
+  async function postOrder() {
+    setSubmitLoading(true)
+
     const formData = new FormData()
     formData.append('token', authContext.userToken)
     formData.append('address', form.address.value)
@@ -49,9 +54,12 @@ export default function Order() {
     formData.append('picture', form.file.value);
 
     for (const field in form)
-      if (!form[field].validation) return toast.error('لطفا فیلد هارا به درستی وارد کنید')
+      if (!form[field].validation) {
+        setSubmitLoading(false)
+        return toast.error('لطفا فیلد هارا به درستی وارد کنید')
+      }
 
-    postForm('/orders/submit', formData)
+    await postForm('/orders/submit', formData)
       .then(() => {
         setSelectedDatas(prev => ({ ...prev, devices: {}, parts: {} }))
         setForm(prev => ({
@@ -63,6 +71,8 @@ export default function Order() {
         toast.success('سفارش شما با موفقیت ثبت شد')
       })
       .catch(error => toast.error(error.response.data.err))
+
+    setSubmitLoading(false)
   }
 
   return (
@@ -199,8 +209,18 @@ export default function Order() {
             </svg>
           </div>
         </div>
-        <button className='btn btn-out-green w-1/2 mt-3
-          sm:w-1/3' onClick={postOrder}>ثبت سفارش</button>
+        <button
+          className={`btn btn-out-green w-1/2 mt-3
+            sm:w-1/3 ${submitLoading && 'hover:bg-white'}`}
+          disabled={submitLoading}
+          onClick={postOrder}
+        >
+          {
+            submitLoading ? (
+              <Loader color={'bg-green-500'} />
+            ) : 'ثبت سفارش'
+          }
+        </button>
       </div>
 
       {
