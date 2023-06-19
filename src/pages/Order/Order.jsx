@@ -6,6 +6,7 @@ import AuthContext from './../../context/AuthContext'
 import useGetCities from './../../Hooks/useGetCities'
 import PortalModal from './../../components/PortalModal/PortalModal'
 import Loader from '../../components/Loader/Loader';
+import SubmitBtn from '../../components/SubmitBtn/SubmitBtn';
 
 export default function Order() {
   const authContext = useContext(AuthContext)
@@ -42,6 +43,7 @@ export default function Order() {
   }, [])
 
   async function postOrder() {
+    console.log(123)
     setSubmitLoading(true)
 
     const formData = new FormData()
@@ -209,18 +211,13 @@ export default function Order() {
             </svg>
           </div>
         </div>
-        <button
-          className={`btn btn-out-green w-1/2 mt-3
-            sm:w-1/3 ${submitLoading && 'hover:bg-white'}`}
-          disabled={submitLoading}
-          onClick={postOrder}
+        <SubmitBtn
+          customClass={'w-1/2 sm:w-1/3'}
+          isLoading={submitLoading}
+          clickHandler={postOrder}
         >
-          {
-            submitLoading ? (
-              <Loader color={'bg-green-500'} />
-            ) : 'ثبت سفارش'
-          }
-        </button>
+          ثبت سفارش
+        </SubmitBtn>
       </div>
 
       {

@@ -6,6 +6,8 @@ import AuthContext from '../../context/AuthContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import Alert from '../../components/Alert/Alert'
 import MessageSection from '../../components/MessageSection/MessageSection'
+import Loader from '../../components/Loader/Loader'
+import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
 
 function UserTickets() {
   const authContext = useContext(AuthContext)
@@ -16,6 +18,7 @@ function UserTickets() {
     subject: { value: '', validation: false },
     text: { value: '', validation: false }
   })
+  const [submitLoading, setSubmitLoading] = useState(false)
 
   const bottomRef = useRef()
 
@@ -31,13 +34,17 @@ function UserTickets() {
       })
   }, [authContext])
 
-  function submitTicketHandler(event) {
+  const submitTicketHandler = async event => {
+    setSubmitLoading(true)
     event.preventDefault()
 
     for (const field in ticketForm)
-      if (!ticketForm[field].validation) return toast.error('لطفا فیلد هارا به درستی پر کنید!')
+      if (!ticketForm[field].validation) {
+        setSubmitLoading(false)
+        return toast.error('لطفا فیلد هارا به درستی پر کنید!')
+      }
 
-    post('/tickets/new', {
+    await post('/tickets/new', {
       token: authContext.userToken,
       subject: ticketForm.subject.value,
       text: ticketForm.text.value
@@ -51,6 +58,8 @@ function UserTickets() {
     }).catch((err) => {
       toast.error(err.response.data.error)
     })
+
+    setSubmitLoading(false)
   }
 
   const closeTicketHandler = () => {
@@ -118,9 +127,13 @@ function UserTickets() {
             </svg>
           </div>
           <div className="w-full">
-            <button className='btn btn-blue w-1/2
-              sm:w-1/3'
-              onClick={submitTicketHandler}>ثبت تیکت</button>
+            <SubmitBtn
+              customClass={'w-1/2 sm:w-1/3'}
+              isLoading={submitLoading}
+              clickHandler={submitTicketHandler}
+            >
+              ثبت تیکت
+            </SubmitBtn>
           </div>
         </form>
 
