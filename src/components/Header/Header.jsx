@@ -12,6 +12,10 @@ export function Header() {
     setShowMobileMenu(false)
   }
 
+  window.addEventListener('click', event => {
+    event.target.dataset.close === 'mobile-menu' && setShowMobileMenu(false)
+  })
+
   return (
     <>
       <div className='bg-blue-500 w-screen flex justify-between items-center p-3 px-7 z-50'>
@@ -90,40 +94,47 @@ export function Header() {
       </div>
 
       <div
-        className={`bg-white h-screen w-3/4 flex flex-col items-center
-        fixed top-0 left-0 z-50
-        ${showMobileMenu ? 'translate-x-0' : '-translate-x-full'}
-        lg:hidden`}>
-        <ul className='w-full flex flex-col justify-center items-center gap-3 p-3'>
-          <li className='w-full'>
-            <NavLink to='/'
-              className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
-              onClick={closeMobileMenu}>
-              صفحه اصلی
-            </NavLink>
-          </li>
-          <li className='w-full'>
-            <NavLink to='/order'
-              className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
-              onClick={closeMobileMenu}>
-              ثبت سفارش
-            </NavLink>
-          </li>
-          <li className='w-full'>
-            <NavLink to='/contact-us'
-              className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
-              onClick={closeMobileMenu}>
-              ارتباط با ما
-            </NavLink>
-          </li>
-          <li className='w-full'>
-            <NavLink to='/report'
-              className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
-              onClick={closeMobileMenu}>
-              ثبت شکایات
-            </NavLink>
-          </li>
-        </ul>
+        className={`w-screen h-screen fixed top-0 left-0 z-50
+          ${showMobileMenu ? 'translate-x-0' : '-translate-x-full'}
+          lg:hidden
+        `}
+        data-close={'mobile-menu'}
+      >
+        <div
+          className={`bg-white h-full w-4/6 flex flex-col items-center
+          shadow-2xl absolute top-0 left-0`}
+        >
+          <ul className='w-full flex flex-col justify-center items-center gap-3 p-3'>
+            <li className='w-full'>
+              <NavLink to='/'
+                className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
+                onClick={closeMobileMenu}>
+                صفحه اصلی
+              </NavLink>
+            </li>
+            <li className='w-full'>
+              <NavLink to='/order'
+                className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
+                onClick={closeMobileMenu}>
+                ثبت سفارش
+              </NavLink>
+            </li>
+            <li className='w-full'>
+              <NavLink to='/contact-us'
+                className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
+                onClick={closeMobileMenu}>
+                ارتباط با ما
+              </NavLink>
+            </li>
+            <li className='w-full'>
+              <NavLink to='/report'
+                className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
+                onClick={closeMobileMenu}>
+                ثبت شکایات
+              </NavLink>
+            </li>
+          </ul>
+        </div>
       </div>
     </>
   )
