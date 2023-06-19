@@ -281,6 +281,18 @@ input[type="number"] {
   .td__wrapper {
     @apply w-full flex flex-wrap items-center gap-3;
   }
+
+  .hidden-bar::-webkit-scrollbar {
+    width: 0;
+  }
+  
+  .hidden-bar::-webkit-scrollbar-track {
+    background: none;
+  }
+  
+  .hidden-bar::-webkit-scrollbar-thumb {
+    background: none;
+  }
 }
 
 

@@ -70,7 +70,7 @@ function AdminDashboard() {
     <>
       <div className='w-screen h-screen flex overflow-hidden'>
         <div className="bg-blue-500 w-4/12 h-full hidden flex-col items-center gap-3 pb-3
-          overflow-y-scroll
+          overflow-y-scroll hidden-bar
           sm:flex lg:w-2/12">
           <div className="flex flex-col justify-center items-center gap-3 p-3">
             <div className="bg-blue-400 w-28 h-28 rounded-full relative">
