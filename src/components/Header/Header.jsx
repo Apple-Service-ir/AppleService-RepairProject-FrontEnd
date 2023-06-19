@@ -6,7 +6,6 @@ import { useState } from 'react'
 
 export function Header() {
   const authcontext = useContext(AuthContext)
-
   const [showMobileMenu, setShowMobileMenu] = useState(false)
 
   function closeMobileMenu() {

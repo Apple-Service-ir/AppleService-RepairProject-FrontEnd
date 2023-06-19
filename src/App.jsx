@@ -53,6 +53,8 @@ function App() {
       })
   }
 
+  const setUserInfoHandler = userInfo => setUserInfo(userInfo)
+
   useEffect(() => {
     const localStorageToken = localStorage.getItem('e-service-token')
     get(`/informations/get?token=${localStorageToken}`)
@@ -76,6 +78,7 @@ function App() {
         userToken,
         isLogin,
         userInfo,
+        setUserInfoHandler,
         login,
         logOut
       }}
