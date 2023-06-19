@@ -22,6 +22,7 @@ function UserDashboard() {
 
   const changeUserInformationHandler = event => {
     event.preventDefault()
+    setShowEditInformationModal(false)
 
     for (const field in editInformationForm)
       if (!editInformationForm[field].validation) return toast.error('لطفا فیلد ها را کامل کنید')

@@ -32,6 +32,7 @@ function AdminDashboard() {
 
   const changeUserInformationHandler = event => {
     event.preventDefault()
+    setShowEditInformationModal(false)
 
     for (const field in editInformationForm)
       if (!editInformationForm[field].validation) return toast.error('لطفا فیلد ها را کامل کنید')
@@ -69,8 +70,8 @@ function AdminDashboard() {
     <>
       <div className='w-screen h-screen flex overflow-hidden'>
         <div className="bg-blue-500 w-4/12 h-full hidden flex-col items-center gap-3 pb-3
-        overflow-y-scroll
-        sm:flex lg:w-2/12">
+          overflow-y-scroll
+          sm:flex lg:w-2/12">
           <div className="flex flex-col justify-center items-center gap-3 p-3">
             <div className="bg-blue-400 w-28 h-28 rounded-full">
               {authContext.userInfo.profile && (
@@ -178,15 +179,32 @@ function AdminDashboard() {
           sm:hidden">
             {
               showMobileMenu && (
-                <ul className='bg-blue-500 shadow-xl shadow-[#00000035] w-72
-                flex flex-col justify-center items-center gap-3
-                p-6 rounded-xl absolute right-0 top-16 z-50 show-up'>
-                  <span className='text-white flex justify-center items-center gap-1 my-1'>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-7 h-7 ml-1">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {authContext.userInfo.firstName} {authContext.userInfo.lastName}
-                  </span>
+                <ul
+                  className='bg-blue-500 shadow-2xl w-72
+                    flex flex-col justify-center items-center gap-3
+                    p-6 rounded-xl absolute right-0 top-16 z-50 show-up'
+                >
+                  <div className="flex flex-col justify-center items-center gap-3">
+                    <div className="bg-blue-400 w-20 h-20 rounded-full">
+                      {authContext.userInfo.profile && (
+                        <img className='h-full object-cover rounded-full' src={config.mainUrl.replace("/api", "") + `/uploads/` + authContext.userInfo.profile} />
+                      )}
+                    </div>
+                    <span className='text-white flex justify-center items-center gap-1'>
+                      <div
+                        className='w-5 h-5 group cursor-pointer'
+                        onClick={() => setShowEditInformationModal(true)}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-5 h-5 group-hover:-translate-y-1"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                        </svg>
+                      </div>
+                      {authContext.userInfo.firstName} {authContext.userInfo.lastName}
+                    </span>
+                  </div>
                   <AdminSideBarMobile
                     link={'/admin'}
                     title={'داشبورد'}
