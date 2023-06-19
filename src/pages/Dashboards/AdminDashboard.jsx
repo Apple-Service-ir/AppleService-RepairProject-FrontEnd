@@ -73,9 +73,13 @@ function AdminDashboard() {
           overflow-y-scroll
           sm:flex lg:w-2/12">
           <div className="flex flex-col justify-center items-center gap-3 p-3">
-            <div className="bg-blue-400 w-28 h-28 rounded-full">
+            <div className="bg-blue-400 w-28 h-28 rounded-full relative">
               {authContext.userInfo.profile && (
-                <img className='h-full object-cover rounded-full' src={config.mainUrl.replace("/api", "") + `/uploads/` + authContext.userInfo.profile} />
+                <img
+                  className='w-full h-full rounded-full
+                    absolute top-0 left-0 object-cover object-top'
+                  src={config.mainUrl.replace("/api", "") + `/uploads/` + authContext.userInfo.profile}
+                />
               )}
             </div>
             <span className='text-white flex justify-center items-center gap-1'>
