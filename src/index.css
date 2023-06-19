@@ -77,7 +77,7 @@ input[type="number"] {
   .chat-r::after{
     content: "";
     border : 15px solid transparent;
-    border-right-color: rgb(187 247 208);
+    border-right-color: #bbf7d0;
     position: absolute;
     right: 0;
     bottom: 0;
@@ -91,7 +91,7 @@ input[type="number"] {
   .chat-l::after{
     content: "";
     border : 15px solid transparent;
-    border-right-color: rgb(191 219 254);
+    border-right-color: #bfdbfe;
     position: absolute;
     left: 0;
     bottom: 0;

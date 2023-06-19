@@ -45,9 +45,16 @@ function AdminDashboard() {
       city: editInformationForm.city.value || defaultCity.id
     }))
 
-    postForm("/informations/edit", requestForm).then((res) => {
-      toast.success("اطلاعات شما با موفقیت بروز شد.")
-    })
+    postForm("/informations/edit", requestForm).
+      then(response => {
+        console.log(response)
+        authContext.userInfo = response.data.user
+        localStorage.setItem('e-service-userInfo', JSON.stringify(
+          response.data.user
+        ))
+        toast.success("اطلاعات شما با موفقیت بروز شد.")
+      })
+      .catch(error => toast.error(error.response.data.err))
   }
 
   const readUrl = file => {
@@ -61,7 +68,8 @@ function AdminDashboard() {
   return (
     <>
       <div className='w-screen h-screen flex overflow-hidden'>
-        <div className="bg-blue-500 w-4/12 h-full hidden flex-col items-center gap-3
+        <div className="bg-blue-500 w-4/12 h-full hidden flex-col items-center gap-3 pb-3
+        overflow-y-scroll
         sm:flex lg:w-2/12">
           <div className="flex flex-col justify-center items-center gap-3 p-3">
             <div className="bg-blue-400 w-28 h-28 rounded-full">
@@ -84,7 +92,7 @@ function AdminDashboard() {
               {authContext.userInfo.firstName} {authContext.userInfo.lastName}
             </span>
           </div>
-          <ul className='w-full flex flex-col justify-center items-center gap-3 pr-3'>
+          <ul className='w-full flex flex-col justify-center items-center gap-3 pr-3 mt-6'>
             <AdminSideBarLink
               link={'/admin'}
               title={'داشبورد'}
