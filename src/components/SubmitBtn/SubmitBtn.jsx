@@ -14,7 +14,7 @@ function SubmitBtn(props) {
       type='submit'
     >
       {
-        isLoading ? <Loader before={'before:bg-white'} /> : children
+        isLoading ? <Loader size={'w-7 h-7'} before={'before:bg-white'} /> : children
       }
     </button>
   )

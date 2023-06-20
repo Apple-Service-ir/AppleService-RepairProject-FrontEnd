@@ -365,14 +365,11 @@ input[type="number"] {
 /* ----------------------- LOADER ----- */
 @layer components {
   .dot-spinner {
-    --size: 2rem;
     --speed: 750ms;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    height: var(--size);
-    width: var(--size);
   }
   
   .dot-spinner__dot {

@@ -1,8 +1,8 @@
 import React from 'react'
 
-function Loader({ before }) {
+function Loader({ size, before }) {
   return (
-    <div className="dot-spinner">
+    <div className={`dot-spinner ${size}`}>
       <div className={`dot-spinner__dot ${before}`}></div>
       <div className={`dot-spinner__dot ${before}`}></div>
       <div className={`dot-spinner__dot ${before}`}></div>
