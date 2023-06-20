@@ -16,9 +16,9 @@ function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef
   }, [currentTicket])
 
   const sendMassageHandler = async ticketId => {
-    setIsloading(true)
-
     if (sendMessageRef.current.value.length > 0) {
+      setIsloading(true)
+
       await post('/tickets/messages/new',
         {
           ticketId,

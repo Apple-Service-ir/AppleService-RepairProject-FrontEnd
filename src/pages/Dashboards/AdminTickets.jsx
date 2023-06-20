@@ -6,12 +6,14 @@ import AuthContext from '../../context/AuthContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import Alert from '../../components/Alert/Alert'
 import MessageSection from '../../components/MessageSection/MessageSection'
+import CloseIconLoader from '../../components/CloseIconLoader/CloseIconLoader'
 
 function AdminTickets() {
   const authContext = useContext(AuthContext)
 
   const [tickets, setTickets] = useState([])
   const [modal, setModal] = useState({ shwo: false, ticket: {} })
+  const [closeTicketIsLoading, setCloseTicketIsLoading] = useState(false)
 
   const bottomRef = useRef()
 
@@ -26,11 +28,14 @@ function AdminTickets() {
       })
   }, [authContext])
 
-  const closeTicket = (event, ticket) => {
+  const closeTicket = async (event, ticket) => {
+    console.log(ticket);
     event.stopPropagation()
-
+    
     if (ticket.status !== 'closed') {
-      post('/tickets/close', {
+      setCloseTicketIsLoading(true)
+
+      await post('/tickets/close', {
         token: authContext.userToken,
         ticketId: ticket.id
       })
@@ -45,6 +50,8 @@ function AdminTickets() {
           })
         })
         .catch(errorr => toast.error(errorr.response.data.err))
+
+      setCloseTicketIsLoading(false)
     }
   }
 
@@ -107,11 +114,10 @@ function AdminTickets() {
                           onClick={event => closeTicket(event, ticket)}
                         >
                           <div className="td__wrapper justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
-                              className={`stroke-red-500 w-5 h-5
-                              ${ticket.status !== 'closed' && 'group-hover:-translate-y-1'}`}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <CloseIconLoader
+                              customClass={ticket.status !== 'closed' && 'group-hover:-translate-y-1'}
+                              isLoading={closeTicketIsLoading}
+                            />
                           </div>
                         </td>
                       </tr>
