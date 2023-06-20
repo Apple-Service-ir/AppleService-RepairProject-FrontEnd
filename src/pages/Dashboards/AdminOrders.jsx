@@ -7,12 +7,16 @@ import { useRef } from 'react'
 import AuthContext from '../../context/AuthContext'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
+import OrderStatusBtn from '../../components/OrderStatusBtn/OrderStatusBtn'
 
 function AdminOrders() {
   const authContext = useContext(AuthContext)
 
   const [orders, setOrders] = useState([])
   const [modal, setModal] = useState({ show: false, order: {} })
+  const [orderStatusLoaders, setOrderStatusLoaders] = useState({
+    cancelled: false, working: false, done: false
+  })
 
   const orderDescRef = useRef()
 
@@ -29,9 +33,14 @@ function AdminOrders() {
     if (orderDescRef.current) orderDescRef.current.value = ''
   }, [modal])
 
-  function changeStatus(orderId, currentStatus) {
+  const changeStatus = async (orderId, currentStatus) => {
+    setOrderStatusLoaders({
+      cancelled: currentStatus === 'cancelled',
+      working: currentStatus === 'working',
+      done: currentStatus === 'done'
+    })
 
-    post('/admins/orders/status', {
+    await post('/admins/orders/status', {
       token: authContext.userToken,
       id: orderId,
       status: currentStatus,
@@ -56,6 +65,10 @@ function AdminOrders() {
         toast.success('تغییر وضعیت با موفقیت انجام شد')
       })
       .catch(error => toast.error(error.response.data.err))
+
+    setOrderStatusLoaders({
+      cancelled: false, working: false, done: false
+    })
   }
 
   return (
@@ -144,27 +157,27 @@ function AdminOrders() {
             <ul className="w-96 max-h-[80vh] overflow-y-scroll rounded-md">
               <li className='w-full rounded-md
                 flex justify-center items-center gap-1'>
-                <button
-                  className='bg-white text-red-500 w-1/3 h-9 text-sm
-                    py-2 px-6 rounded-md hover:bg-red-500 hover:text-white'
-                  onClick={() => changeStatus(modal.order.id, 'cancelled')}
+                <OrderStatusBtn
+                  status={'cancelled'}
+                  isLoading={orderStatusLoaders.cancelled}
+                  clickHandler={() => changeStatus(modal.order.id, 'cancelled')}
                 >
                   لغو کردن
-                </button>
-                <button
-                  className='bg-white text-yellow-500 w-1/3 h-9 text-sm
-                    py-2 px-6 rounded-md hover:bg-yellow-500 hover:text-white'
-                  onClick={() => changeStatus(modal.order.id, 'working')}
+                </OrderStatusBtn>
+                <OrderStatusBtn
+                  status={'working'}
+                  isLoading={orderStatusLoaders.working}
+                  clickHandler={() => changeStatus(modal.order.id, 'working')}
                 >
                   تایید کردن
-                </button>
-                <button
-                  className='bg-white text-green-500 w-1/3 h-9 text-sm
-                    py-2 px-6 rounded-md shadow-2xl hover:bg-green-500 hover:text-white'
-                  onClick={() => changeStatus(modal.order.id, 'done')}
+                </OrderStatusBtn>
+                <OrderStatusBtn
+                  status={'done'}
+                  isLoading={orderStatusLoaders.done}
+                  clickHandler={() => changeStatus(modal.order.id, 'done')}
                 >
                   تمام شده
-                </button>
+                </OrderStatusBtn>
               </li>
 
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
