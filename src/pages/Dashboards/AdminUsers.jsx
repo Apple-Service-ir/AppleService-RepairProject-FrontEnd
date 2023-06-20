@@ -38,7 +38,9 @@ function AdminUsers() {
     phone: { value: '', validation: true },
     city: { value: '', validation: true },
   })
+  const [submitLoading, setSubmitLoading] = useState(false)
   const [submitEditLoading, setSubmitEditLoading] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
 
   const profileRef = useRef()
 
@@ -54,12 +56,12 @@ function AdminUsers() {
   }, [authContext])
 
   const submitHandler = async event => {
-    setSubmitEditLoading(true)
+    setSubmitLoading(true)
     event.preventDefault()
 
     for (const field in userForm)
       if (!userForm[field].validation) {
-        setSubmitEditLoading(false)
+        setSubmitLoading(false)
         return toast.error('لطفا فیلد هارا کامل پر کنید')
       }
 
@@ -74,11 +76,10 @@ function AdminUsers() {
       .then(response => {
         setUsers(prev => [response.data.user, ...prev])
         setUserForm({
-          id: { value: '', validation: true },
           firstName: { value: '', validation: false },
           lastName: { value: '', validation: false },
           phone: { value: '', validation: false },
-          city: { value: '', validation: false },
+          city: { value: '', validation: true },
           role: {
             value: 'user', validation: true, buttons: {
               user: { value: 'user', checked: true },
@@ -91,14 +92,18 @@ function AdminUsers() {
       })
       .catch(error => toast.error(error.response.data.err))
 
-    setSubmitEditLoading(false)
+    setSubmitLoading(false)
   }
 
-  const changeUserInformationHandler = event => {
+  const changeUserInformationHandler = async event => {
+    setSubmitEditLoading(true)
     event.preventDefault()
 
     for (const field in editInformationForm)
-      if (!editInformationForm[field].validation) return toast.error('لطفا فیلد ها را کامل کنید')
+      if (!editInformationForm[field].validation) {
+        setSubmitEditLoading(false)
+        return toast.error('لطفا فیلد ها را کامل کنید')
+      }
 
     const requestForm = new FormData()
     requestForm.append('token', authContext.userToken)
@@ -110,29 +115,31 @@ function AdminUsers() {
       city: editInformationForm.city.value || defaultCity.id
     }))
 
-    postForm("/informations/edit", requestForm).then((res) => {
-      toast.success("با موفقیت انجام شد.")
-    }).catch((error) => {
-      toast.error(error.response.data.err)
-    })
+    await postForm("/informations/edit", requestForm)
+      .then(response => {
+        setUsers(prev => {
+          const newUsers = prev.map(user => {
+            if (user.id === editInformationForm.id.value) {
+              return response.data.user
+            }
+            else {
+              return user
+            }
+          })
+
+          return newUsers
+        })
+
+        toast.success("با موفقیت انجام شد")
+      }).catch((error) => {
+        toast.error(error.response.data.err)
+      })
+
+    setShowEditInformationModal({ show: false, id: null })
+    setSubmitEditLoading(false)
   }
 
   function editClickHandler(user) {
-    setUserForm({
-      id: { value: user.id, validation: false },
-      firstName: { value: user.firstName, validation: false },
-      lastName: { value: user.lastName, validation: false },
-      phone: { value: user.phone, validation: false },
-      city: { value: user.city, validation: false },
-      role: {
-        value: 'user', validation: true, buttons: {
-          user: { value: 'user', checked: true },
-          supporter: { value: 'supporter', checked: false },
-          repairman: { value: 'repairman', checked: false },
-        }
-      }
-    })
-
     setEditInformationForm({
       id: { value: user.id, validation: true },
       profile: { file: user.profile, validation: true },
@@ -144,37 +151,15 @@ function AdminUsers() {
     setShowEditInformationModal({ show: true, id: user.id })
   }
 
-  const removeUserFromTable = (arr, id) => {
-    const objWithIdIndex = arr.findIndex((obj) => obj.id === id);
-
-    objWithIdIndex > -1 && arr.splice(objWithIdIndex, 1);
-
-    return arr;
-  }
-
-  const deleteUserInformationHandler = (event) => {
+  const deleteUserInformationHandler = async event => {
+    setDeleteLoading(true)
     event.preventDefault()
 
-    post("/admins/users/delete", {
+    await post("/admins/users/delete", {
       token: authContext.userToken,
       id: editInformationForm.id.value
-    }).then((res) => {
-      removeUserFromTable(users, editInformationForm.id.value)
-
-      setUserForm({
-        id: { value: '', validation: false },
-        firstName: { value: '', validation: false },
-        lastName: { value: '', validation: false },
-        phone: { value: '', validation: false },
-        city: { value: '', validation: false },
-        role: {
-          value: 'user', validation: true, buttons: {
-            user: { value: 'user', checked: true },
-            supporter: { value: 'supporter', checked: false },
-            repairman: { value: 'repairman', checked: false },
-          }
-        }
-      })
+    }).then(() => {
+      setUsers(prev => prev.filter(user => user.id !== editInformationForm.id.value))
 
       setEditInformationForm({
         id: { value: '', validation: true },
@@ -184,11 +169,11 @@ function AdminUsers() {
         phone: { value: '', validation: true },
         city: { value: '', validation: true },
       })
+      toast.success('کاربر با موفقیت حذف شد')
+    }).catch(error => toast.error(error.response.data.err))
 
-      setShowEditInformationModal({ show: false, id: null })
-    }).catch((e) => {
-      toast.error(e.response.data.err)
-    })
+    setShowEditInformationModal({ show: false, id: null })
+    setDeleteLoading(false)
   }
 
   const readUrl = file => {
@@ -364,34 +349,31 @@ function AdminUsers() {
                     }))
                   }}
                 />
-                {authContext.userInfo.role == "admin" && (<>
-                  <label htmlFor="supporter">پشتیبان</label>
-                  <input
-                    className='ml-3'
-                    type="radio"
-                    id='supporter'
-                    name='user-rank'
-                    checked={userForm.role.buttons.supporter.checked}
-                    value={userForm.role.buttons.supporter.value}
-                    onChange={event => {
-                      setUserForm(prev => ({
-                        ...prev,
-                        role: {
-                          value: event.target.value, validation: true, buttons: {
-                            user: { ...prev.role.buttons.user, checked: false },
-                            supporter: { ...prev.role.buttons.supporter, checked: true },
-                            repairman: { ...prev.role.buttons.repairman, checked: false }
-                          }
+                <label htmlFor="supporter">پشتیبان</label>
+                <input
+                  className='ml-3'
+                  type="radio"
+                  id='supporter'
+                  name='user-rank'
+                  checked={userForm.role.buttons.supporter.checked}
+                  value={userForm.role.buttons.supporter.value}
+                  onChange={event => {
+                    setUserForm(prev => ({
+                      ...prev,
+                      role: {
+                        value: event.target.value, validation: true, buttons: {
+                          user: { ...prev.role.buttons.user, checked: false },
+                          supporter: { ...prev.role.buttons.supporter, checked: true },
+                          repairman: { ...prev.role.buttons.repairman, checked: false }
                         }
-                      }))
-                    }}
-                  />
-                </>
-                )}
+                      }
+                    }))
+                  }}
+                />
               </div>
               <SubmitBtn
                 customClass={'w-full sm:w-1/2'}
-                isLoading={submitEditLoading}
+                isLoading={submitLoading}
                 clickHandler={submitHandler}
               >
                 ساخت کاربر
@@ -476,8 +458,7 @@ function AdminUsers() {
           >
             <form className='bg-white w-96 flex flex-col justify-center items-center gap-3 p-3 rounded-xl'>
               <div
-                className={`${!editInformationForm.profile.validation && 'border-blue-500 border-dashed border-2'}
-                  bg-blue-100 w-32 h-32 flex justify-center items-center rounded-full cursor-pointer relative`}
+                className='bg-blue-100 w-32 h-32 flex justify-center items-center rounded-full cursor-pointer relative'
                 onClick={() => {
                   profileRef.current.click()
                 }}
@@ -487,9 +468,9 @@ function AdminUsers() {
                   (editInformationForm.profile.file) && (
                     <img
                       className='w-full h-full rounded-full
-                          absolute top-0 left-0 object-cover object-top show-fade'
+                        absolute top-0 left-0 object-cover object-top show-fade'
                       src={profileUrl || config.mainUrl.replace("/api", "") + '/uploads/' + editInformationForm.profile.file}
-                      alt="admin profile"
+                      alt="user profile"
                     />
                   )
                 }
@@ -598,21 +579,21 @@ function AdminUsers() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
                 </svg>
               </div>
-              {authContext.userInfo.role == "admin" && (
-                <button
-                  className="btn btn-danger w-full"
-                  onClick={deleteUserInformationHandler}
+              <SubmitBtn
+                customClass={'w-full'}
+                isLoading={deleteLoading}
+                clickHandler={deleteUserInformationHandler}
+                type={'danger'}
                 >
-                  حذف کاربر
-                </button>
-              )
-              }
-              <button
-                className="btn btn-blue w-full"
-                onClick={changeUserInformationHandler}
+                حذف کاربر
+              </SubmitBtn>
+              <SubmitBtn
+                customClass={'w-full'}
+                isLoading={submitEditLoading}
+                clickHandler={changeUserInformationHandler}
               >
                 ثبت تغییر
-              </button>
+              </SubmitBtn>
             </form>
           </PortalModal>
         )

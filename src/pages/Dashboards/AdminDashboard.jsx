@@ -336,8 +336,7 @@ function AdminDashboard() {
           >
             <form className='bg-white w-96 flex flex-col justify-center items-center gap-3 p-3 rounded-xl'>
               <div
-                className={`${!editInformationForm.profile.validation && 'border-blue-500 border-dashed border-2'}
-                bg-blue-100 w-32 h-32 flex justify-center items-center rounded-full cursor-pointer relative`}
+                className='bg-blue-100 w-32 h-32 flex justify-center items-center rounded-full cursor-pointer relative'
                 onClick={() => {
                   profileRef.current.click()
                 }}
