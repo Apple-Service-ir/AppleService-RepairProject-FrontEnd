@@ -3,18 +3,23 @@ import React, { useContext, useRef, useEffect } from 'react'
 import AuthContext from '../../context/AuthContext'
 import { post } from '../../utility'
 import { toast, Toaster } from 'react-hot-toast'
+import Loader from './../Loader/Loader'
+import { useState } from 'react'
 
 function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef, closeTicketHandler }) {
   const authcontext = useContext(AuthContext)
   const sendMessageRef = useRef()
+  const [isLoading, setIsloading] = useState(false)
 
   useEffect(() => {
     bottomRef.current.scrollTop = bottomRef.current.scrollHeight
   }, [currentTicket])
 
-  function sendMassageHandler(ticketId) {
+  const sendMassageHandler = async ticketId => {
+    setIsloading(true)
+
     if (sendMessageRef.current.value.length > 0) {
-      post('/tickets/messages/new',
+      await post('/tickets/messages/new',
         {
           ticketId,
           text: sendMessageRef.current.value,
@@ -35,9 +40,9 @@ function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef
         })
 
         sendMessageRef.current.value = ''
-      }).catch((err) => {
-        toast.error(err.response.data.err)
-      })
+      }).catch(error => toast.error(error.response.data.err))
+
+      setIsloading(false)
     }
   }
 
@@ -98,13 +103,20 @@ function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef
             rounded-b-xl absolute bottom-0 left-0">
             <button
               className='bg-blue-500 text-white w-16 h-12 rounded-full
-            flex justify-center items-center'
+                flex justify-center items-center'
               onClick={() => sendMassageHandler(currentTicket.id)}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
-                className="w-6 h-6 -rotate-90">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-              </svg>
+              {
+                isLoading ? (
+                  <Loader size={'w-6 h-6'} before={'before:bg-white'} />
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6 -rotate-90">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                  </svg>
+                )
+              }
             </button>
             <div className='w-full bg-input'>
               <input
