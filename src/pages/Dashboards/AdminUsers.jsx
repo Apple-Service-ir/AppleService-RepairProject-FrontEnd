@@ -1,18 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-
-import { get, post, postForm } from './../../utility'
 import { toast, Toaster } from 'react-hot-toast'
+
+import config from '../../../config.json'
 import AuthContext from './../../context/AuthContext'
+import { get, post, postForm } from './../../utility'
 import Alert from '../../components/Alert/Alert'
 import useGetCities from './../../Hooks/useGetCities'
 import PortalModal from './../../components/PortalModal/PortalModal'
-import config from '../../../config.json'
+import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
 
 function AdminUsers() {
   const authContext = useContext(AuthContext)
 
   const [defaultCity, allCities] = useGetCities()
-  const [cities, setCities] = useState([])
   const [users, setUsers] = useState([])
   const [showUserForm, setShowUserForm] = useState(false)
   const [profileUrl, setProfileUrl] = useState('')
@@ -21,7 +21,7 @@ function AdminUsers() {
     firstName: { value: '', validation: false },
     lastName: { value: '', validation: false },
     phone: { value: '', validation: false },
-    city: { value: '', validation: false },
+    city: { value: '', validation: true },
     role: {
       value: 'user', validation: true, buttons: {
         user: { value: 'user', checked: true },
@@ -38,6 +38,7 @@ function AdminUsers() {
     phone: { value: '', validation: true },
     city: { value: '', validation: true },
   })
+  const [submitEditLoading, setSubmitEditLoading] = useState(false)
 
   const profileRef = useRef()
 
@@ -46,32 +47,31 @@ function AdminUsers() {
   }, [])
 
   useEffect(() => {
-    get('/list/cities').then(response => {
-      setCities(response.data)
-    })
-
     authContext.userToken && get(`/admins/users/all?token=${authContext.userToken}`)
       .then(response => {
         setUsers(response.data.users)
       })
   }, [authContext])
 
-  function submitHandler(event) {
+  const submitHandler = async event => {
+    setSubmitEditLoading(true)
     event.preventDefault()
 
     for (const field in userForm)
-      if (!userForm[field].validation) return toast.error('لطفا فیلد هارا کامل پر کنید')
+      if (!userForm[field].validation) {
+        setSubmitEditLoading(false)
+        return toast.error('لطفا فیلد هارا کامل پر کنید')
+      }
 
-    post('/admins/users/create', {
+    await post('/admins/users/create', {
       token: authContext.userToken,
       firstName: userForm.firstName.value,
       lastName: userForm.lastName.value,
       phone: userForm.phone.value,
-      city: userForm.city.value,
+      city: userForm.city.value || defaultCity.id,
       role: userForm.role.value
     })
       .then(response => {
-
         setUsers(prev => [response.data.user, ...prev])
         setUserForm({
           id: { value: '', validation: true },
@@ -87,9 +87,11 @@ function AdminUsers() {
             }
           }
         })
-        toast.success('کاربر جدید با موفقیا ساخته شد')
+        toast.success('کاربر جدید با موفقیت ساخته شد')
       })
       .catch(error => toast.error(error.response.data.err))
+
+    setSubmitEditLoading(false)
   }
 
   const changeUserInformationHandler = event => {
@@ -303,14 +305,13 @@ function AdminUsers() {
                         ...prev,
                         city: {
                           value: event.target.value,
-                          validation: event.target.value !== 'none'
+                          validation: true
                         }
                       }))
                     }}
                   >
-                    <option value="none">شهر را انتخاب کنید</option>
                     {
-                      cities.map(city => (
+                      allCities.map(city => (
                         <option key={city.id} value={city.id}>{city.name}</option>
                       ))
                     }
@@ -388,14 +389,13 @@ function AdminUsers() {
                 </>
                 )}
               </div>
-              <button
-                className='btn btn-blue w-full
-                  sm:w-1/2'
-                type='submit'
-                onClick={submitHandler}
+              <SubmitBtn
+                customClass={'w-full sm:w-1/2'}
+                isLoading={submitEditLoading}
+                clickHandler={submitHandler}
               >
                 ساخت کاربر
-              </button>
+              </SubmitBtn>
             </form>
           )
         }

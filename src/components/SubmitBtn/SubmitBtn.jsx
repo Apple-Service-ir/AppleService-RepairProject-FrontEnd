@@ -10,6 +10,7 @@ function SubmitBtn(props) {
       className={`btn btn-blue ${customClass} ${isLoading && 'cursor-default'}`}
       onClick={clickHandler}
       disabled={isLoading}
+      type='submit'
     >
       {
         isLoading ? <Loader before={'before:bg-white'} /> : children
