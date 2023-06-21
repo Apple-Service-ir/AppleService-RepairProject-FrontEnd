@@ -13,7 +13,7 @@ function AdminTickets() {
 
   const [tickets, setTickets] = useState([])
   const [modal, setModal] = useState({ shwo: false, ticket: {} })
-  const [closeTicketIsLoading, setCloseTicketIsLoading] = useState(false)
+  const [closeTicketIsLoading, setCloseTicketIsLoading] = useState({ isLoading: false, id: null })
 
   const bottomRef = useRef()
 
@@ -29,15 +29,12 @@ function AdminTickets() {
   }, [authContext])
 
   const closeTicket = async (event, ticket) => {
-    console.log(ticket);
     event.stopPropagation()
-    
-    if (ticket.status !== 'closed') {
-      setCloseTicketIsLoading(true)
 
+    if (ticket.status !== 'closed') {
       await post('/tickets/close', {
         token: authContext.userToken,
-        ticketId: ticket.id
+        id: ticket.id
       })
         .then(() => {
           setTickets(prev => {
@@ -48,10 +45,11 @@ function AdminTickets() {
 
             return filteredTickets
           })
+          toast.success('تیکت با موفقیت بسته شد')
         })
         .catch(errorr => toast.error(errorr.response.data.err))
 
-      setCloseTicketIsLoading(false)
+      setCloseTicketIsLoading({ isLoading: false, id: null })
     }
   }
 
@@ -111,12 +109,15 @@ function AdminTickets() {
                         </td>
                         <td
                           className='tbody__tr__td w-1/12 group'
-                          onClick={event => closeTicket(event, ticket)}
+                          onClick={event => {
+                            setCloseTicketIsLoading({ isLoading: true, id: ticket.id })
+                            closeTicket(event, ticket)
+                          }}
                         >
                           <div className="td__wrapper justify-center">
                             <CloseIconLoader
                               customClass={ticket.status !== 'closed' && 'group-hover:-translate-y-1'}
-                              isLoading={closeTicketIsLoading}
+                              isLoading={closeTicketIsLoading.isLoading && (closeTicketIsLoading.id === ticket.id)}
                             />
                           </div>
                         </td>
