@@ -23,6 +23,7 @@ function AdminDevices() {
   })
   const [createDeviceLoading, setCreateDeviceLoading] = useState(false)
   const [deleteDeviceLoading, setDeleteDeviceLoading] = useState({ isLoading: false, id: null })
+  const [editDeviceLoading, setEditDeviceLoading] = useState(false)
 
   useEffect(() => {
     document.title = "مدیریت دستگاه ها - داشبورد مدیریت اپل سرویس"
@@ -108,12 +109,14 @@ function AdminDevices() {
     setDeleteDeviceLoading({ isLoading: false, id: null })
   }
 
-  const editDevice = event => {
+  const editDevice = async event => {
     event.preventDefault()
 
     if (editDeviceModal.brand.length < 1 || editDeviceModal.model.length < 1) return toast.error('لطفا فیلد هارا کامل کنید')
 
-    post('/admins/devices/edit', {
+    setEditDeviceLoading(true)
+
+    await post('/admins/devices/edit', {
       token: authContext.userToken,
       id: editDeviceModal.id,
       data: { brand: editDeviceModal.brand, model: editDeviceModal.model },
@@ -123,6 +126,8 @@ function AdminDevices() {
         setEditDeviceModal({ show: false, id: null, brand: '', model: '' })
         toast.success('دستگاه با موفقیت ویرایش شد')
       }).catch(error => { toast.error(error.response.data.err) })
+
+    setEditDeviceLoading(false)
   }
 
   return (
@@ -383,12 +388,13 @@ function AdminDevices() {
                 </svg>
 
               </div>
-              <button
-                className="btn btn-blue w-full"
-                onClick={editDevice}
+              <SubmitBtn
+                customClass={'w-full'}
+                clickHandler={editDevice}
+                isLoading={editDeviceLoading}
               >
                 ثبت تغییر
-              </button>
+              </SubmitBtn>
             </form>
           </PortalModal>
         )
