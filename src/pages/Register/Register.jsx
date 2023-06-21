@@ -4,6 +4,7 @@ import toast, { Toaster } from 'react-hot-toast';
 
 import { get, post } from '../../utility'
 import AuthContext from '../../context/AuthContext';
+import SubmitBtn from './../../components/SubmitBtn/SubmitBtn'
 
 export default function Register() {
   const authcontext = useContext(AuthContext)
@@ -20,6 +21,7 @@ export default function Register() {
     phone: { value: '', validation: false },
     city: { value: '', validation: false },
   })
+  const [registerLoadings, setRegisterLoadings] = useState({ login: false, signin: false, otp: false })
 
   const otpRef = useRef()
 
@@ -52,7 +54,7 @@ export default function Register() {
     }
   }, [formPage])
 
-  function generateAgainOtp() {
+  const generateAgainOtp = () => {
     post(`/auth?action=generate&mode=${prevPage}`, { phone: form.phone.value })
       .then(() => {
         toast.success(`کد تایید مجدد ارسال شد`)
@@ -69,9 +71,11 @@ export default function Register() {
       })
   }
 
-  function generateLoginOtp() {
+  const generateLoginOtp = async () => {
+    setRegisterLoadings({ login: true, signin: false, otp: false })
+
     setOtpNumber({ value: '', validation: false })
-    post('/auth?action=generate&mode=login', { phone: form.phone.value }).then(response => {
+    await post('/auth?action=generate&mode=login', { phone: form.phone.value }).then(response => {
       toast.success(`کد تایید ارسال شد`)
       response.data.nextPage && setFormPage('otpPage')
     }).catch((err) => {
@@ -86,11 +90,15 @@ export default function Register() {
       })
       err.response.data.nextPage && setFormPage('otpPage')
     })
+
+    setRegisterLoadings({ login: false, signin: false, otp: false })
   }
 
-  function generateRegisterOtp() {
+  const generateRegisterOtp = async () => {
+    setRegisterLoadings({ login: false, signin: true, otp: false })
+
     setOtpNumber({ value: '', validation: false })
-    post('/auth?action=generate&mode=register', { phone: form.phone.value })
+    await post('/auth?action=generate&mode=register', { phone: form.phone.value })
       .then(response => {
         toast.success(`کد تایید ارسال شد`)
         response.data.nextPage && setFormPage('otpPage')
@@ -104,16 +112,18 @@ export default function Register() {
           )
         })
       })
+
+    setRegisterLoadings({ login: false, signin: false, otp: false })
   }
 
-  function submitLogin() {
+  const submitLogin = () => {
     if (form.phone.validation) {
       setPrevPage('login')
       generateLoginOtp()
     } else toast.error('لطفا شماره خود را به درستی وارد کنید!')
   }
 
-  function submitRegister() {
+  const submitRegister = () => {
     for (const field in form)
       if (!form[field].validation) return toast.error('لطفا فیلد هارا به درستی کامل کنید!')
 
@@ -121,10 +131,12 @@ export default function Register() {
     generateRegisterOtp()
   }
 
-  function otpSubmit() {
+  const otpSubmit = async () => {
     if (!otpNumber.validation) return toast.error('لطفا کد را کامل وارد کنید!')
 
-    post(`/auth?action=submit&mode=${prevPage}`, {
+    setRegisterLoadings({ login: false, signin: false, otp: true })
+
+    await post(`/auth?action=submit&mode=${prevPage}`, {
       code: otpNumber.value,
       phone: form.phone.value,
       mode: prevPage
@@ -151,6 +163,8 @@ export default function Register() {
     }).catch(err => {
       toast.error(err.response.data.err)
     })
+
+    setRegisterLoadings({ login: false, signin: false, otp: false })
 
   }
 
@@ -214,13 +228,26 @@ export default function Register() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
             </svg>
           </div>
-          <button className='btn btn-blue w-full'
-            onClick={submitLogin}>ورود</button>
-          <span className='text-xs flex justify-center items-center gap-2 mt-1 show-up a-slow'>
+          <SubmitBtn
+            customClass={'w-full'}
+            clickHandler={submitLogin}
+            isLoading={registerLoadings.login}
+          >
+            ورود
+          </SubmitBtn>
+          <div
+            className={`text-xs flex justify-center items-center gap-2 mt-1 show-up a-slow
+              ${registerLoadings.login && 'opacity-50'}`}
+          >
             حساب کاربری ندارید؟
-            <span className='text-blue-500 cursor-pointer select-none'
-              onClick={() => setFormPage('register')}>ثبت نام کنید</span>
-          </span>
+            <button
+              className='text-blue-500 cursor-pointer select-none'
+              onClick={() => setFormPage('register')}
+              disabled={registerLoadings.login}
+            >
+              ثبت نام کنید
+            </button>
+          </div>
         </div>
 
         <div className={`${formPage === 'register' ? 'flex' : 'hidden'}
@@ -312,13 +339,26 @@ export default function Register() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
             </svg>
           </div>
-          <button className='btn btn-blue w-full'
-            onClick={submitRegister}>ثبت نام</button>
-          <span className='text-xs flex justify-center items-center gap-2 mt-1 show-up a-slow'>
+          <SubmitBtn
+            customClass={'w-full'}
+            clickHandler={submitRegister}
+            isLoading={registerLoadings.signin}
+          >
+            ثبت نام
+          </SubmitBtn>
+          <div
+            className={`text-xs flex justify-center items-center gap-2 mt-1 show-up a-slow
+              ${registerLoadings.signin && 'opacity-50'}`}
+          >
             حساب کاربری دارید؟
-            <span className='text-blue-500 cursor-pointer select-none'
-              onClick={() => setFormPage('login')}>وارد شوید</span>
-          </span>
+            <button
+              className='text-blue-500 cursor-pointer select-none'
+              onClick={() => setFormPage('login')}
+              disabled={registerLoadings.signin}
+            >
+              وارد شوید
+            </button>
+          </div>
         </div>
 
         <div className={`${formPage === 'otpPage' ? 'flex' : 'hidden'}
@@ -343,28 +383,51 @@ export default function Register() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
             </svg>
           </div>
-          <button className='btn btn-blue w-full' onClick={otpSubmit}>ثبت کد</button>
-          <span className='text-xs flex justify-center items-center gap-2 mt-1 show-up a-slow'>
+          <SubmitBtn
+            customClass={'w-full'}
+            clickHandler={otpSubmit}
+            isLoading={registerLoadings.otp}
+          >
+            ثبت کد
+          </SubmitBtn>
+          <div
+            className={`text-xs flex justify-center items-center gap-2 mt-1 show-up a-slow
+              ${registerLoadings.otp && 'opacity-50'}`}
+          >
             شماره خود را اشتباه وارد کرده اید؟
             {
               prevPage === 'login' ? (
-                <span className='text-blue-500 cursor-pointer select-none'
-                  onClick={() => setFormPage('login')}>بازگشت به صفحه ورود</span>
+                <button
+                  className='text-blue-500 cursor-pointer select-none'
+                  onClick={() => setFormPage('login')}
+                  disabled={registerLoadings.otp}
+                >
+                  بازگشت به صفحه ورود
+                </button>
               ) : (
-                <span className='text-blue-500 cursor-pointer select-none'
-                  onClick={() => setFormPage('register')}>بازگشت به صفحه ثبت نام</span>
+                <button
+                  className='text-blue-500 cursor-pointer select-none'
+                  onClick={() => setFormPage('register')}
+                  disabled={registerLoadings.otp}
+                >
+                  بازگشت به صفحه ثبت نام
+                </button>
               )
             }
-          </span>
-          <span className='text-xs flex justify-center items-center gap-2 show-up'>
+          </div>
+          <div
+            className={`text-xs flex justify-center items-center gap-2 mt-1 show-up a-slow
+              ${registerLoadings.otp && 'opacity-50'}`}
+          >
             کدی دریافت نکردید؟
             <button
               className='text-blue-500 cursor-pointer select-none'
               onClick={generateAgainOtp}
+              disabled={registerLoadings.otp}
             >
               دریافت دوباره
             </button>
-          </span>
+          </div>
         </div>
       </div>
 
