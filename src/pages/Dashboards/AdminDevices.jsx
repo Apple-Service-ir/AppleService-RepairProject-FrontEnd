@@ -5,6 +5,8 @@ import { toast, Toaster } from 'react-hot-toast'
 import AuthContext from './../../context/AuthContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import Alert from '../../components/Alert/Alert'
+import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
+import DeleteIconLoader from '../../components/DeleteIconLoader/DeleteIconLoader'
 
 function AdminDevices() {
   const authContext = useContext(AuthContext)
@@ -19,6 +21,8 @@ function AdminDevices() {
     selectBrand: { value: '', validation: false },
     newBrand: { value: '', validation: false }
   })
+  const [createDeviceLoading, setCreateDeviceLoading] = useState(false)
+  const [deleteDeviceLoading, setDeleteDeviceLoading] = useState({ isLoading: false, id: null })
 
   useEffect(() => {
     document.title = "مدیریت دستگاه ها - داشبورد مدیریت اپل سرویس"
@@ -40,14 +44,18 @@ function AdminDevices() {
       .catch(error => toast.error(error.response.data.err))
   }
 
-  const submitHandler = event => {
+  const submitHandler = async event => {
     event.preventDefault()
     if (deviceForm.selectBrand.validation && deviceForm.model.validation) {
+      setCreateDeviceLoading(true)
 
       const devicesMap = datas.devices.map(d => d.model.toLowerCase())
-      if (devicesMap.includes(deviceForm.model.value.toLowerCase())) return toast.error("مدل وارد شده از قبل ثبت شده است.")
+      if (devicesMap.includes(deviceForm.model.value.toLowerCase())) {
+        setCreateDeviceLoading(false)
+        return toast.error("مدل وارد شده از قبل ثبت شده است.")
+      }
 
-      post('/admins/devices/create', {
+      await post('/admins/devices/create', {
         token: authContext.userToken,
         brand: deviceForm.selectBrand.value,
         model: deviceForm.model.value
@@ -65,6 +73,8 @@ function AdminDevices() {
           toast.success('دستگاه با موفقیت اضافه شد')
         })
         .catch(error => toast.error(error.response.data.err))
+
+      setCreateDeviceLoading(false)
     }
     else toast.error('لطفا فیلد هارا کامل کنید')
   }
@@ -83,17 +93,19 @@ function AdminDevices() {
     }
   }
 
-  const removeDevice = deviceId => {
+  const removeDevice = async deviceId => {
     const requestBody = {
       token: authContext.userToken,
       id: deviceId
     }
-    post('/admins/devices/delete', requestBody)
+    await post('/admins/devices/delete', requestBody)
       .then(() => {
         getDatas()
         toast.success('دستگاه با موفقیت حذف شد')
       })
       .catch(error => toast.error(error.response.data.err))
+
+    setDeleteDeviceLoading({ isLoading: false, id: null })
   }
 
   const editDevice = event => {
@@ -180,14 +192,13 @@ function AdminDevices() {
                   </svg>
                 </div>
               </div>
-              <button
-                className='btn btn-blue w-full
-                  sm:w-1/2'
-                type='submit'
-                onClick={submitHandler}
+              <SubmitBtn
+                customClass={'w-full sm:w-1/2'}
+                clickHandler={submitHandler}
+                isLoading={createDeviceLoading}
               >
                 اضافه کردن
-              </button>
+              </SubmitBtn>
             </form>
           )
         }
@@ -237,13 +248,16 @@ function AdminDevices() {
                         </td>
                         <td
                           className='tbody__tr__td w-1/12 group cursor-pointer'
-                          onClick={() => removeDevice(device.id)}
+                          onClick={() => {
+                            setDeleteDeviceLoading({ isLoading: true, id: device.id })
+                            removeDevice(device.id)
+                          }}
                         >
                           <div className="td__wrapper justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-red-500 w-5 h-5
-                            group-hover:-translate-y-1">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                            </svg>
+                            <DeleteIconLoader
+                              customClass={'group-hover:-translate-y-1'}
+                              isLoading={deleteDeviceLoading.isLoading && (deleteDeviceLoading.id === device.id)}
+                            />
                           </div>
                         </td>
                       </tr>
@@ -264,7 +278,7 @@ function AdminDevices() {
             />
           )
         }
-      </div>
+      </div >
 
       {
         showModal && (
@@ -277,17 +291,7 @@ function AdminDevices() {
               <span className='w-full block text-center text-xl sansbold p-1'>
                 برند را انتخاب کنید
               </span>
-              <div className='w-full bg-input mb-4 mt-1'>
-                <input
-                  className='input'
-                  type="text"
-                  placeholder='جستجو کنید'
-                />
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
-              </div>
-              <ul className='w-full max-h-[12rem] overflow-y-scroll'>
+              <ul className='w-full max-h-[20rem] overflow-y-scroll'>
                 {
                   datas.brands.map((device, index) => (
                     <li
