@@ -15,7 +15,7 @@ function AdminParts() {
   const [partName, setPartName] = useState({ value: '', validation: false })
   const [parts, setParts] = useState([])
   const [modal, setModal] = useState({ show: false, part: {} })
-  const [editPartName, setEdirPartName] = useState({ value: '', validation: false })
+  const [editPartName, setEditPartName] = useState({ value: '', validation: false })
   const [createPartLoading, setCreatePartLoading] = useState(false)
   const [deletePartLoading, setDeletePartLoading] = useState({ isLoading: false, id: null })
   const [editPartLoading, setEditPartLoading] = useState(false)
@@ -27,32 +27,6 @@ function AdminParts() {
       .then(response => setParts(response.data))
       .catch(error => toast.error(error.response.data.err))
   }, [])
-
-  const addPartHandler = async event => {
-    event.preventDefault()
-
-    const englishWords = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm']
-    const persianWords = ['ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', 'خ', 'ح', 'ج', 'چ', 'ش', 'س', 'ی', 'ب', 'ل', 'ا', 'ت', 'ن', 'م', 'ک', 'گ', 'ظ', 'ط', 'ز', 'ر', 'ذ', 'د', 'ئ', 'و', 'ۀ', 'آ', 'ة', 'ي', 'ؤ', 'إ', 'أ', 'ء']
-
-    if (!partName.validation) return toast.error('لطفا فیلد را کامل کنید')
-    if (!partName.value.includes("-")) return toast.error('نام قطعه باید دارای اسم فارسی و انگلیسی باشد. همچنین اسم را با " - " جداسازی نمایید')
-    if (!partName.value.includes(" - ")) setPartName({ ...partName, value: partName.value.replace("-", " - ") })
-    if (!englishWords.includes(partName.value.split(" - ")[0][0].toLowerCase()) || !persianWords.includes(partName.value.split(" - ")[1][0])) return toast.error("ابتدا اسم قطعه به انگلیسی و سپس به فارسی وارد نمایید")
-
-    setCreatePartLoading(true)
-
-    await post('/admins/parts/create', {
-      token: authContext.userToken,
-      name: partName.value
-    })
-      .then(response => {
-        setParts(prev => [response.data.part, ...prev])
-        toast.success('قطعه با موفقیت اضافه شد')
-      })
-      .catch(error => toast.error(error.response.data.err))
-
-    setCreatePartLoading(false)
-  }
 
   const removePartHandler = async partId => {
     await post('/admins/parts/delete', {
@@ -70,32 +44,87 @@ function AdminParts() {
     setDeletePartLoading({ isLoading: false, id: null })
   }
 
+  const partNameValidatorHandler = name => {
+    const englishWords = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm']
+    const persianWords = ['ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', 'خ', 'ح', 'ج', 'چ', 'ش', 'س', 'ی', 'ب', 'ل', 'ا', 'ت', 'ن', 'م', 'ک', 'گ', 'ظ', 'ط', 'ز', 'ر', 'ذ', 'د', 'ئ', 'و', 'ۀ', 'آ', 'ة', 'ي', 'ؤ', 'إ', 'أ', 'ء']
+
+    console.log(name)
+
+    if (!name.includes("-")) {
+      toast.error('نام قطعه باید دارای اسم فارسی و انگلیسی باشد. همچنین اسم را با " - " جداسازی نمایید')
+      return { status: false, name }
+    }
+
+    if (!partName.value.includes(" - ") && partName.validation) {
+      name = partName.value.replace("-", " - ")
+    }
+
+    if (!editPartName.value.includes(" - ") && editPartName.validation) {
+      name = editPartName.value.replace("-", " - ")
+    }
+
+    if (!englishWords.includes(name.split(" - ")[0][0].toLowerCase())
+      || !persianWords.includes(name.split(" - ")[1][0])) {
+      toast.error("ابتدا اسم قطعه به انگلیسی و سپس به فارسی وارد نمایید")
+      return { status: false, name }
+    }
+
+    return { status: true, name }
+  }
+
+  const addPartHandler = async event => {
+    event.preventDefault()
+
+    if (!partName.validation) return toast.error('لطفا فیلد را کامل کنید')
+
+    const partNameValidator = partNameValidatorHandler(partName.value)
+    if (partNameValidator.status) {
+      setCreatePartLoading(true)
+      await post('/admins/parts/create', {
+        token: authContext.userToken,
+        name: partNameValidator.name
+      })
+        .then(response => {
+          setParts(prev => [response.data.part, ...prev])
+          setPartName({ value: '', validation: false })
+          toast.success('قطعه با موفقیت اضافه شد')
+        })
+        .catch(error => toast.error(error.response.data.err))
+
+      setCreatePartLoading(false)
+    }
+  }
+
   const editPartNameHandler = async event => {
     event.preventDefault()
 
     if (!editPartName.validation) return toast.error('لطفا فیلد را کامل کنید')
 
-    setEditPartLoading(true)
+    const partNameValidator = partNameValidatorHandler(editPartName.value)
+    if (partNameValidator.status) {
+      setEditPartLoading(true)
 
-    await post('/admins/parts/edit', {
-      token: authContext.userToken,
-      id: modal.part.id,
-      data: { name: editPartName.value },
-    })
-      .then(() => {
-        setParts(prev => {
-          const newParts = prev.map(part => {
-            if (part.id === modal.part.id) part.name = editPartName.value
-            return part
-          })
-          return newParts
-        })
-        toast.success('قطعه با موفقیت ویرایش شد')
+      await post('/admins/parts/edit', {
+        token: authContext.userToken,
+        id: modal.part.id,
+        data: { name: partNameValidator.name },
       })
-      .catch(error => toast.error(error.response.data.err))
+        .then(() => {
+          setParts(prev => {
+            const newParts = prev.map(part => {
+              if (part.id === modal.part.id) part.name = partNameValidator.name
+              return part
+            })
+            return newParts
+          })
+          setEditPartName({ value: '', validation: false })
+          toast.success('قطعه با موفقیت ویرایش شد')
+        })
+        .catch(error => toast.error(error.response.data.err))
 
-    setModal({ show: false, part: {} })
-    setEditPartLoading(false)
+      setModal({ show: false, part: {} })
+      setEditPartLoading(false)
+    }
   }
 
   return (
@@ -184,7 +213,7 @@ function AdminParts() {
                           className='tbody__tr__td w-1/12 group cursor-pointer'
                           onClick={() => {
                             setModal({ show: true, part })
-                            setEdirPartName({ value: part.name, validation: true })
+                            setEditPartName({ value: part.name, validation: true })
                           }}
                         >
                           <div className="td__wrapper justify-center">
@@ -241,7 +270,7 @@ function AdminParts() {
                   placeholder='نام جدید قطعه'
                   value={editPartName.value}
                   onChange={event => {
-                    setEdirPartName({
+                    setEditPartName({
                       value: event.target.value,
                       validation: event.target.value.length > 1
                     })
