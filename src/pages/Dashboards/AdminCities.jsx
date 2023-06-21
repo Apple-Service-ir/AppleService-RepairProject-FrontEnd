@@ -5,6 +5,8 @@ import { get, post } from '../../utility'
 import AuthContext from '../../context/AuthContext'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
+import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
+import DeleteIconLoader from '../../components/DeleteIconLoader/DeleteIconLoader'
 
 function AdminCities() {
   const authContext = useContext(AuthContext)
@@ -14,6 +16,9 @@ function AdminCities() {
   const [cities, setCities] = useState([])
   const [modal, setModal] = useState({ show: false, city: {} })
   const [editCityName, setEditCityName] = useState({ value: '', validation: false })
+  const [createCityLoader, setCreateCityLoader] = useState(false)
+  const [deleteCityLoader, setDeleteCityLoader] = useState({ isLoading: false, id: null })
+  const [editCityLoader, setEditCityLoader] = useState(false)
 
   useEffect(() => {
     document.title = "مدیریت شهر ها - داشبورد مدیریت اپل سرویس"
@@ -23,34 +28,37 @@ function AdminCities() {
       .catch(error => toast.error(error.response.data.err))
   }, [])
 
-  const addCityHandler = event => {
+  const addCityHandler = async event => {
     event.preventDefault()
 
-    const englishWords = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm']
+    const persianWords = /^[\u0600-\u06FF\s]+$/;
 
     if (!cityName.validation) return toast.error('لطفا فیلد را کامل کنید')
-    if (englishWords.includes(cityName.value)) return toast.error('اسم شهر باید فقط حروف فارسی باشد.')
-
+    if (!persianWords.test(cityName.value)) return toast.error('اسم شهر باید فقط حروف فارسی باشد.')
     if (cities.map(city => city.name).includes(cityName.value)) return toast.error("این شهر از قبل ثبت شده است.")
+
+    setCreateCityLoader(true)
 
     const requestBody = {
       token: authContext.userToken,
       name: cityName.value
     }
-    post('/admins/cities/create', requestBody)
+    await post('/admins/cities/create', requestBody)
       .then(response => {
         setCities(prev => [response.data.city, ...prev])
         toast.success('شهر با موفقیت اضافه شد')
       })
       .catch(error => toast.error(error.response.data.err))
+
+    setCreateCityLoader(false)
   }
 
-  const removeCityHandler = cityId => {
+  const removeCityHandler = async cityId => {
     const requestBody = {
       token: authContext.userToken,
       id: cityId
     }
-    post('/admins/cities/delete', requestBody)
+    await post('/admins/cities/delete', requestBody)
       .then((r) => {
         setCities(prev => {
           return prev.filter(city => city.id !== cityId)
@@ -58,17 +66,22 @@ function AdminCities() {
         toast.success('شهر با موفقیت حذف شد')
       })
       .catch(error => toast.error(error.response.data.err))
+
+    setDeleteCityLoader({ isLoading: false, id: null })
   }
 
-  const editCityNameHandler = event => {
+  const editCityNameHandler = async event => {
     event.preventDefault()
     if (!editCityName.validation) return toast.error('لطفا فیلد را کامل کنید')
+
+    setEditCityLoader(true)
+
     const requestBody = {
       token: authContext.userToken,
       id: modal.city.id,
       data: { name: editCityName.value },
     }
-    post('/admins/cities/edit', requestBody)
+    await post('/admins/cities/edit', requestBody)
       .then(() => {
         setCities(prev => {
           const newCities = prev.map(city => {
@@ -80,6 +93,9 @@ function AdminCities() {
         toast.success('شهر با موفقیت ویرایش شد')
       })
       .catch(error => toast.error(error.response.data.err))
+
+    setModal({ show: false, city: {} })
+    setEditCityLoader(false)
   }
 
   return (
@@ -126,14 +142,13 @@ function AdminCities() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 3.03v.568c0 .334.148.65.405.864l1.068.89c.442.369.535 1.01.216 1.49l-.51.766a2.25 2.25 0 01-1.161.886l-.143.048a1.107 1.107 0 00-.57 1.664c.369.555.169 1.307-.427 1.605L9 13.125l.423 1.059a.956.956 0 01-1.652.928l-.679-.906a1.125 1.125 0 00-1.906.172L4.5 15.75l-.612.153M12.75 3.031a9 9 0 00-8.862 12.872M12.75 3.031a9 9 0 016.69 14.036m0 0l-.177-.529A2.25 2.25 0 0017.128 15H16.5l-.324-.324a1.453 1.453 0 00-2.328.377l-.036.073a1.586 1.586 0 01-.982.816l-.99.282c-.55.157-.894.702-.8 1.267l.073.438c.08.474.49.821.97.821.846 0 1.598.542 1.865 1.345l.215.643m5.276-3.67a9.012 9.012 0 01-5.276 3.67m0 0a9 9 0 01-10.275-4.835M15.75 9c0 .896-.393 1.7-1.016 2.25" />
                 </svg>
               </div>
-              <button
-                className='btn btn-blue w-full
-                sm:w-1/2'
-                type='submit'
-                onClick={addCityHandler}
+              <SubmitBtn
+                customClass={'w-full sm:w-1/2 '}
+                clickHandler={addCityHandler}
+                isLoading={createCityLoader}
               >
                 اضافه کردن
-              </button>
+              </SubmitBtn>
             </form>
           )
         }
@@ -180,13 +195,16 @@ function AdminCities() {
                         </td>
                         <td
                           className='tbody__tr__td w-1/12 group cursor-pointer'
-                          onClick={() => removeCityHandler(city.id)}
+                          onClick={() => {
+                            setDeleteCityLoader({ isLoading: true, id: city.id })
+                            removeCityHandler(city.id)
+                          }}
                         >
                           <div className="td__wrapper justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-red-500 w-5 h-5
-                            group-hover:-translate-y-1">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                            </svg>
+                            <DeleteIconLoader
+                              customClass={'group-hover:-translate-y-1'}
+                              isLoading={deleteCityLoader.isLoading && (deleteCityLoader.id === city.id)}
+                            />
                           </div>
                         </td>
                       </tr>
@@ -232,10 +250,13 @@ function AdminCities() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 3.03v.568c0 .334.148.65.405.864l1.068.89c.442.369.535 1.01.216 1.49l-.51.766a2.25 2.25 0 01-1.161.886l-.143.048a1.107 1.107 0 00-.57 1.664c.369.555.169 1.307-.427 1.605L9 13.125l.423 1.059a.956.956 0 01-1.652.928l-.679-.906a1.125 1.125 0 00-1.906.172L4.5 15.75l-.612.153M12.75 3.031a9 9 0 00-8.862 12.872M12.75 3.031a9 9 0 016.69 14.036m0 0l-.177-.529A2.25 2.25 0 0017.128 15H16.5l-.324-.324a1.453 1.453 0 00-2.328.377l-.036.073a1.586 1.586 0 01-.982.816l-.99.282c-.55.157-.894.702-.8 1.267l.073.438c.08.474.49.821.97.821.846 0 1.598.542 1.865 1.345l.215.643m5.276-3.67a9.012 9.012 0 01-5.276 3.67m0 0a9 9 0 01-10.275-4.835M15.75 9c0 .896-.393 1.7-1.016 2.25" />
                 </svg>
               </div>
-              <button
-                className='btn btn-blue w-full'
-                onClick={editCityNameHandler}
-              >ثبت تغییر</button>
+              <SubmitBtn
+                customClass={'w-full'}
+                clickHandler={editCityNameHandler}
+                isLoading={editCityLoader}
+              >
+                ثبت تغییر
+              </SubmitBtn>
             </form>
           </PortalModal>
         )
