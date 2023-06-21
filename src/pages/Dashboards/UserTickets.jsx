@@ -18,6 +18,7 @@ function UserTickets() {
     text: { value: '', validation: false }
   })
   const [submitLoading, setSubmitLoading] = useState(false)
+  const [closeTicketLoading, setCloseTicketLoading] = useState(false)
 
   const bottomRef = useRef()
 
@@ -28,7 +29,6 @@ function UserTickets() {
   useEffect(() => {
     authContext.userToken && get(`/tickets/all?token=${authContext.userToken}`)
       .then(response => {
-        console.log(response);
         setTickets(response.data.tickets)
       })
   }, [authContext])
@@ -61,24 +61,29 @@ function UserTickets() {
     setSubmitLoading(false)
   }
 
-  const closeTicketHandler = () => {
-    post("/tickets/close", {
+  const closeTicketHandler = async () => {
+    setCloseTicketLoading(true)
+
+    await post("/tickets/close", {
       token: authContext.userToken,
       id: modal.ticket.id
-    }).then(() => {
-      setTickets(prev => {
-        const filteredTickets = prev.map(item => {
-          if (item.id === modal.ticket.id) item.status = 'closed'
-          return item
-        })
-
-        return filteredTickets
-      })
-      setModal({ show: false, ticket: {} })
-      toast.success("تیکت با موفقیت بسته شد.")
-    }).catch((e) => {
-      toast.error(e.response.data.err)
     })
+      .then(() => {
+        setTickets(prev => {
+          const filteredTickets = prev.map(item => {
+            if (item.id === modal.ticket.id) item.status = 'closed'
+            return item
+          })
+
+          return filteredTickets
+        })
+        setModal({ show: false, ticket: {} })
+        toast.success("تیکت با موفقیت بسته شد.")
+      }).catch((e) => {
+        toast.error(e.response.data.err)
+      })
+
+    setCloseTicketLoading(false)
   }
 
   return (
@@ -222,11 +227,12 @@ function UserTickets() {
               <MessageSection
                 setTickets={setTickets}
                 currentTicket={modal.ticket}
-                closeTicketHandler={closeTicketHandler}
                 setCurrentTicket={ticket => {
                   setModal(prev => ({ ...prev, ticket }))
                 }}
                 bottomRef={bottomRef}
+                closeTicketHandler={closeTicketHandler}
+                closeTicketLoading={closeTicketLoading}
               >
               </MessageSection>
             </div>

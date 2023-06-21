@@ -6,10 +6,12 @@ import { toast, Toaster } from 'react-hot-toast'
 import Loader from './../Loader/Loader'
 import { useState } from 'react'
 
-function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef, closeTicketHandler }) {
+function MessageSection(props) {
   const authcontext = useContext(AuthContext)
   const sendMessageRef = useRef()
   const [isLoading, setIsloading] = useState(false)
+
+  const { setTickets, currentTicket, setCurrentTicket, bottomRef, closeTicketHandler, closeTicketLoading } = props
 
   useEffect(() => {
     bottomRef.current.scrollTop = bottomRef.current.scrollHeight
@@ -52,17 +54,24 @@ function MessageSection({ setTickets, currentTicket, setCurrentTicket, bottomRef
 
       <div className="bg-blue-500 w-full h-12 flex justify-between items-center
         rounded-t-xl px-6 absolute top-0 left-0 z-50">
-        <span className='text-white sansbold'>
-          {currentTicket.subject}
-        </span>
+        <div className="flex items-center gap-3">
+          <span className='text-white sansbold'>{currentTicket.id} #</span>
+          <span className='text-white sansbold'>{currentTicket.subject}</span>
+        </div>
         {
-          currentTicket.clientId == authcontext.userInfo.id && currentTicket.status != "closed" ? (
-            <div className='flex items-center'>
-              <button onClick={closeTicketHandler} className='ml-3 text-xs btn btn-danger p-1 rounded-md h-8'>بستن تیکت</button>
-              <span className='text-white sansbold'>{currentTicket.id} #</span>
-            </div>
-          ) : (
-            <span className='text-white sansbold'>{currentTicket.id} #</span>
+          currentTicket.clientId == authcontext.userInfo.id
+          && currentTicket.status != "closed"
+          && (
+            <button
+              className='badge-btn badge-danger w-24'
+              onClick={closeTicketHandler}
+            >
+              {
+                closeTicketLoading ? (
+                  <Loader size={'w-3 h-3'} before={'before:bg-white'} />
+                ) : 'بستن تیکت'
+              }
+            </button>
           )
         }
 
