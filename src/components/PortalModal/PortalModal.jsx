@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 function PortalModal({ children, closeHandler }) {
   return createPortal(
     <div
-      className='bg-black bg-opacity-25 backdrop-blur-sm
+      className='bg-black bg-opacity-25 backdrop-blur-xl
         w-screen h-screen flex justify-center items-center p-3 overflow-hidden
         fixed top-0 left-0 z-50 show-modal
         sm:p-0'
