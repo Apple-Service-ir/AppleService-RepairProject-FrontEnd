@@ -73,9 +73,10 @@ function App() {
         localStorage.removeItem('e-service-token')
         localStorage.removeItem('e-service-userInfo')
       })
+      .finally(() => {
+        setScreenLoading(false)
+      })
   }, [])
-
-  window.addEventListener('load', () => setScreenLoading(false))
 
   return (
     <>
