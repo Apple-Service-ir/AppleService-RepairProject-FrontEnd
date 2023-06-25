@@ -45,8 +45,8 @@ function AdminParts() {
   }
 
   const partNameValidatorHandler = name => {
-    const englishWords = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm']
-    const persianWords = ['ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', 'خ', 'ح', 'ج', 'چ', 'ش', 'س', 'ی', 'ب', 'ل', 'ا', 'ت', 'ن', 'م', 'ک', 'گ', 'ظ', 'ط', 'ز', 'ر', 'ذ', 'د', 'ئ', 'و', 'ۀ', 'آ', 'ة', 'ي', 'ؤ', 'إ', 'أ', 'ء']
+    const englishWords = /^[a-zA-Z]+$/
+    const persianWords = /^[\u0600-\u06FF\s]+$/;
 
     if (!name.includes("-")) {
       toast.error('نام قطعه باید دارای اسم فارسی و انگلیسی باشد. همچنین اسم را با " - " جداسازی نمایید')
@@ -61,8 +61,8 @@ function AdminParts() {
       name = editPartName.value.replace("-", " - ")
     }
 
-    if (!englishWords.includes(name.split(" - ")[0][0].toLowerCase())
-      || !persianWords.includes(name.split(" - ")[1][0])) {
+    if (!englishWords.test(name.split(" - ")[0][0].toLowerCase())
+      || !persianWords.test(name.split(" - ")[1][0])) {
       toast.error("ابتدا اسم قطعه به انگلیسی و سپس به فارسی وارد نمایید")
       return { status: false, name }
     }
