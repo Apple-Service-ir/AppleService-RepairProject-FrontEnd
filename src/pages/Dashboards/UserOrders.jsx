@@ -234,7 +234,7 @@ function UserOrders() {
       {
         modal.show && (
           <PortalModal closeHandler={() => setModal({ show: false, order: {} })}>
-            <ul className="w-96 max-h-[80vh] overflow-y-scroll rounded-md">
+            <ul className="w-[500px] max-h-[80vh] overflow-y-scroll rounded-md">
               <li className='w-full flex justify-center items-center rounded-md'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
                   کد سفارش
@@ -322,7 +322,7 @@ function UserOrders() {
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                   <a
                     className='underline'
-                    href={`${mainUrl}/uploads/${modal.order.picture}`}
+                    href={`${mainUrl.replace('/api', '')}/uploads/${submitOrderModal.order.picture}`}
                     target='_blank'
                   >مشاهده</a>
                 </div>
