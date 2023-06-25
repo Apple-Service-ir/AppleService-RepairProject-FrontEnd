@@ -6,6 +6,7 @@ import UserDashboard from "./pages/Dashboards/UserDashboard.jsx"
 import UserHome from "./pages/Dashboards/UserHome.jsx"
 import UserOrders from "./pages/Dashboards/UserOrders.jsx"
 import UserTickets from "./pages/Dashboards/UserTickets.jsx"
+import RepairMan from "./pages/Dashboards/RepairMan.jsx"
 import AdminDashboard from "./pages/Dashboards/AdminDashboard.jsx"
 import AdminHome from "./pages/Dashboards/AdminHome.jsx"
 import AdminUsers from "./pages/Dashboards/AdminUsers.jsx"
@@ -31,7 +32,8 @@ const routes = [
     children: [
       { path: '/dashboard', element: <UserHome /> },
       { path: '/dashboard/orders', element: <UserOrders /> },
-      { path: '/dashboard/tickets', element: <UserTickets /> }
+      { path: '/dashboard/tickets', element: <UserTickets /> },
+      { path: '/dashboard/repairman', element: <RepairMan /> }
     ]
   },
   {

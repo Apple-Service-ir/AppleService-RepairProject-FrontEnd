@@ -97,9 +97,23 @@ function UserDashboard() {
                   </NavLink>
                 )
               }
+              {
+                authContext.userInfo.role === 'repairman' && (
+                  <NavLink
+                    to='repairman'
+                    className={link => link.isActive ? 'btn btn-white w-full' : 'btn btn-out-white w-full'}
+                  >
+                    ناحیه تعمیرکار
+                  </NavLink>
+                )
+              }
+              <Link
+                className='btn btn-danger w-full'
+                onClick={authContext.logOut}
+              >
+                خروج از حساب
+              </Link>
             </div>
-            <Link className='btn btn-danger w-full mt-9'
-              onClick={authContext.logOut}>خروج از حساب</Link>
           </div>
         </div>
         <div className="w-full rounded-xl p-6 relative

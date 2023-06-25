@@ -16,6 +16,7 @@ const containingHeader = [
   '/dashboard',
   '/dashboard/orders',
   '/dashboard/tickets',
+  '/dashboard/repairman',
 ]
 
 const containingFooter = [
