@@ -3,7 +3,7 @@ import { toast, Toaster } from 'react-hot-toast'
 
 import { mainUrl } from './../../../config.json'
 import AuthContext from '../../context/AuthContext'
-import { get } from '../../utility'
+import { get, post } from '../../utility'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 
@@ -22,6 +22,17 @@ function RepairMan() {
         })
         .catch(error => toast.error(error.response.data.err))
   }, [authContext])
+
+  const submitOrderHandler = orderId => {
+    const requestBody = {
+      token: authContext.userToken,
+      id: orderId
+    }
+    post('/repairmans/orders/accept', requestBody)
+      .then(response => {
+        console.log(response)
+      })
+  }
 
   return (
     <>
@@ -82,8 +93,11 @@ function RepairMan() {
         submitOrderModal.show && (
           <PortalModal closeHandler={() => setSubmitOrderModal({ show: false, order: {} })}>
             <ul className="w-[500px] max-h-[80vh] overflow-y-scroll rounded-md">
-              <li className='bg-white text-green-500 w-full flex justify-center items-center p-3 rounded-md
-                cursor-pointer hover:bg-green-500 hover:text-white'>
+              <li
+                className='bg-white text-green-500 w-full flex justify-center items-center p-3 rounded-md
+                  cursor-pointer hover:bg-green-500 hover:text-white'
+                onClick={() => submitOrderHandler(submitOrderModal.order.id)}
+              >
                 قبول کردن
               </li>
               <li className='w-full flex justify-center items-center rounded-md mt-1'>

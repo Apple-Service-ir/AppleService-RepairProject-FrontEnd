@@ -21,6 +21,7 @@ function UserOrders() {
   useEffect(() => {
     authContext.userToken && get(`/orders/log?token=${authContext.userToken}`)
       .then((response) => {
+        console.log(response)
         setOrders(response.data.orders)
       })
   }, [authContext])
@@ -139,6 +140,13 @@ function UserOrders() {
                         </li>
                       )
                     }
+                    <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                      flex gap-3 p-3`}>
+                      <span className='sansbold'>مشخصات تعمیرکار:</span>
+                      <p className='text-sm'>
+                        {order.repairman.firstName} {order.repairman.lastName} - {order.repairman.phone}
+                      </p>
+                    </li>
                   </ul>
                 </div>
               )
@@ -265,8 +273,8 @@ function UserOrders() {
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                   {
-                    modal.order.repairMan ?
-                      `${modal.order.repairMan.firstName} ${modal.order.repairMan.firstName}`
+                    modal.order.repairman ?
+                      `${modal.order.repairman.firstName} ${modal.order.repairman.lastName} - ${modal.order.repairman.phone}`
                       : '-'
                   }
                 </div>
@@ -322,7 +330,7 @@ function UserOrders() {
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                   <a
                     className='underline'
-                    href={`${mainUrl.replace('/api', '')}/uploads/${submitOrderModal.order.picture}`}
+                    href={`${mainUrl.replace('/api', '')}/uploads/${modal.order.picture}`}
                     target='_blank'
                   >مشاهده</a>
                 </div>
