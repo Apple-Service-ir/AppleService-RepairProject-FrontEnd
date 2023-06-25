@@ -37,7 +37,6 @@ function MessageSection(props) {
             }
             return ticket
           })
-          console.log(mapedTickets);
           return mapedTickets
         })
 

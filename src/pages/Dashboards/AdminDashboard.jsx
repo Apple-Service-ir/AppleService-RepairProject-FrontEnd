@@ -53,7 +53,6 @@ function AdminDashboard() {
 
     await postForm("/informations/edit", requestForm).
       then(response => {
-        console.log(response)
         authContext.setUserInfoHandler(response.data.user)
         localStorage.setItem('e-service-userInfo', JSON.stringify(
           response.data.user

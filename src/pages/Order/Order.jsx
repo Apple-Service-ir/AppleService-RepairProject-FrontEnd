@@ -42,7 +42,6 @@ export default function Order() {
   }, [])
 
   async function postOrder() {
-    console.log(123)
     setSubmitLoading(true)
 
     const formData = new FormData()
