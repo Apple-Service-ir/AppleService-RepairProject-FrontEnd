@@ -371,6 +371,7 @@ export default function Register() {
               min={0}
               ref={otpRef}
               autoComplete='one-time-code'
+	      inputMode='decimal'
               value={otpNumber.value}
               onChange={event => {
                 setOtpNumber({
