@@ -17,6 +17,7 @@ function RepairMan() {
     if (authContext.userToken)
       get(`/repairmans/orders/get?token=${authContext.userToken}`)
         .then(response => {
+          console.log(response)
           const pendingOrders = response.data.orders.filter(order => order.status === 'pending')
           setOrders({ all: response.data.orders, pending: pendingOrders })
         })
@@ -31,22 +32,9 @@ function RepairMan() {
     post('/repairmans/orders/accept', requestBody)
       .then(() => {
         setOrders(prev => {
-          let newAllOrders = []
-          let newPendingOrders = prev.pending.map(order => {
-            if (order.id === orderId) {
-              order.status = 'working'
-              newAllOrders.push(order)
-            }
-            else {
-              return order
-            }
-          })
-
-          if(!newPendingOrders[0]) newPendingOrders = []
-
-          console.log('all', newAllOrders)
-          console.log('pending', newPendingOrders)
-          return { all: newAllOrders, pending: newPendingOrders }
+          let newAllOrdersItem = prev.pending.filter(order => order.id === orderId)
+          let newPendingOrders = prev.pending.filter(order => order.id !== orderId)
+          return { all: [...prev.all, newAllOrdersItem], pending: newPendingOrders }
         })
         toast.success('سفارش یا موفقیت تایید شد')
       })
