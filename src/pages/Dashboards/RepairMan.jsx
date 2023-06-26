@@ -19,7 +19,7 @@ function RepairMan() {
         .then(response => {
           const pendingOrders = response.data.orders.filter(order => order.status === 'pending')
           const inWorkingOrder = response.data.orders.filter(order => (
-            order.repairmanId === authContext.userInfo.id
+            (order.repairmanId === authContext.userInfo.id && order.status === 'working')
           ))
           setOrders({
             all: response.data.orders,
@@ -74,7 +74,22 @@ function RepairMan() {
   }
 
   const doneOrderHandler = orderId => {
-    console.log(orderId)
+    const requestBody = {
+      token: authContext.userToken,
+      id: orderId
+    }
+    post('/repairmans/orders/done', requestBody)
+      .then(response => {
+        console.log(123, response)
+        setOrders(prev => ({
+          ...prev,
+          all: [...prev.all, response.data.order],
+          inWorking: {}
+        }))
+        toast.success('سفارش با موفقیت به اتمام رسید، خسته نباشید')
+      })
+      .catch(error => toast.error(error.response.data.err))
+    setSubmitOrderModal({ show: false, order: {} })
   }
 
   return (
@@ -196,7 +211,7 @@ function RepairMan() {
                         rounded-md cursor-pointer hover:bg-red-500 hover:text-white'
                       onClick={() => cancelledSubmitOrderHandler(submitOrderModal.order.id)}
                     >
-                      رد کردن
+                      لغو تعمیر
                     </button>
                     <button
                       className='bg-white text-green-500 w-1/2 flex justify-center items-center p-3 
