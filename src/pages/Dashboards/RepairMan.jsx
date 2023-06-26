@@ -10,16 +10,22 @@ import PortalModal from '../../components/PortalModal/PortalModal'
 function RepairMan() {
   const authContext = useContext(AuthContext)
 
-  const [orders, setOrders] = useState({ all: [], pending: [] })
+  const [orders, setOrders] = useState({ all: [], pending: [], inWorking: {} })
   const [submitOrderModal, setSubmitOrderModal] = useState({ show: false, order: {} })
 
   useEffect(() => {
     if (authContext.userToken)
       get(`/repairmans/orders/get?token=${authContext.userToken}`)
         .then(response => {
-          console.log(response)
           const pendingOrders = response.data.orders.filter(order => order.status === 'pending')
-          setOrders({ all: response.data.orders, pending: pendingOrders })
+          const inWorkingOrder = response.data.orders.filter(order => (
+            order.repairmanId === authContext.userInfo.id
+          ))
+          setOrders({
+            all: response.data.orders,
+            pending: pendingOrders,
+            inWorking: inWorkingOrder[0] || {}
+          })
         })
         .catch(error => toast.error(error.response.data.err))
   }, [authContext])
@@ -30,35 +36,108 @@ function RepairMan() {
       id: orderId
     }
     post('/repairmans/orders/accept', requestBody)
-      .then(() => {
+      .then(response => {
+        setSubmitOrderModal(prev => ({ ...prev, order: response.data.order }))
+
         setOrders(prev => {
-          let newAllOrdersItem = prev.pending.filter(order => order.id === orderId)
-          let newPendingOrders = prev.pending.filter(order => order.id !== orderId)
-          return { all: [...prev.all, newAllOrdersItem], pending: newPendingOrders }
+          const newPendingOrders = prev.pending.filter(order => order.id !== orderId)
+          return {
+            all: prev.all,
+            pending: newPendingOrders,
+            inWorking: response.data.order
+          }
         })
         toast.success('سفارش یا موفقیت تایید شد')
       })
       .catch(error => toast.error(error.response.data.err))
   }
 
+  const cancelledSubmitOrderHandler = orderId => {
+    const requestBody = {
+      token: authContext.userToken,
+      id: orderId
+    }
+    post('/repairmans/orders/cancel', requestBody)
+      .then(response => {
+        setSubmitOrderModal(prev => ({ ...prev, order: response.data.order }))
+
+        setOrders(prev => {
+          return {
+            all: prev.all,
+            pending: [...prev.pending, response.data.order],
+            inWorking: {}
+          }
+        })
+      })
+      .catch(error => toast.error(error.response.data.err))
+
+  }
+
+  const doneOrderHandler = orderId => {
+    console.log(orderId)
+  }
+
   return (
     <>
       <div className='w-full flex flex-col justify-center items-center gap-6 show-fade'>
+        {
+          Object.keys(orders.inWorking).length ? (
+            <div className='w-full'>
+              <h1 className='w-full text-right text-xl sansbold mb-3'>سفارش درحال تعمیر</h1>
+              <ul className="bg-yellow-200 w-full h-12 flex justify-between items-center 
+                pr-6 rounded-xl relative mb-3">
+                <span className='px-2 text-sm opacity-90'>{orders.inWorking.id} #</span>
+                <li>
+                  نام دستگاه:
+                  <span className='px-2 text-sm opacity-90'>{orders.inWorking.phoneName}</span>
+                </li>
+                <li>
+                  نام قطعه:
+                  <span className='px-2 text-sm opacity-90'>{orders.inWorking.partName}</span>
+                </li>
+                <li>
+                  عکس دستگاه:
+                  <a
+                    href={`${mainUrl.replace('/api', '')}/uploads/${orders.inWorking.picture}`}
+                    className='px-2 underline text-sm opacity-90'
+                    target="_blank"
+                  >
+                    مشاهده
+                  </a>
+                </li>
+                <button
+                  className='bg-yellow-300 w-16 h-full flex justify-center items-center rounded-l-xl
+                    hover:bg-yellow-400'
+                  onClick={() => {
+                    setSubmitOrderModal({ show: true, order: orders.inWorking })
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
+                    className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </button>
+              </ul>
+            </div>
+          ) : ''
+        }
         <div className="w-full">
           <h1 className='w-full text-right text-xl sansbold mb-3'>سفارش های در انتظار تایید</h1>
           {
             orders.pending.length > 0 ? orders.pending.map(order => (
-              <div key={order.id} className="bg-green-200 w-full h-12 flex justify-between items-center 
+              <ul key={order.id} className="bg-green-200 w-full h-12 flex justify-between items-center 
                 pr-6 rounded-xl relative mb-3">
-                <div>
+                <span className='px-2 text-sm opacity-90'>{order.id} #</span>
+                <li>
                   نام دستگاه:
                   <span className='px-2 text-sm opacity-90'>{order.phoneName}</span>
-                </div>
-                <div>
+                </li>
+                <li>
                   نام قطعه:
                   <span className='px-2 text-sm opacity-90'>{order.partName}</span>
-                </div>
-                <div>
+                </li>
+                <li>
                   عکس دستگاه:
                   <a
                     href={`${mainUrl.replace('/api', '')}/uploads/${order.picture}`}
@@ -67,7 +146,7 @@ function RepairMan() {
                   >
                     مشاهده
                   </a>
-                </div>
+                </li>
                 <button
                   className='bg-green-300 w-16 h-full flex justify-center items-center rounded-l-xl
                   hover:bg-green-400'
@@ -81,7 +160,7 @@ function RepairMan() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </button>
-              </div>
+              </ul>
             )) : (
               <Alert
                 theme={'danger'}
@@ -101,13 +180,34 @@ function RepairMan() {
         submitOrderModal.show && (
           <PortalModal closeHandler={() => setSubmitOrderModal({ show: false, order: {} })}>
             <ul className="w-[500px] max-h-[80vh] overflow-y-scroll rounded-md">
-              <li
-                className='bg-white text-green-500 w-full flex justify-center items-center p-3 rounded-md
-                  cursor-pointer hover:bg-green-500 hover:text-white'
-                onClick={() => submitOrderHandler(submitOrderModal.order.id)}
-              >
-                قبول کردن
-              </li>
+              {
+                submitOrderModal.order.status === 'pending' ? (
+                  <li
+                    className='bg-white text-blue-500 w-full flex justify-center items-center p-3 
+                      rounded-md cursor-pointer hover:bg-blue-500 hover:text-white'
+                    onClick={() => submitOrderHandler(submitOrderModal.order.id)}
+                  >
+                    قبول کردن
+                  </li>
+                ) : (
+                  <li className='w-full flex gap-1'>
+                    <button
+                      className='bg-white text-red-500 w-1/2 flex justify-center items-center p-3 
+                        rounded-md cursor-pointer hover:bg-red-500 hover:text-white'
+                      onClick={() => cancelledSubmitOrderHandler(submitOrderModal.order.id)}
+                    >
+                      رد کردن
+                    </button>
+                    <button
+                      className='bg-white text-green-500 w-1/2 flex justify-center items-center p-3 
+                        rounded-md cursor-pointer hover:bg-green-500 hover:text-white'
+                      onClick={() => doneOrderHandler(submitOrderModal.order.id)}
+                    >
+                      اتمام تعمیر
+                    </button>
+                  </li>
+                )
+              }
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
                   کد سفارش
