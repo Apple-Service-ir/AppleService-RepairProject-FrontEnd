@@ -31,13 +31,22 @@ function RepairMan() {
     post('/repairmans/orders/accept', requestBody)
       .then(() => {
         setOrders(prev => {
-          const newPendingOrders = prev.pending.map(order => {
+          let newAllOrders = []
+          let newPendingOrders = prev.pending.map(order => {
             if (order.id === orderId) {
               order.status = 'working'
+              newAllOrders.push(order)
             }
-            return order
+            else {
+              return order
+            }
           })
-          return { ...prev, pending: newPendingOrders }
+
+          if(!newPendingOrders[0]) newPendingOrders = []
+
+          console.log('all', newAllOrders)
+          console.log('pending', newPendingOrders)
+          return { all: newAllOrders, pending: newPendingOrders }
         })
         toast.success('سفارش یا موفقیت تایید شد')
       })
@@ -51,7 +60,8 @@ function RepairMan() {
           <h1 className='w-full text-right text-xl sansbold mb-3'>سفارش های در انتظار تایید</h1>
           {
             orders.pending.length > 0 ? orders.pending.map(order => (
-              <div className="bg-green-200 w-full h-12 flex justify-between items-center pr-6 rounded-xl relative mb-3">
+              <div key={order.id} className="bg-green-200 w-full h-12 flex justify-between items-center 
+                pr-6 rounded-xl relative mb-3">
                 <div>
                   نام دستگاه:
                   <span className='px-2 text-sm opacity-90'>{order.phoneName}</span>
