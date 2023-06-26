@@ -29,9 +29,19 @@ function RepairMan() {
       id: orderId
     }
     post('/repairmans/orders/accept', requestBody)
-      .then(response => {
-        console.log(response)
+      .then(() => {
+        setOrders(prev => {
+          const newPendingOrders = prev.pending.map(order => {
+            if (order.id === orderId) {
+              order.status = 'working'
+            }
+            return order
+          })
+          return { ...prev, pending: newPendingOrders }
+        })
+        toast.success('سفارش یا موفقیت تایید شد')
       })
+      .catch(error => toast.error(error.response.data.err))
   }
 
   return (
