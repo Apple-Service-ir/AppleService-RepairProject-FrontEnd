@@ -6,12 +6,16 @@ import AuthContext from '../../context/AuthContext'
 import { get, post } from '../../utility'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
+import OrderStatusBtn from '../../components/OrderStatusBtn/OrderStatusBtn'
 
 function RepairMan() {
   const authContext = useContext(AuthContext)
 
   const [orders, setOrders] = useState({ all: [], pending: [], inWorking: {} })
   const [submitOrderModal, setSubmitOrderModal] = useState({ show: false, order: {} })
+  const [orderStatusLoadings, setOrderStatusLoadings] = useState({
+    accept: false, cancel: false, done: false
+  })
 
   useEffect(() => {
     if (authContext.userToken)
@@ -30,12 +34,14 @@ function RepairMan() {
         .catch(error => toast.error(error.response.data.err))
   }, [authContext])
 
-  const submitOrderHandler = orderId => {
+  const submitOrderHandler = async orderId => {
+    setOrderStatusLoadings({ accept: true, cancel: false, done: false })
+
     const requestBody = {
       token: authContext.userToken,
       id: orderId
     }
-    post('/repairmans/orders/accept', requestBody)
+    await post('/repairmans/orders/accept', requestBody)
       .then(response => {
         setSubmitOrderModal(prev => ({ ...prev, order: response.data.order }))
 
@@ -50,14 +56,17 @@ function RepairMan() {
         toast.success('سفارش یا موفقیت تایید شد')
       })
       .catch(error => toast.error(error.response.data.err))
+    setOrderStatusLoadings({ accept: false, cancel: false, done: false })
   }
 
-  const cancelledSubmitOrderHandler = orderId => {
+  const cancelledSubmitOrderHandler = async orderId => {
+    setOrderStatusLoadings({ accept: false, cancel: true, done: false })
+
     const requestBody = {
       token: authContext.userToken,
       id: orderId
     }
-    post('/repairmans/orders/cancel', requestBody)
+    await post('/repairmans/orders/cancel', requestBody)
       .then(response => {
         setSubmitOrderModal(prev => ({ ...prev, order: response.data.order }))
 
@@ -68,17 +77,20 @@ function RepairMan() {
             inWorking: {}
           }
         })
+        toast.success('سفارش با موفقیت لفو شد')
       })
       .catch(error => toast.error(error.response.data.err))
-
+    setOrderStatusLoadings({ accept: false, cancel: false, done: false })
   }
 
-  const doneOrderHandler = orderId => {
+  const doneOrderHandler = async orderId => {
+    setOrderStatusLoadings({ accept: false, cancel: false, done: true })
+
     const requestBody = {
       token: authContext.userToken,
       id: orderId
     }
-    post('/repairmans/orders/done', requestBody)
+    await post('/repairmans/orders/done', requestBody)
       .then(response => {
         console.log(123, response)
         setOrders(prev => ({
@@ -90,6 +102,7 @@ function RepairMan() {
       })
       .catch(error => toast.error(error.response.data.err))
     setSubmitOrderModal({ show: false, order: {} })
+    setOrderStatusLoadings({ accept: false, cancel: false, done: false })
   }
 
   return (
@@ -197,29 +210,32 @@ function RepairMan() {
             <ul className="w-[500px] max-h-[80vh] overflow-y-scroll rounded-md">
               {
                 submitOrderModal.order.status === 'pending' ? (
-                  <li
-                    className='bg-white text-blue-500 w-full flex justify-center items-center p-3 
-                      rounded-md cursor-pointer hover:bg-blue-500 hover:text-white'
-                    onClick={() => submitOrderHandler(submitOrderModal.order.id)}
+                  <OrderStatusBtn
+                    customStyles={'w-full'}
+                    status={'working'}
+                    isLoading={orderStatusLoadings.accept}
+                    clickHandler={() => submitOrderHandler(submitOrderModal.order.id)}
                   >
-                    قبول کردن
-                  </li>
+                    تایید کردن
+                  </OrderStatusBtn>
                 ) : (
                   <li className='w-full flex gap-1'>
-                    <button
-                      className='bg-white text-red-500 w-1/2 flex justify-center items-center p-3 
-                        rounded-md cursor-pointer hover:bg-red-500 hover:text-white'
-                      onClick={() => cancelledSubmitOrderHandler(submitOrderModal.order.id)}
+                    <OrderStatusBtn
+                      customStyles={'w-full'}
+                      status={'cancelled'}
+                      isLoading={orderStatusLoadings.cancel}
+                      clickHandler={() => cancelledSubmitOrderHandler(submitOrderModal.order.id)}
                     >
                       لغو تعمیر
-                    </button>
-                    <button
-                      className='bg-white text-green-500 w-1/2 flex justify-center items-center p-3 
-                        rounded-md cursor-pointer hover:bg-green-500 hover:text-white'
-                      onClick={() => doneOrderHandler(submitOrderModal.order.id)}
+                    </OrderStatusBtn>
+                    <OrderStatusBtn
+                      customStyles={'w-full'}
+                      status={'done'}
+                      isLoading={orderStatusLoadings.done}
+                      clickHandler={() => doneOrderHandler(submitOrderModal.order.id)}
                     >
                       اتمام تعمیر
-                    </button>
+                    </OrderStatusBtn>
                   </li>
                 )
               }

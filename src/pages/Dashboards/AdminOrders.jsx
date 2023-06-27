@@ -163,7 +163,7 @@ function AdminOrders() {
                   isLoading={orderStatusLoaders.cancelled}
                   clickHandler={() => changeStatus(modal.order.id, 'cancelled')}
                 >
-                  لغو کردن
+                  لغو تعمیر
                 </OrderStatusBtn>
                 <OrderStatusBtn
                   status={'working'}
@@ -177,7 +177,7 @@ function AdminOrders() {
                   isLoading={orderStatusLoaders.done}
                   clickHandler={() => changeStatus(modal.order.id, 'done')}
                 >
-                  تمام شده
+                  اتمام تعمیر
                 </OrderStatusBtn>
               </li>
 
