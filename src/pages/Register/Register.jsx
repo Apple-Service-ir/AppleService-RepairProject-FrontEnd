@@ -28,9 +28,13 @@ export default function Register() {
   useEffect(() => {
     document.title = "ورود - اپل سرویس"
 
-    get('/list/cities').then(response => {
-      setCities(response.data)
-    })
+    authcontext.setProgressIsLoadingHandler(true)
+    get('/list/cities')
+      .then(response => {
+        setCities(response.data)
+      })
+      .catch(error => toast.error(error.response.data.err))
+      .finally(() => authcontext.setProgressIsLoadingHandler(false))
   }, [])
 
   useEffect(() => {
@@ -371,7 +375,7 @@ export default function Register() {
               min={0}
               ref={otpRef}
               autoComplete='one-time-code'
-	      inputMode='decimal'
+              inputMode='decimal'
               value={otpNumber.value}
               onChange={event => {
                 setOtpNumber({

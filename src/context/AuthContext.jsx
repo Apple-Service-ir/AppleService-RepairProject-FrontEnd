@@ -6,7 +6,10 @@ const AuthContext = createContext({
   userInfo: null,
   setUserInfoHandler: () => { },
   login: () => { },
-  logOut: () => { }
+  logOut: () => { },
+  // progress loading
+  progressIsLoading: false,
+  setProgressIsLoadingHandler: () => { }
 })
 
 export default AuthContext

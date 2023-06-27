@@ -462,4 +462,18 @@ input[type="number"] {
       opacity: 1;
     }
   }
+
+  .page-progress-loading {
+    animation: page-progress-loading 7s ease-in-out;
+  }
+
+  @keyframes page-progress-loading {
+    0% {
+      width: 0;
+    }
+
+    90% {
+      width: 90%;
+    }
+  }
 }

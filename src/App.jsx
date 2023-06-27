@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { useRoutes, useNavigate } from "react-router-dom"
 import { routes } from "./routes"
@@ -31,9 +31,32 @@ function App() {
     localStorage.getItem("e-service-userInfo") ? JSON.parse(localStorage.getItem("e-service-userInfo")) : {}
   )
   const [screenLoaing, setScreenLoading] = useState(true)
+  const [progressIsLoading, setProgressIsLoading] = useState(false)
 
   const router = useRoutes(routes)
   const redirect = useNavigate()
+
+  const progressIsLoadingRef = useRef()
+
+  useEffect(() => {
+    const localStorageToken = localStorage.getItem('e-service-token')
+    get(`/informations/get?token=${localStorageToken}`)
+      .then(response => {
+        setIslogin(true)
+        setUserInfo(response.data.user)
+        setUserToken(response.data.token)
+        localStorage.setItem('e-service-userInfo', JSON.stringify(response.data.user))
+      }).catch(() => {
+        setUserToken(null)
+        setIslogin(false)
+        setUserInfo({})
+        localStorage.removeItem('e-service-token')
+        localStorage.removeItem('e-service-userInfo')
+      })
+      .finally(() => {
+        setScreenLoading(false)
+      })
+  }, [])
 
   const login = (token, info) => {
     setUserToken(token)
@@ -59,25 +82,17 @@ function App() {
 
   const setUserInfoHandler = userInfo => setUserInfo(userInfo)
 
-  useEffect(() => {
-    const localStorageToken = localStorage.getItem('e-service-token')
-    get(`/informations/get?token=${localStorageToken}`)
-      .then(response => {
-        setIslogin(true)
-        setUserInfo(response.data.user)
-        setUserToken(response.data.token)
-        localStorage.setItem('e-service-userInfo', JSON.stringify(response.data.user))
-      }).catch(() => {
-        setUserToken(null)
-        setIslogin(false)
-        setUserInfo({})
-        localStorage.removeItem('e-service-token')
-        localStorage.removeItem('e-service-userInfo')
-      })
-      .finally(() => {
-        setScreenLoading(false)
-      })
-  }, [])
+  const setProgressIsLoadingHandler = (status) => {
+    if (status) {
+      setProgressIsLoading(true)
+    }
+    else {
+      progressIsLoadingRef.current.classList.remove('page-progress-loading');
+      setTimeout(() => {
+        setProgressIsLoading(false)
+      }, 100);
+    }
+  }
 
   return (
     <>
@@ -88,7 +103,9 @@ function App() {
           userInfo,
           setUserInfoHandler,
           login,
-          logOut
+          logOut,
+          progressIsLoading,
+          setProgressIsLoadingHandler
         }}
       >
         {
@@ -101,12 +118,24 @@ function App() {
           containingFooter.includes(location.pathname) && <Footer />
         }
       </AuthContext.Provider>
+
       {
         screenLoaing && createPortal(
           <div className="bg-black bg-opacity-25 backdrop-blur-xl
           w-screen h-screen flex justify-center items-center p-3 overflow-hidden
           fixed top-0 left-0 z-50">
             <Loader size={'w-16 h-16'} before={'before:bg-white'} />
+          </div>,
+          document.body
+        )
+      }
+
+      {
+        progressIsLoading && createPortal(
+          <div
+            className='bg-blue-200 w-full h-1 absolute top-0 left-0 z-50 page-progress-loading'
+            ref={progressIsLoadingRef}
+          >
           </div>,
           document.body
         )
