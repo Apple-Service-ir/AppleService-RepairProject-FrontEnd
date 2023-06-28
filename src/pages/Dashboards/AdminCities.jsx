@@ -22,10 +22,10 @@ function AdminCities() {
 
   useEffect(() => {
     document.title = "مدیریت شهر ها - داشبورد مدیریت اپل سرویس"
-
+    authContext.setProgressIsLoadingHandler(true)
     get('/list/cities')
       .then(response => setCities(response.data))
-      .catch(error => toast.error(error.response.data.err))
+      .finally(() => authContext.setProgressIsLoadingHandler(false))
   }, [])
 
   const addCityHandler = async event => {
