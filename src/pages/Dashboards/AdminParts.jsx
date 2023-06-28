@@ -22,10 +22,10 @@ function AdminParts() {
 
   useEffect(() => {
     document.title = "مدیریت قطعات - داشبورد مدیریت اپل سرویس"
-
+    authContext.setProgressIsLoadingHandler(true)
     get('/list/parts')
       .then(response => setParts(response.data))
-      .catch(error => toast.error(error.response.data.err))
+      .finally(() => authContext.setProgressIsLoadingHandler(false))
   }, [])
 
   const removePartHandler = async partId => {
