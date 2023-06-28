@@ -18,6 +18,7 @@ function RepairMan() {
   })
 
   useEffect(() => {
+    authContext.setProgressIsLoadingHandler(true)
     if (authContext.userToken)
       get(`/repairmans/orders/get?token=${authContext.userToken}`)
         .then(response => {
@@ -31,8 +32,8 @@ function RepairMan() {
             inWorking: inWorkingOrder[0] || {}
           })
         })
-        .catch(error => toast.error(error.response.data.err))
-  }, [authContext])
+        .finally(() => authContext.setProgressIsLoadingHandler(false))
+  }, [authContext.userInfo])
 
   const submitOrderHandler = async orderId => {
     setOrderStatusLoadings({ accept: true, cancel: false, done: false })
