@@ -22,11 +22,13 @@ function AdminTickets() {
   }, [])
 
   useEffect(() => {
+    authContext.setProgressIsLoadingHandler(true)
     authContext.userToken && get(`/tickets/all?admin=true&token=${authContext.userToken}`)
       .then(response => {
         setTickets(response.data.tickets)
       })
-  }, [authContext])
+      .finally(() => authContext.setProgressIsLoadingHandler(false))
+  }, [authContext.userInfo])
 
   const closeTicket = async (event, ticket) => {
     event.stopPropagation()
