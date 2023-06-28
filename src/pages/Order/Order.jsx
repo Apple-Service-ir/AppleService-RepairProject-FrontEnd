@@ -26,19 +26,26 @@ export default function Order() {
 
 
   useEffect(() => {
-    document.title = "ثبت سفارش - اپل سرویس"
+    authContext.setProgressIsLoadingHandler(true)
+    const func = async () => {
+      document.title = "ثبت سفارش - اپل سرویس"
 
-    get('/list/devices').then(response => {
-      const mapped = response.data.phones.map(item => {
-        return { id: item.id, value: `${item.brand} ${item.model}`, brand: item.brand }
+      await get('/list/devices').then(response => {
+        const mapped = response.data.phones.map(item => {
+          return { id: item.id, value: `${item.brand} ${item.model}`, brand: item.brand }
+        })
+        setDatas(prev => ({ ...prev, all: mapped, brands: response.data.brands }))
       })
-      setDatas(prev => ({ ...prev, all: mapped, brands: response.data.brands }))
-    })
 
-    get('/list/parts').then(response => {
-      const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
-      setDatas(prev => ({ ...prev, parts: mapped }))
-    })
+      await get('/list/parts').then(response => {
+        const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
+        setDatas(prev => ({ ...prev, parts: mapped }))
+      })
+
+      authContext.setProgressIsLoadingHandler(false)
+    }
+
+    func()
   }, [])
 
   async function postOrder() {
