@@ -30,8 +30,17 @@ function AdminDevices() {
   }, [])
 
   useEffect(() => {
-    authContext.userToken && getDatas()
-  }, [authContext])
+    authContext.setProgressIsLoadingHandler(true)
+    get('/list/devices')
+      .then(response => {
+        setDatas(prev => ({
+          ...prev,
+          brands: response.data.brands,
+          devices: response.data.phones,
+        }))
+      })
+      .finally(() => authContext.setProgressIsLoadingHandler(false))
+  }, [authContext.userInfo])
 
   const getDatas = () => {
     get('/list/devices')
@@ -42,7 +51,6 @@ function AdminDevices() {
           devices: response.data.phones,
         }))
       })
-      .catch(error => toast.error(error.response.data.err))
   }
 
   const submitHandler = async event => {
