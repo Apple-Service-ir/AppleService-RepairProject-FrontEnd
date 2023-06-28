@@ -49,11 +49,13 @@ function AdminUsers() {
   }, [])
 
   useEffect(() => {
+    authContext.setProgressIsLoadingHandler(true)
     authContext.userToken && get(`/admins/users/all?token=${authContext.userToken}`)
       .then(response => {
         setUsers(response.data.users)
       })
-  }, [authContext])
+      .finally(() => authContext.setProgressIsLoadingHandler(false))
+  }, [authContext.userInfo])
 
   const submitHandler = async event => {
     setSubmitLoading(true)
@@ -584,7 +586,7 @@ function AdminUsers() {
                 isLoading={deleteLoading}
                 clickHandler={deleteUserInformationHandler}
                 type={'danger'}
-                >
+              >
                 حذف کاربر
               </SubmitBtn>
               <SubmitBtn

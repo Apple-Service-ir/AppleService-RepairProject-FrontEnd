@@ -133,7 +133,9 @@ function App() {
       {
         progressIsLoading && createPortal(
           <div
-            className='bg-blue-200 w-full h-1 absolute top-0 left-0 z-50 page-progress-loading'
+            className='bg-white w-full h-0.5 fixed top-0 left-0 z-50 page-progress-loading
+              before:bg-blue-500 before:content-[""] before:w-full before:h-0.5 before:absolute
+              before:top-full before:left-0'
             ref={progressIsLoadingRef}
           >
           </div>,
