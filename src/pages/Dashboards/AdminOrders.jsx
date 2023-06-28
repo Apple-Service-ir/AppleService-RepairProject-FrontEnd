@@ -23,11 +23,13 @@ function AdminOrders() {
   useEffect(() => { document.title = "سفارشات - داشبورد مدیریت اپل سرویس" }, [])
 
   useEffect(() => {
+    authContext.setProgressIsLoadingHandler(true)
     authContext.userInfo && get(`/admins/orders/all?token=${authContext.userToken}`)
       .then(response => {
         setOrders(response.data.orders)
       })
-  }, [authContext])
+      .finally(() => authContext.setProgressIsLoadingHandler(false))
+  }, [authContext.userInfo])
 
   useEffect(() => {
     if (orderDescRef.current) orderDescRef.current.value = ''
@@ -151,7 +153,7 @@ function AdminOrders() {
           )
         }
       </div >
-      
+
       {
         modal.show && (
           <PortalModal closeHandler={() => setModal({ show: false, order: {} })}>
