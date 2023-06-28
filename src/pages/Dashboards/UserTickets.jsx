@@ -27,11 +27,13 @@ function UserTickets() {
   }, [])
 
   useEffect(() => {
+    authContext.setProgressIsLoadingHandler(true)
     authContext.userToken && get(`/tickets/all?token=${authContext.userToken}`)
       .then(response => {
         setTickets(response.data.tickets)
       })
-  }, [authContext])
+      .finally(() => authContext.setProgressIsLoadingHandler(false))
+  }, [authContext.userInfo])
 
   const submitTicketHandler = async event => {
     setSubmitLoading(true)
