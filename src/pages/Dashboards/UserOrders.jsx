@@ -19,12 +19,14 @@ function UserOrders() {
   }, [])
 
   useEffect(() => {
+    authContext.setProgressIsLoadingHandler(true)
     authContext.userToken && get(`/orders/log?token=${authContext.userToken}`)
       .then((response) => {
         console.log(response)
         setOrders(response.data.orders)
       })
-  }, [authContext])
+      .finally(() => authContext.setProgressIsLoadingHandler(false))
+  }, [authContext.userInfo])
 
   function deleteOrder(orderId) {
     post('/orders/cancel', { orderId, token: authContext.userToken })
