@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { get, post } from '../../utility'
 import { toast, Toaster } from 'react-hot-toast'
 import AuthContext from './../../context/AuthContext'
+import LoadingContext from './../../context/LoadingContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import Alert from '../../components/Alert/Alert'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
@@ -10,6 +11,7 @@ import DeleteIconLoader from '../../components/DeleteIconLoader/DeleteIconLoader
 
 function AdminDevices() {
   const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const [showDeviceForm, setShowDeviceForm] = useState(false)
 
@@ -27,10 +29,7 @@ function AdminDevices() {
 
   useEffect(() => {
     document.title = "مدیریت دستگاه ها - داشبورد مدیریت اپل سرویس"
-  }, [])
-
-  useEffect(() => {
-    authContext.setProgressIsLoadingHandler(true)
+    loadingContext.setProgressIsLoadingHandler(true)
     get('/list/devices')
       .then(response => {
         setDatas(prev => ({
@@ -39,8 +38,8 @@ function AdminDevices() {
           devices: response.data.phones,
         }))
       })
-      .finally(() => authContext.setProgressIsLoadingHandler(false))
-  }, [authContext.userInfo])
+      .finally(() => loadingContext.setProgressIsLoadingHandler(false))
+  }, [])
 
   const getDatas = () => {
     get('/list/devices')
