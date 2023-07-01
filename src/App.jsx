@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { useRoutes, useNavigate } from "react-router-dom"
+import { toast } from "react-hot-toast"
+
 import { routes } from "./routes"
+import { get, post } from "./utility"
+import AuthContext from "./context/AuthContext"
+import LoadingContext from "./context/LoadingContext"
+import Loader from "./components/Loader/Loader"
 import { Header } from "./components/Header/Header"
 import Footer from "./components/Footer/Footer"
-
-import { get, post } from "./utility"
-import { toast } from "react-hot-toast"
-import AuthContext from "./context/AuthContext"
-import Loader from "./components/Loader/Loader"
 
 const containingHeader = [
   '/',
@@ -103,20 +104,25 @@ function App() {
           userInfo,
           setUserInfoHandler,
           login,
-          logOut,
-          progressIsLoading,
-          setProgressIsLoadingHandler
+          logOut
         }}
       >
-        {
-          containingHeader.includes(location.pathname) && <Header />
-        }
+        <LoadingContext.Provider
+          value={{
+            progressIsLoading,
+            setProgressIsLoadingHandler
+          }}
+        >
+          {
+            containingHeader.includes(location.pathname) && <Header />
+          }
 
-        {router}
+          {router}
 
-        {
-          containingFooter.includes(location.pathname) && <Footer />
-        }
+          {
+            containingFooter.includes(location.pathname) && <Footer />
+          }
+        </LoadingContext.Provider>
       </AuthContext.Provider>
 
       {
