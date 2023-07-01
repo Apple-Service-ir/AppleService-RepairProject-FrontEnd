@@ -3,6 +3,7 @@ import { toast, Toaster } from 'react-hot-toast'
 
 import { get, post } from '../../utility'
 import AuthContext from '../../context/AuthContext'
+import LoadingContext from '../../context/LoadingContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import Alert from '../../components/Alert/Alert'
 import MessageSection from '../../components/MessageSection/MessageSection'
@@ -10,6 +11,7 @@ import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
 
 function UserTickets() {
   const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const [tickets, setTickets] = useState([])
   const [modal, setModal] = useState({ show: false, ticket: {} })
@@ -23,16 +25,15 @@ function UserTickets() {
   const bottomRef = useRef()
 
   useEffect(() => {
-    document.title = "تیکت ها - داشبورد اپل سرویس"
-  }, [])
-
-  useEffect(() => {
-    authContext.setProgressIsLoadingHandler(true)
-    authContext.userToken && get(`/tickets/all?token=${authContext.userToken}`)
-      .then(response => {
-        setTickets(response.data.tickets)
-      })
-      .finally(() => authContext.setProgressIsLoadingHandler(false))
+    loadingContext.setProgressIsLoadingHandler(true)
+    if (authContext.userToken) {
+      document.title = "تیکت ها - داشبورد اپل سرویس"
+      get(`/tickets/all?token=${authContext.userToken}`)
+        .then(response => {
+          setTickets(response.data.tickets)
+        })
+        .finally(() => loadingContext.setProgressIsLoadingHandler(false))
+    }
   }, [authContext.userInfo])
 
   const submitTicketHandler = async event => {
