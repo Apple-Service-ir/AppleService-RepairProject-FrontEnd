@@ -3,6 +3,7 @@ import { toast, Toaster } from 'react-hot-toast'
 
 import config from '../../../config.json'
 import AuthContext from './../../context/AuthContext'
+import LoadingContext from './../../context/LoadingContext'
 import { get, post, postForm } from './../../utility'
 import Alert from '../../components/Alert/Alert'
 import useGetCities from './../../Hooks/useGetCities'
@@ -11,6 +12,7 @@ import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
 
 function AdminUsers() {
   const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const [defaultCity, allCities] = useGetCities()
   const [users, setUsers] = useState([])
@@ -45,16 +47,15 @@ function AdminUsers() {
   const profileRef = useRef()
 
   useEffect(() => {
-    document.title = "کاربران - داشبورد مدیریت اپل سرویس"
-  }, [])
-
-  useEffect(() => {
-    authContext.setProgressIsLoadingHandler(true)
-    authContext.userToken && get(`/admins/users/all?token=${authContext.userToken}`)
-      .then(response => {
-        setUsers(response.data.users)
-      })
-      .finally(() => authContext.setProgressIsLoadingHandler(false))
+    loadingContext.setProgressIsLoadingHandler(true)
+    if (authContext.userToken) {
+      document.title = "کاربران - داشبورد مدیریت اپل سرویس"
+      get(`/admins/users/all?token=${authContext.userToken}`)
+        .then(response => {
+          setUsers(response.data.users)
+        })
+        .finally(() => loadingContext.setProgressIsLoadingHandler(false))
+    }
   }, [authContext.userInfo])
 
   const submitHandler = async event => {
