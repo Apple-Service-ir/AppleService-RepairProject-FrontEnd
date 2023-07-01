@@ -3,6 +3,7 @@ import { toast, Toaster } from 'react-hot-toast'
 
 import { mainUrl } from './../../../config.json'
 import AuthContext from '../../context/AuthContext'
+import LoadingContext from '../../context/LoadingContext'
 import { get, post } from '../../utility'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
@@ -10,6 +11,7 @@ import OrderStatusBtn from '../../components/OrderStatusBtn/OrderStatusBtn'
 
 function RepairMan() {
   const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const [orders, setOrders] = useState({ all: [], pending: [], inWorking: {} })
   const [submitOrderModal, setSubmitOrderModal] = useState({ show: false, order: {} })
@@ -18,7 +20,7 @@ function RepairMan() {
   })
 
   useEffect(() => {
-    authContext.setProgressIsLoadingHandler(true)
+    loadingContext.setProgressIsLoadingHandler(true)
     if (authContext.userToken)
       get(`/repairmans/orders/get?token=${authContext.userToken}`)
         .then(response => {
@@ -32,7 +34,7 @@ function RepairMan() {
             inWorking: inWorkingOrder[0] || {}
           })
         })
-        .finally(() => authContext.setProgressIsLoadingHandler(false))
+        .finally(() => loadingContext.setProgressIsLoadingHandler(false))
   }, [authContext.userInfo])
 
   const submitOrderHandler = async orderId => {
