@@ -21,12 +21,11 @@ function UserOrders() {
       document.title = "سفارشات - داشبورد اپل سرویس"
       get(`/orders/log?token=${authContext.userToken}`)
         .then((response) => {
-          console.log(response)
           setOrders(response.data.orders)
         })
         .finally(() => loadingContext.setProgressIsLoadingHandler(false))
     }
-  }, [authContext.userInfo])
+  }, [authContext.userToken])
 
   const deleteOrder = orderId => {
     post('/orders/cancel', { orderId, token: authContext.userToken })
