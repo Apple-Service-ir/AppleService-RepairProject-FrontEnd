@@ -4,10 +4,12 @@ import toast, { Toaster } from 'react-hot-toast';
 
 import { get, post } from '../../utility'
 import AuthContext from '../../context/AuthContext';
+import LoadingContext from '../../context/LoadingContext'
 import SubmitBtn from './../../components/SubmitBtn/SubmitBtn'
 
 export default function Register() {
-  const authcontext = useContext(AuthContext)
+  const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const navigate = useNavigate()
 
@@ -28,13 +30,13 @@ export default function Register() {
   useEffect(() => {
     document.title = "ورود - اپل سرویس"
 
-    authcontext.setProgressIsLoadingHandler(true)
+    loadingContext.setProgressIsLoadingHandler(true)
     get('/list/cities')
       .then(response => {
         setCities(response.data)
       })
       .catch(error => toast.error(error.response.data.err))
-      .finally(() => authcontext.setProgressIsLoadingHandler(false))
+      .finally(() => loadingContext.setProgressIsLoadingHandler(false))
   }, [])
 
   useEffect(() => {
@@ -162,7 +164,7 @@ export default function Register() {
         })
       }
 
-      authcontext.login(token, userData)
+      authContext.login(token, userData)
       navigate('/')
     }).catch(err => {
       toast.error(err.response.data.err)
