@@ -3,12 +3,14 @@ import toast, { Toaster } from 'react-hot-toast';
 
 import { get, postForm } from '../../utility';
 import AuthContext from './../../context/AuthContext'
+import LoadingContext from './../../context/LoadingContext'
 import useGetCities from './../../Hooks/useGetCities'
 import PortalModal from './../../components/PortalModal/PortalModal'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn';
 
 export default function Order() {
   const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const [defaultCity, allCities] = useGetCities()
   const [datas, setDatas] = useState({ all: [], brands: [], devices: [], parts: [] })
@@ -26,7 +28,7 @@ export default function Order() {
 
 
   useEffect(() => {
-    authContext.setProgressIsLoadingHandler(true)
+    loadingContext.setProgressIsLoadingHandler(true)
     const func = async () => {
       document.title = "ثبت سفارش - اپل سرویس"
 
@@ -42,7 +44,7 @@ export default function Order() {
         setDatas(prev => ({ ...prev, parts: mapped }))
       })
 
-      authContext.setProgressIsLoadingHandler(false)
+      loadingContext.setProgressIsLoadingHandler(false)
     }
 
     func()
