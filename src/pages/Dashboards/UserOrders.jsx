@@ -1,31 +1,31 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { createPortal } from 'react-dom'
 import { toast, Toaster } from 'react-hot-toast'
 
 import { mainUrl } from "../../../config.json"
 import { get, post } from '../../utility'
 import AuthContext from './../../context/AuthContext'
+import LoadingContext from './../../context/LoadingContext'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 
 function UserOrders() {
   const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const [orders, setOrders] = useState([])
   const [modal, setModal] = useState({ show: false, order: {} })
 
   useEffect(() => {
-    document.title = "سفارشات - داشبورد اپل سرویس"
-  }, [])
-
-  useEffect(() => {
-    authContext.setProgressIsLoadingHandler(true)
-    authContext.userToken && get(`/orders/log?token=${authContext.userToken}`)
-      .then((response) => {
-        console.log(response)
-        setOrders(response.data.orders)
-      })
-      .finally(() => authContext.setProgressIsLoadingHandler(false))
+    loadingContext.setProgressIsLoadingHandler(true)
+    if (authContext.userToken) {
+      document.title = "سفارشات - داشبورد اپل سرویس"
+      get(`/orders/log?token=${authContext.userToken}`)
+        .then((response) => {
+          console.log(response)
+          setOrders(response.data.orders)
+        })
+        .finally(() => loadingContext.setProgressIsLoadingHandler(false))
+    }
   }, [authContext.userInfo])
 
   function deleteOrder(orderId) {
