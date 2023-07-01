@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 
 import AuthContext from '../../context/AuthContext'
+import LoadingContext from '../../context/LoadingContext'
 import { get, post } from '../../utility'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
@@ -10,6 +11,7 @@ import DeleteIconLoader from '../../components/DeleteIconLoader/DeleteIconLoader
 
 function AdminParts() {
   const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const [showPartsForm, setShowPartsForm] = useState(false)
   const [partName, setPartName] = useState({ value: '', validation: false })
@@ -22,10 +24,10 @@ function AdminParts() {
 
   useEffect(() => {
     document.title = "مدیریت قطعات - داشبورد مدیریت اپل سرویس"
-    authContext.setProgressIsLoadingHandler(true)
+    loadingContext.setProgressIsLoadingHandler(true)
     get('/list/parts')
       .then(response => setParts(response.data))
-      .finally(() => authContext.setProgressIsLoadingHandler(false))
+      .finally(() => loadingContexts.setProgressIsLoadingHandler(false))
   }, [])
 
   const removePartHandler = async partId => {
