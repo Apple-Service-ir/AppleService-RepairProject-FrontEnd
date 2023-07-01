@@ -3,6 +3,7 @@ import { Toaster, toast } from 'react-hot-toast'
 
 import { get, post } from '../../utility'
 import AuthContext from '../../context/AuthContext'
+import LoadingContext from '../../context/LoadingContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import Alert from '../../components/Alert/Alert'
 import MessageSection from '../../components/MessageSection/MessageSection'
@@ -10,6 +11,7 @@ import CloseIconLoader from '../../components/CloseIconLoader/CloseIconLoader'
 
 function AdminTickets() {
   const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const [tickets, setTickets] = useState([])
   const [modal, setModal] = useState({ shwo: false, ticket: {} })
@@ -18,17 +20,16 @@ function AdminTickets() {
   const bottomRef = useRef()
 
   useEffect(() => {
-    document.title = "تیکت ها - داشبورد مدیریت اپل سرویس"
-  }, [])
-
-  useEffect(() => {
-    authContext.setProgressIsLoadingHandler(true)
-    authContext.userToken && get(`/tickets/all?admin=true&token=${authContext.userToken}`)
-      .then(response => {
-        setTickets(response.data.tickets)
-      })
-      .finally(() => authContext.setProgressIsLoadingHandler(false))
-  }, [authContext.userInfo])
+    loadingContext.setProgressIsLoadingHandler(true)
+    if (authContext.userToken) {
+      document.title = "تیکت ها - داشبورد مدیریت اپل سرویس"
+      get(`/tickets/all?admin=true&token=${authContext.userToken}`)
+        .then(response => {
+          setTickets(response.data.tickets)
+        })
+        .finally(() => loadingContext.setProgressIsLoadingHandler(false))
+    }
+  }, [authContext.userToken])
 
   const closeTicket = async (event, ticket) => {
     event.stopPropagation()
