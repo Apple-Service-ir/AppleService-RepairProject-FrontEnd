@@ -27,7 +27,7 @@ function AdminParts() {
     loadingContext.setProgressIsLoadingHandler(true)
     get('/list/parts')
       .then(response => setParts(response.data))
-      .finally(() => loadingContexts.setProgressIsLoadingHandler(false))
+      .finally(() => loadingContext.setProgressIsLoadingHandler(false))
   }, [])
 
   const removePartHandler = async partId => {
