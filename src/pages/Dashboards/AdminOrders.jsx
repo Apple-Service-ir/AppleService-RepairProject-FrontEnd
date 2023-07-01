@@ -5,12 +5,14 @@ import { mainUrl } from "../../../config.json"
 import { get, post } from '../../utility'
 import { useRef } from 'react'
 import AuthContext from '../../context/AuthContext'
+import LoadingContext from '../../context/LoadingContext'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import OrderStatusBtn from '../../components/OrderStatusBtn/OrderStatusBtn'
 
 function AdminOrders() {
   const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const [orders, setOrders] = useState([])
   const [modal, setModal] = useState({ show: false, order: {} })
@@ -20,16 +22,17 @@ function AdminOrders() {
 
   const orderDescRef = useRef()
 
-  useEffect(() => { document.title = "سفارشات - داشبورد مدیریت اپل سرویس" }, [])
-
   useEffect(() => {
-    authContext.setProgressIsLoadingHandler(true)
-    authContext.userInfo && get(`/admins/orders/all?token=${authContext.userToken}`)
-      .then(response => {
-        setOrders(response.data.orders)
-      })
-      .finally(() => authContext.setProgressIsLoadingHandler(false))
-  }, [authContext.userInfo])
+    loadingContext.setProgressIsLoadingHandler(true)
+    if (authContext.userToken) {
+      document.title = "سفارشات - داشبورد مدیریت اپل سرویس"
+      get(`/admins/orders/all?token=${authContext.userToken}`)
+        .then(response => {
+          setOrders(response.data.orders)
+        })
+        .finally(() => loadingContext.setProgressIsLoadingHandler(false))
+    }
+  }, [authContext.userToken])
 
   useEffect(() => {
     if (orderDescRef.current) orderDescRef.current.value = ''
