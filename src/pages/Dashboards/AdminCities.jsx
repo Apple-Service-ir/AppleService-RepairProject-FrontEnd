@@ -3,6 +3,7 @@ import { toast, Toaster } from 'react-hot-toast'
 
 import { get, post } from '../../utility'
 import AuthContext from '../../context/AuthContext'
+import LoadingContext from '../../context/LoadingContext'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
@@ -10,6 +11,7 @@ import DeleteIconLoader from '../../components/DeleteIconLoader/DeleteIconLoader
 
 function AdminCities() {
   const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const [showCitiesForm, setShowCitiesForm] = useState(false)
   const [cityName, setCityName] = useState({ value: '', validation: false })
@@ -22,10 +24,10 @@ function AdminCities() {
 
   useEffect(() => {
     document.title = "مدیریت شهر ها - داشبورد مدیریت اپل سرویس"
-    authContext.setProgressIsLoadingHandler(true)
+    loadingContext.setProgressIsLoadingHandler(true)
     get('/list/cities')
       .then(response => setCities(response.data))
-      .finally(() => authContext.setProgressIsLoadingHandler(false))
+      .finally(() => loadingContext.setProgressIsLoadingHandler(false))
   }, [])
 
   const addCityHandler = async event => {
