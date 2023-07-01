@@ -28,7 +28,7 @@ function UserOrders() {
     }
   }, [authContext.userInfo])
 
-  function deleteOrder(orderId) {
+  const deleteOrder = orderId => {
     post('/orders/cancel', { orderId, token: authContext.userToken })
       .then(response => {
         setOrders(response.data.orders)
