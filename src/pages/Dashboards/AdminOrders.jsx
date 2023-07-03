@@ -127,7 +127,7 @@ function AdminOrders() {
                             {
                               order.total ? (
                                 <>
-                                  39,000,000
+                                  {modal.order.total}
                                   <small className='italic opacity-75 mx-1'>تومان</small>
                                 </>
                               ) : '-'
