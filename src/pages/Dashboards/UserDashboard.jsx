@@ -8,9 +8,9 @@ import PortalModal from '../../components/PortalModal/PortalModal'
 import useGetCities from './../../Hooks/useGetCities'
 import SubmitBtn from './../../components/SubmitBtn/SubmitBtn'
 
-const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
 
 function UserDashboard() {
+  const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
   const authContext = useContext(AuthContext)
 
   const [defaultCity, allCities] = useGetCities()
