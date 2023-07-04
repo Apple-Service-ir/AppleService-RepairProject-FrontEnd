@@ -7,9 +7,9 @@ function SubmitBtn(props) {
 
   return (
     <button
-      className={`btn ${type === 'danger' ? 'btn-danger' : 'btn-blue'}
+      className={`btn ${type === 'danger' ? 'btn-danger' : type === 'outline' ? 'btn-out-blue' : 'btn-blue'}
         ${customClass} ${isLoading && 'cursor-default'}`}
-      onClick={clickHandler}
+      onClick={event => clickHandler(event)}
       disabled={isLoading}
       type='submit'
     >
