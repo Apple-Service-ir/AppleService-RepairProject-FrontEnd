@@ -19,9 +19,13 @@ function RepairManGetOrder() {
   const [orderStatusLoadings, setOrderStatusLoadings] = useState({
     accept: false, paymentAccept: false, cancel: false, done: false
   })
+  const [changePriceForOrderLoading, setChangePriceForOrderLoading] = useState({
+    accept: false, delete: false
+  })
   const [showPaymentModal, setShowPaymentModal] = useState(false)
 
   const priceInputRef = useRef()
+  const submitPriceInputRef = useRef()
 
   useEffect(() => {
     loadingContext.setProgressIsLoadingHandler(true)
@@ -119,6 +123,54 @@ function RepairManGetOrder() {
     setOrderStatusLoadings({ accept: false, paymentAccept: false, cancel: false, done: false })
   }
 
+  const submitPriceForOrder = async orderId => {
+    if (submitPriceInputRef.current.value < 100_000) {
+      return toast.error('حداقل مبلغ باید 100 هزار تومان باشد')
+    }
+    setChangePriceForOrderLoading({ accept: true, delete: false })
+
+    const requestBody = {
+      token: authContext.userToken,
+      id: orderId,
+      price: +submitPriceInputRef.current.value
+    }
+    await post('/repairmans/orders/price/set', requestBody)
+      .then(response => {
+        console.log(response)
+        setOrders(prev => ({
+          ...prev,
+          inWorking: response.data.order
+        }))
+        setSubmitOrderModal(prev => ({ ...prev, order: response.data.order }))
+        submitPriceInputRef.current.value = ''
+        toast.success('قیمت با موفقیت تعیین شد')
+      })
+      .catch(error => toast.error(error.response.data.err))
+    setChangePriceForOrderLoading({ accept: false, delete: false })
+  }
+
+  const deltePriceForOrder = async orderId => {
+    setChangePriceForOrderLoading({ accept: false, delete: true })
+
+    const requestBody = {
+      token: authContext.userToken,
+      id: orderId,
+      price: '0'
+    }
+    await post('/repairmans/orders/price/set', requestBody)
+      .then(response => {
+        setOrders(prev => ({
+          ...prev,
+          inWorking: response.data.order
+        }))
+        setSubmitOrderModal(prev => ({ ...prev, order: response.data.order }))
+        submitPriceInputRef.current.value = ''
+        toast.success('قیمت با موفقیت پاک شد')
+      })
+      .catch(error => toast.error(error.response.data.err))
+    setChangePriceForOrderLoading({ accept: false, delete: false })
+  }
+
   return (
     <>
       <div className='w-full flex flex-col justify-center items-center gap-6 show-fade'>
@@ -143,7 +195,7 @@ function RepairManGetOrder() {
                       در انتطار پرداخت
                       <span className='px-2 text-sm opacity-90'>
                         {
-                          orders.inWorking.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current)
+                          orders.inWorking.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
                         }
                         <small className='mr-1 italic'>تومان</small>
                       </span>
@@ -286,7 +338,7 @@ function RepairManGetOrder() {
                     </div>
                     <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                       {
-                        submitOrderModal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current)
+                        submitOrderModal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
                       }
                       <small className='mr-1 italic'>تومان</small>
                     </div>
@@ -367,6 +419,48 @@ function RepairManGetOrder() {
                   {submitOrderModal.order.description}
                 </div>
               </li>
+              {
+                (submitOrderModal.order.status === 'working'
+                  || submitOrderModal.order.status === 'payment-working') && (
+                  <li className='w-full flex flex-col justify-center items-center rounded-md mt-1 '>
+                    <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
+                      تعیین قیمت برای تعمیر
+                    </div>
+                    <div className="bg-white w-full flex flex-col justify-center items-center p-3 
+                      gap-3 rounded-b-md">
+                      <div className='w-full bg-input'>
+                        <input
+                          className='input'
+                          id='submit-price-input'
+                          type="decimal"
+                          placeholder='قیمت به تومان'
+                          ref={submitPriceInputRef}
+                        />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                        </svg>
+                      </div>
+                      <div className="w-full flex justify-center items-center gap-3">
+                        <SubmitBtn
+                          customClass={'w-1/2'}
+                          isLoading={changePriceForOrderLoading.accept}
+                          clickHandler={() => submitPriceForOrder(submitOrderModal.order.id)}
+                        >
+                          ثبت
+                        </SubmitBtn>
+                        <SubmitBtn
+                          type={'danger'}
+                          customClass={'w-1/2'}
+                          isLoading={changePriceForOrderLoading.delete}
+                          clickHandler={() => deltePriceForOrder(submitOrderModal.order.id)}
+                        >
+                          حذف قیمت
+                        </SubmitBtn>
+                      </div>
+                    </div>
+                  </li>
+                )
+              }
             </ul>
           </PortalModal>
         )
@@ -389,7 +483,7 @@ function RepairManGetOrder() {
                 <input
                   className='input'
                   id='payment-input'
-                  type="text"
+                  type="decimal"
                   placeholder='قیمت به تومان'
                   ref={priceInputRef}
                 />
