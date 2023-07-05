@@ -11,9 +11,9 @@ import PortalModal from './../../components/PortalModal/PortalModal'
 import config from '../../../config.json'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
 
-const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
 
 function AdminDashboard() {
+  const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
   const authContext = useContext(AuthContext)
 
   const [defaultCity, allCities] = useGetCities()

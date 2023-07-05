@@ -17,7 +17,7 @@ function RepairManGetOrder() {
   const [orders, setOrders] = useState({ all: [], pending: [], inWorking: {} })
   const [submitOrderModal, setSubmitOrderModal] = useState({ show: false, order: {} })
   const [orderStatusLoadings, setOrderStatusLoadings] = useState({
-    accept: false, cancel: false, done: false
+    accept: false, paymentAccept: false, cancel: false, done: false
   })
   const [showPaymentModal, setShowPaymentModal] = useState(false)
 
@@ -30,7 +30,7 @@ function RepairManGetOrder() {
         .then(response => {
           const pendingOrders = response.data.orders.filter(order => order.status === 'pending')
           const inWorkingOrder = response.data.orders.filter(order => (
-            (order.repairmanId === authContext.userInfo.id && order.status === 'working')
+            (order.repairmanId === authContext.userInfo.id && order.status === 'working' || order.status === 'payment-working')
           ))
           setOrders({
             all: response.data.orders,
@@ -44,15 +44,16 @@ function RepairManGetOrder() {
   const submitOrderHandler = async (event, hasPrice, orderId) => {
     event.preventDefault()
 
-    if (hasPrice && priceInputRef.current.value < 10_000) {
-      return toast.error('حداقل مبلغ باید 10 هزار تومان باشد')
+    if (hasPrice && priceInputRef.current.value < 100_000) {
+      return toast.error('حداقل مبلغ باید 100 هزار تومان باشد')
     }
 
-    setOrderStatusLoadings({ accept: true, cancel: false, done: false })
+    setOrderStatusLoadings({ accept: !hasPrice, paymentAccept: hasPrice, cancel: false, done: false })
 
     const requestBody = {
       token: authContext.userToken,
-      id: orderId
+      id: orderId,
+      ...(hasPrice && { status: 'payment-working', price: +priceInputRef.current.value })
     }
     await post('/repairmans/orders/accept', requestBody)
       .then(response => {
@@ -70,11 +71,11 @@ function RepairManGetOrder() {
       })
       .catch(error => toast.error(error.response.data.err))
     setShowPaymentModal(false)
-    setOrderStatusLoadings({ accept: false, cancel: false, done: false })
+    setOrderStatusLoadings({ accept: false, paymentAccept: false, cancel: false, done: false })
   }
 
   const cancelledSubmitOrderHandler = async orderId => {
-    setOrderStatusLoadings({ accept: false, cancel: true, done: false })
+    setOrderStatusLoadings({ accept: false, paymentAccept: false, cancel: true, done: false })
 
     const requestBody = {
       token: authContext.userToken,
@@ -94,11 +95,11 @@ function RepairManGetOrder() {
         toast.success('سفارش با موفقیت لفو شد')
       })
       .catch(error => toast.error(error.response.data.err))
-    setOrderStatusLoadings({ accept: false, cancel: false, done: false })
+    setOrderStatusLoadings({ accept: false, paymentAccept: false, cancel: false, done: false })
   }
 
   const doneOrderHandler = async orderId => {
-    setOrderStatusLoadings({ accept: false, cancel: false, done: true })
+    setOrderStatusLoadings({ accept: false, paymentAccept: false, cancel: false, done: true })
 
     const requestBody = {
       token: authContext.userToken,
@@ -106,7 +107,6 @@ function RepairManGetOrder() {
     }
     await post('/repairmans/orders/done', requestBody)
       .then(response => {
-        console.log(123, response)
         setOrders(prev => ({
           ...prev,
           all: [...prev.all, response.data.order],
@@ -116,7 +116,7 @@ function RepairManGetOrder() {
       })
       .catch(error => toast.error(error.response.data.err))
     setSubmitOrderModal({ show: false, order: {} })
-    setOrderStatusLoadings({ accept: false, cancel: false, done: false })
+    setOrderStatusLoadings({ accept: false, paymentAccept: false, cancel: false, done: false })
   }
 
   return (
@@ -137,16 +137,33 @@ function RepairManGetOrder() {
                   نام قطعه:
                   <span className='px-2 text-sm opacity-90'>{orders.inWorking.partName}</span>
                 </li>
-                <li>
-                  عکس دستگاه:
-                  <a
-                    href={`${mainUrl.replace('/api', '')}/uploads/${orders.inWorking.picture}`}
-                    className='px-2 underline text-sm opacity-90'
-                    target="_blank"
-                  >
-                    مشاهده
-                  </a>
-                </li>
+                {
+                  orders.inWorking.status === 'payment-working' && (
+                    <li className='bg-yellow-300 py-0.5 pr-2 rounded-full'>
+                      در انتطار پرداخت
+                      <span className='px-2 text-sm opacity-90'>
+                        {
+                          orders.inWorking.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current)
+                        }
+                        <small className='mr-1 italic'>تومان</small>
+                      </span>
+                    </li>
+                  )
+                }
+                {
+                  orders.inWorking.status === 'working' && (
+                    <li>
+                      تصویر:
+                      <a
+                        href={`${mainUrl.replace('/api', '')}/uploads/${orders.inWorking.picture}`}
+                        className='px-2 underline text-sm opacity-90'
+                        target="_blank"
+                      >
+                        مشاهده
+                      </a>
+                    </li>
+                  )
+                }
                 <button
                   className='bg-yellow-300 w-16 h-full flex justify-center items-center rounded-l-xl
                     hover:bg-yellow-400'
@@ -180,7 +197,7 @@ function RepairManGetOrder() {
                   <span className='px-2 text-sm opacity-90'>{order.partName}</span>
                 </li>
                 <li>
-                  عکس دستگاه:
+                  تصویر:
                   <a
                     href={`${mainUrl.replace('/api', '')}/uploads/${order.picture}`}
                     className='px-2 underline text-sm opacity-90'
@@ -261,6 +278,21 @@ function RepairManGetOrder() {
                   {submitOrderModal.order.id} #
                 </div>
               </li>
+              {
+                submitOrderModal.order.status === 'payment-working' && (
+                  <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                    <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                      در انتطار پرداخت
+                    </div>
+                    <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                      {
+                        submitOrderModal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current)
+                      }
+                      <small className='mr-1 italic'>تومان</small>
+                    </div>
+                  </li>
+                )
+              }
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
                   دستگاه
@@ -278,7 +310,6 @@ function RepairManGetOrder() {
                   {submitOrderModal.order.partName}
                 </div>
               </li>
-
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
                   تاریخ
@@ -369,7 +400,7 @@ function RepairManGetOrder() {
               <div className="w-full flex justify-center items-center gap-3">
                 <SubmitBtn
                   customClass={'w-1/2'}
-                  isLoading={orderStatusLoadings.accept}
+                  isLoading={orderStatusLoadings.paymentAccept}
                   clickHandler={event => submitOrderHandler(event, true, submitOrderModal.order.id)}
                 >
                   تایید قیمت
