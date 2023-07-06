@@ -14,18 +14,23 @@ function RepairManGetOrder() {
   const authContext = useContext(AuthContext)
   const loadingContext = useContext(LoadingContext)
 
-  const [orders, setOrders] = useState({ all: [], pending: [], inWorking: {} })
+  const [orders, setOrders] = useState({ pending: [], inWorking: {}, inPaymentDone: {} })
   const [submitOrderModal, setSubmitOrderModal] = useState({ show: false, order: {} })
   const [orderStatusLoadings, setOrderStatusLoadings] = useState({
-    accept: false, paymentAccept: false, cancel: false, done: false
+    accept: false, paymentAccept: false, cancel: false, done: false, paymentDone: false
   })
   const [changePriceForOrderLoading, setChangePriceForOrderLoading] = useState({
     accept: false, delete: false
   })
+  const [donePriceForOrderLoading, setDonePriceForOrderLoading] = useState({
+    accept: false, delete: false
+  })
   const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [showDonePaymentModal, setShowDonePaymentModal] = useState(false)
 
   const priceInputRef = useRef()
   const submitPriceInputRef = useRef()
+  const donePriceInputRef = useRef()
 
   useEffect(() => {
     loadingContext.setProgressIsLoadingHandler(true)
@@ -36,10 +41,14 @@ function RepairManGetOrder() {
           const inWorkingOrder = response.data.orders.filter(order => (
             (order.repairmanId === authContext.userInfo.id && order.status === 'working' || order.status === 'payment-working')
           ))
+          const inPaymentDoneOrder = response.data.orders.filter(order => (
+            (order.repairmanId === authContext.userInfo.id && order.status === 'payment-done')
+          ))
+          console.log(inPaymentDoneOrder)
           setOrders({
-            all: response.data.orders,
             pending: pendingOrders,
-            inWorking: inWorkingOrder[0] || {}
+            inWorking: inWorkingOrder[0] || {},
+            inPaymentDone: inPaymentDoneOrder[0] || {},
           })
         })
         .finally(() => loadingContext.setProgressIsLoadingHandler(false))
@@ -52,7 +61,7 @@ function RepairManGetOrder() {
       return toast.error('حداقل مبلغ باید 100 هزار تومان باشد')
     }
 
-    setOrderStatusLoadings({ accept: !hasPrice, paymentAccept: hasPrice, cancel: false, done: false })
+    setOrderStatusLoadings({ accept: !hasPrice, paymentAccept: hasPrice })
 
     const requestBody = {
       token: authContext.userToken,
@@ -66,7 +75,7 @@ function RepairManGetOrder() {
         setOrders(prev => {
           const newPendingOrders = prev.pending.filter(order => order.id !== orderId)
           return {
-            all: prev.all,
+            ...prev,
             pending: newPendingOrders,
             inWorking: response.data.order
           }
@@ -75,11 +84,11 @@ function RepairManGetOrder() {
       })
       .catch(error => toast.error(error.response.data.err))
     setShowPaymentModal(false)
-    setOrderStatusLoadings({ accept: false, paymentAccept: false, cancel: false, done: false })
+    setOrderStatusLoadings({ accept: false, paymentAccept: false })
   }
 
   const cancelledSubmitOrderHandler = async orderId => {
-    setOrderStatusLoadings({ accept: false, paymentAccept: false, cancel: true, done: false })
+    setOrderStatusLoadings({ cancel: true })
 
     const requestBody = {
       token: authContext.userToken,
@@ -91,48 +100,55 @@ function RepairManGetOrder() {
 
         setOrders(prev => {
           return {
-            all: prev.all,
+            ...prev,
             pending: [...prev.pending, response.data.order],
-            inWorking: {}
+            inWorking: {},
           }
         })
         toast.success('سفارش با موفقیت لفو شد')
       })
       .catch(error => toast.error(error.response.data.err))
-    setOrderStatusLoadings({ accept: false, paymentAccept: false, cancel: false, done: false })
+    setOrderStatusLoadings({ cancel: false })
   }
 
-  const doneOrderHandler = async orderId => {
-    setOrderStatusLoadings({ accept: false, paymentAccept: false, cancel: false, done: true })
+  const doneOrderHandler = async (event, hasPrice, orderId) => {
+    event.preventDefault()
+
+    if (hasPrice && donePriceInputRef.current.value < 100_000) {
+      return toast.error('حداقل مبلغ باید 100 هزار تومان باشد')
+    }
+
+    setOrderStatusLoadings({ done: !hasPrice, paymentDone: hasPrice })
 
     const requestBody = {
       token: authContext.userToken,
-      id: orderId
+      id: orderId,
+      ...(hasPrice && { status: 'payment-done', price: +donePriceInputRef.current.value })
     }
     await post('/repairmans/orders/done', requestBody)
       .then(response => {
         setOrders(prev => ({
           ...prev,
-          all: [...prev.all, response.data.order],
-          inWorking: {}
+          inWorking: {},
+          inPaymentDone: hasPrice ? response.data.order : {}
         }))
         toast.success('سفارش با موفقیت به اتمام رسید، خسته نباشید')
       })
       .catch(error => toast.error(error.response.data.err))
     setSubmitOrderModal({ show: false, order: {} })
-    setOrderStatusLoadings({ accept: false, paymentAccept: false, cancel: false, done: false })
+    setOrderStatusLoadings({ done: false, paymentDone: false })
   }
 
   const submitPriceForOrder = async orderId => {
     if (submitPriceInputRef.current.value < 100_000) {
       return toast.error('حداقل مبلغ باید 100 هزار تومان باشد')
     }
-    setChangePriceForOrderLoading({ accept: true, delete: false })
+    setChangePriceForOrderLoading({ accept: true })
 
     const requestBody = {
       token: authContext.userToken,
       id: orderId,
-      price: +submitPriceInputRef.current.value
+      price: submitPriceInputRef.current.value
     }
     await post('/repairmans/orders/price/set', requestBody)
       .then(response => {
@@ -146,11 +162,11 @@ function RepairManGetOrder() {
         toast.success('قیمت با موفقیت تعیین شد')
       })
       .catch(error => toast.error(error.response.data.err))
-    setChangePriceForOrderLoading({ accept: false, delete: false })
+    setChangePriceForOrderLoading({ accept: false })
   }
 
   const deltePriceForOrder = async orderId => {
-    setChangePriceForOrderLoading({ accept: false, delete: true })
+    setChangePriceForOrderLoading({ delete: true })
 
     const requestBody = {
       token: authContext.userToken,
@@ -168,12 +184,72 @@ function RepairManGetOrder() {
         toast.success('قیمت با موفقیت پاک شد')
       })
       .catch(error => toast.error(error.response.data.err))
-    setChangePriceForOrderLoading({ accept: false, delete: false })
+    setChangePriceForOrderLoading({ delete: false })
   }
 
   return (
     <>
       <div className='w-full flex flex-col justify-center items-center gap-6 show-fade'>
+        {
+          Object.keys(orders.inPaymentDone).length ? (
+            <div className={`bg-green-200 w-full flex flex-col justify-center items-center gap-3
+              rounded-xl p-3`}>
+              <div className={`bg-green-300 flex justify-center items-center gap-3 px-9 py-2
+                rounded-full relative shadow-sm shadow-green-500`}>
+                <span>کد سفارش:</span>
+                <span>{orders.inPaymentDone.id} #</span>
+                <div className={`bg-green-500 text-white w-3/4 text-center text-xs
+                  p-0.5 rounded-b-full
+                  absolute top-full shadow-sm shadow-green-700`}>در انتظار پرداخت</div>
+              </div>
+              <ul className='w-full flex flex-col mt-6'>
+                <li className={`border-green-300 border-t-2 border-dashed w-full
+                  flex justify-center items-center gap-3 p-3`}>
+                  <span className='sansbold'>نام دستگاه: </span>
+                  <span className='text-sm'>{orders.inPaymentDone.phoneName}</span>
+                  <span>-</span>
+                  <span className='sansbold'>قطعات:</span>
+                  <span className='text-sm'>{orders.inPaymentDone.partName}</span>
+                </li>
+                <li className={`border-green-300 border-t-2 border-dashed w-full
+                  flex gap-3 p-3`}>
+                  <span className='sansbold'>آدرس:</span>
+                  <p className='text-sm'>{orders.inPaymentDone.address}</p>
+                </li>
+                <li className={`border-green-300 border-t-2 border-dashed w-full
+                  flex gap-3 p-3`}>
+                  <span className='sansbold'>توضیحات:</span>
+                  <p className='text-sm'>{orders.inPaymentDone.description}</p>
+                </li>
+                <li className={`border-green-300 border-t-2 border-dashed w-full
+                  flex gap-3 p-3`}>
+                  <span className='sansbold'>در انتظار پرداخت:</span>
+                  <span className='text-sm'>
+                    {
+                      orders.inPaymentDone.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                    }
+                  </span>
+                </li>
+                {
+                  orders.inPaymentDone.adminMessage && (
+                    <li className={`border-green-300 border-t-2 border-dashed w-full
+                      flex gap-3 p-3`}>
+                      <span className='sansbold'>پیام پشتیبانی:</span>
+                      <p className='text-sm'>{orders.inPaymentDone.adminMessage}</p>
+                    </li>
+                  )
+                }
+                <li className={`border-green-300 border-t-2 border-dashed w-full
+                  flex gap-3 p-3`}>
+                  <span className='sansbold'>مشخصات مشتری:</span>
+                  <p className='text-sm'>
+                    {orders.inPaymentDone.user.firstName} {orders.inPaymentDone.user.lastName} - {orders.inPaymentDone.user.phone}
+                  </p>
+                </li>
+              </ul>
+            </div>
+          ) : ''
+        }
         {
           Object.keys(orders.inWorking).length ? (
             <div className='w-full'>
@@ -314,8 +390,9 @@ function RepairManGetOrder() {
                     <OrderStatusBtn
                       customStyles={'w-full'}
                       status={'done'}
-                      isLoading={orderStatusLoadings.done}
-                      clickHandler={() => doneOrderHandler(submitOrderModal.order.id)}
+                      isLoading={false}
+                      // isLoading={orderStatusLoadings.done}
+                      clickHandler={() => setShowDonePaymentModal(true)}
                     >
                       اتمام تعمیر
                     </OrderStatusBtn>
@@ -504,6 +581,53 @@ function RepairManGetOrder() {
                   customClass={'w-1/2'}
                   isLoading={orderStatusLoadings.accept}
                   clickHandler={event => submitOrderHandler(event, false, submitOrderModal.order.id)}
+                >
+                  خیر، ادامه
+                </SubmitBtn>
+              </div>
+            </form>
+          </PortalModal>
+        )
+      }
+
+      {
+        (submitOrderModal.show && showDonePaymentModal) && (
+          <PortalModal
+            closeHandler={() => setShowPaymentModal(false)}
+            asAlert={true}
+          >
+            <form className='bg-white w-96 flex flex-col justify-center items-center gap-3 p-6 rounded-xl'>
+              <label
+                className='text-blue-500 sansbold text-center'
+                htmlFor="payment-input"
+              >
+                سفارش مشمول هزینه می باشد؟
+              </label>
+              <div className='w-full bg-input'>
+                <input
+                  className='input'
+                  id='payment-input'
+                  type="decimal"
+                  placeholder='قیمت به تومان'
+                  ref={donePriceInputRef}
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                </svg>
+              </div>
+              <div className="w-full flex justify-center items-center gap-3">
+                <SubmitBtn
+                  customClass={'w-1/2'}
+                  isLoading={orderStatusLoadings.paymentDone}
+                  clickHandler={event => doneOrderHandler(event, true, submitOrderModal.order.id)}
+                >
+                  تایید قیمت
+                </SubmitBtn>
+                <SubmitBtn
+                  type={'outline'}
+                  customClass={'w-1/2'}
+                  isLoading={orderStatusLoadings.done}
+                  clickHandler={event => doneOrderHandler(event, false, submitOrderModal.order.id)}
                 >
                   خیر، ادامه
                 </SubmitBtn>

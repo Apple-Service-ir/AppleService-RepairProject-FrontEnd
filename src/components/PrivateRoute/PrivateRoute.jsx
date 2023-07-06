@@ -19,6 +19,10 @@ function PrivateRoute({ reDirectPath, children, privateRole }) {
       return ['admin', 'supporter'].includes(authContext.userInfo.role) ? children : <Navigate to={reDirectPath} />
     }
 
+    case 'isRepairMan': {
+      return authContext.userInfo.role === 'repairman' ? children : <Navigate to={reDirectPath} />
+    }
+
     case 'isAdmin': {
       return authContext.userInfo.role === 'admin' ? children : <Navigate to={reDirectPath} />
     }

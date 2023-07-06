@@ -43,7 +43,11 @@ const routes = [
         path: '/dashboard/repairman',
         element: <RepairMan />,
         children: [
-          { path: '/dashboard/repairman', element: <RepairManHome /> },
+          {
+            path: '/dashboard/repairman', element: <PrivateRoute reDirectPath='/dashboard' privateRole={'isRepairMan'}>
+
+            </PrivateRoute>
+          },
           { path: '/dashboard/repairman/get', element: <RepairManGetOrder /> },
           { path: '/dashboard/repairman/done', element: <RepairManDoneOrders /> }
         ]
