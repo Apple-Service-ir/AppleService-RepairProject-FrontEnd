@@ -113,10 +113,12 @@ function RepairManDoneOrders() {
               </li>
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  تعمیر کننده
+                  مشتری
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {modal.order.repairman.firstName} {modal.order.repairman.phone}
+                  {
+                    `${modal.order.user.firstName} ${modal.order.user.lastName} - ${modal.order.user.phone}`
+                  }
                 </div>
               </li>
 
@@ -144,6 +146,17 @@ function RepairManDoneOrders() {
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                   {new Date(modal.order.createdAt).toLocaleDateString('fa-IR')}
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  در انتظار پرداخت
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {
+                    modal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                  }
                 </div>
               </li>
 
