@@ -14,7 +14,7 @@ function RepairManGetOrder() {
   const authContext = useContext(AuthContext)
   const loadingContext = useContext(LoadingContext)
 
-  const [orders, setOrders] = useState({ pending: [], inWorking: {}, inPaymentDone: {} })
+  const [orders, setOrders] = useState({ pending: [], inWorking: {}, inPaymentDone: [] })
   const [submitOrderModal, setSubmitOrderModal] = useState({ show: false, order: {} })
   const [orderStatusLoadings, setOrderStatusLoadings] = useState({
     accept: false, paymentAccept: false, cancel: false, done: false, paymentDone: false
@@ -22,11 +22,9 @@ function RepairManGetOrder() {
   const [changePriceForOrderLoading, setChangePriceForOrderLoading] = useState({
     accept: false, delete: false
   })
-  const [donePriceForOrderLoading, setDonePriceForOrderLoading] = useState({
-    accept: false, delete: false
-  })
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [showDonePaymentModal, setShowDonePaymentModal] = useState(false)
+  const [paymentOrdersModal, setPaymentOrdersModal] = useState({ show: false, order: {} })
 
   const priceInputRef = useRef()
   const submitPriceInputRef = useRef()
@@ -44,11 +42,10 @@ function RepairManGetOrder() {
           const inPaymentDoneOrder = response.data.orders.filter(order => (
             (order.repairmanId === authContext.userInfo.id && order.status === 'payment-done')
           ))
-          console.log(inPaymentDoneOrder)
           setOrders({
             pending: pendingOrders,
             inWorking: inWorkingOrder[0] || {},
-            inPaymentDone: inPaymentDoneOrder[0] || {},
+            inPaymentDone: inPaymentDoneOrder[0] ? inPaymentDoneOrder : [],
           })
         })
         .finally(() => loadingContext.setProgressIsLoadingHandler(false))
@@ -130,7 +127,7 @@ function RepairManGetOrder() {
         setOrders(prev => ({
           ...prev,
           inWorking: {},
-          inPaymentDone: hasPrice ? response.data.order : {}
+          inPaymentDone: hasPrice ? [response.data.order, ...prev.inPaymentDone] : {}
         }))
         toast.success('سفارش با موفقیت به اتمام رسید، خسته نباشید')
       })
@@ -191,64 +188,120 @@ function RepairManGetOrder() {
     <>
       <div className='w-full flex flex-col justify-center items-center gap-6 show-fade'>
         {
-          Object.keys(orders.inPaymentDone).length ? (
-            <div className={`bg-green-200 w-full flex flex-col justify-center items-center gap-3
+          orders.inPaymentDone.length === 1 && (
+            <div className="w-full">
+              <h1 className='w-full text-right text-xl sansbold mb-3'>سفارش های در انتظار پرداخت</h1>
+              <div className={`bg-green-200 w-full flex flex-col justify-center items-center gap-3
               rounded-xl p-3`}>
-              <div className={`bg-green-300 flex justify-center items-center gap-3 px-9 py-2
+                <div className={`bg-green-300 flex justify-center items-center gap-3 px-9 py-2
                 rounded-full relative shadow-sm shadow-green-500`}>
-                <span>کد سفارش:</span>
-                <span>{orders.inPaymentDone.id} #</span>
-                <div className={`bg-green-500 text-white w-3/4 text-center text-xs
+                  <span>کد سفارش:</span>
+                  <span>{orders.inPaymentDone[0].id} #</span>
+                  <div className={`bg-green-500 text-white w-3/4 text-center text-xs
                   p-0.5 rounded-b-full
                   absolute top-full shadow-sm shadow-green-700`}>در انتظار پرداخت</div>
-              </div>
-              <ul className='w-full flex flex-col mt-6'>
-                <li className={`border-green-300 border-t-2 border-dashed w-full
+                </div>
+                <ul className='w-full flex flex-col mt-6'>
+                  <li className={`border-green-300 border-t-2 border-dashed w-full
                   flex justify-center items-center gap-3 p-3`}>
-                  <span className='sansbold'>نام دستگاه: </span>
-                  <span className='text-sm'>{orders.inPaymentDone.phoneName}</span>
-                  <span>-</span>
-                  <span className='sansbold'>قطعات:</span>
-                  <span className='text-sm'>{orders.inPaymentDone.partName}</span>
-                </li>
-                <li className={`border-green-300 border-t-2 border-dashed w-full
+                    <span className='sansbold'>نام دستگاه: </span>
+                    <span className='text-sm'>{orders.inPaymentDone[0].phoneName}</span>
+                    <span>-</span>
+                    <span className='sansbold'>قطعات:</span>
+                    <span className='text-sm'>{orders.inPaymentDone[0].partName}</span>
+                  </li>
+                  <li className={`border-green-300 border-t-2 border-dashed w-full
                   flex gap-3 p-3`}>
-                  <span className='sansbold'>آدرس:</span>
-                  <p className='text-sm'>{orders.inPaymentDone.address}</p>
-                </li>
-                <li className={`border-green-300 border-t-2 border-dashed w-full
+                    <span className='sansbold'>آدرس:</span>
+                    <p className='text-sm'>{orders.inPaymentDone[0].address}</p>
+                  </li>
+                  <li className={`border-green-300 border-t-2 border-dashed w-full
                   flex gap-3 p-3`}>
-                  <span className='sansbold'>توضیحات:</span>
-                  <p className='text-sm'>{orders.inPaymentDone.description}</p>
-                </li>
-                <li className={`border-green-300 border-t-2 border-dashed w-full
+                    <span className='sansbold'>توضیحات:</span>
+                    <p className='text-sm'>{orders.inPaymentDone[0].description}</p>
+                  </li>
+                  <li className={`border-green-300 border-t-2 border-dashed w-full
                   flex gap-3 p-3`}>
-                  <span className='sansbold'>در انتظار پرداخت:</span>
-                  <span className='text-sm'>
-                    {
-                      orders.inPaymentDone.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
-                    }
-                  </span>
-                </li>
-                {
-                  orders.inPaymentDone.adminMessage && (
-                    <li className={`border-green-300 border-t-2 border-dashed w-full
+                    <span className='sansbold'>در انتظار پرداخت:</span>
+                    <span className='text-sm'>
+                      {
+                        orders.inPaymentDone[0].transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                      }
+                    </span>
+                  </li>
+                  {
+                    orders.inPaymentDone[0].adminMessage && (
+                      <li className={`border-green-300 border-t-2 border-dashed w-full
                       flex gap-3 p-3`}>
-                      <span className='sansbold'>پیام پشتیبانی:</span>
-                      <p className='text-sm'>{orders.inPaymentDone.adminMessage}</p>
-                    </li>
-                  )
-                }
-                <li className={`border-green-300 border-t-2 border-dashed w-full
+                        <span className='sansbold'>پیام پشتیبانی:</span>
+                        <p className='text-sm'>{orders.inPaymentDone[0].adminMessage}</p>
+                      </li>
+                    )
+                  }
+                  <li className={`border-green-300 border-t-2 border-dashed w-full
                   flex gap-3 p-3`}>
-                  <span className='sansbold'>مشخصات مشتری:</span>
-                  <p className='text-sm'>
-                    {orders.inPaymentDone.user.firstName} {orders.inPaymentDone.user.lastName} - {orders.inPaymentDone.user.phone}
-                  </p>
-                </li>
-              </ul>
+                    <span className='sansbold'>مشخصات مشتری:</span>
+                    <p className='text-sm'>
+                      {orders.inPaymentDone[0].user.firstName} {orders.inPaymentDone[0].user.lastName} - {orders.inPaymentDone[0].user.phone}
+                    </p>
+                  </li>
+                </ul>
+              </div>
             </div>
-          ) : ''
+          )
+        }
+        {
+          orders.inPaymentDone.length > 1 && (
+            <div className="w-full">
+              <h1 className='w-full text-right text-xl sansbold mb-3'>سفارش های در انتظار پرداخت</h1>
+              <div className="w-full overflow-x-auto rounded-xl">
+                <table className='table'>
+                  <thead className='thead'>
+                    <tr className='thead__tr'>
+                      <th className='thead__tr__th w-2/12'>کد سفارش</th>
+                      <th className='thead__tr__th w-3/12'>نام دستگاه</th>
+                      <th className='thead__tr__th w-3/12'>قطعات</th>
+                      <th className='thead__tr__th w-2/12'>در انتظار پرداخت</th>
+                      <th className='thead__tr__th w-2/12'>تاریخ</th>
+                    </tr>
+                  </thead>
+                  <tbody className='tbody'>
+                    {
+                      orders.inPaymentDone.map(order => (
+                        <tr
+                          key={order.id}
+                          className='tbody__tr cursor-pointer'
+                          onClick={() => {
+                            setPaymentOrdersModal({ show: true, order })
+                          }}
+                        >
+                          <td className='tbody__tr__td w-2/12'>
+                            <div className='td__wrapper justify-center'>
+                              <div className='badge badge-success select-text'>{order.id} #</div>
+                            </div>
+                          </td>
+                          <td className='tbody__tr__td w-3/12 text-sm'>{order.phoneName}</td>
+                          <td className='tbody__tr__td w-3/12'>
+                            <div className="td__wrapper">
+                              <span className='text-xs'>{order.partName}</span>
+                            </div>
+                          </td>
+                          <td className='tbody__tr__td w-2/12 text-sm'>
+                            {
+                              order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                            }
+                          </td>
+                          <td className='tbody__tr__td w-2/12 text-sm'>
+                            {new Date(order.createdAt).toLocaleDateString('fa-IR')}
+                          </td>
+                        </tr>
+                      ))
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )
         }
         {
           Object.keys(orders.inWorking).length ? (
@@ -424,6 +477,16 @@ function RepairManGetOrder() {
               }
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  مشتری
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {
+                    `${submitOrderModal.order.user.firstName} ${submitOrderModal.order.user.lastName} - ${submitOrderModal.order.user.phone}`
+                  }
+                </div>
+              </li>
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
                   دستگاه
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
@@ -593,7 +656,7 @@ function RepairManGetOrder() {
       {
         (submitOrderModal.show && showDonePaymentModal) && (
           <PortalModal
-            closeHandler={() => setShowPaymentModal(false)}
+            closeHandler={() => setShowDonePaymentModal(false)}
             asAlert={true}
           >
             <form className='bg-white w-96 flex flex-col justify-center items-center gap-3 p-6 rounded-xl'>
@@ -633,6 +696,128 @@ function RepairManGetOrder() {
                 </SubmitBtn>
               </div>
             </form>
+          </PortalModal>
+        )
+      }
+
+      {
+        paymentOrdersModal.show && (
+          <PortalModal closeHandler={() => setPaymentOrdersModal({ show: false, order: {} })}>
+            <ul className="w-[500px] max-h-[80vh] overflow-y-scroll rounded-md">
+              <li className='w-full flex justify-center items-center rounded-md'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  کد سفارش
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {paymentOrdersModal.order.id} #
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  وضعیت
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  در انتظار پرداخت
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  مشتری
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {
+                    `${paymentOrdersModal.order.user.firstName} ${paymentOrdersModal.order.user.lastName} - ${paymentOrdersModal.order.user.phone}`
+                  }
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  دستگاه
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {paymentOrdersModal.order.phoneName}
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  قطعه
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {paymentOrdersModal.order.partName}
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  تاریخ
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {new Date(paymentOrdersModal.order.createdAt).toLocaleDateString('fa-IR')}
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  در انتظار پرداخت
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {
+                    paymentOrdersModal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                  }
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  تصویر
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  <a
+                    className='underline'
+                    href={`${mainUrl.replace('/api', '')}/uploads/${paymentOrdersModal.order.picture}`}
+                    target='_blank'
+                  >مشاهده</a>
+                </div>
+              </li>
+
+              {
+                paymentOrdersModal.order.adminMessage && (
+                  <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
+                    <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
+                      پیام پشتیبانی
+                    </div>
+                    <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
+                      text-center break-all">
+                      {paymentOrdersModal.order.adminMessage}
+                    </div>
+                  </li>
+                )
+              }
+
+              <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
+                  آدرس
+                </div>
+                <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
+                  text-center break-all">
+                  {paymentOrdersModal.order.address}
+                </div>
+              </li>
+
+              <li className='w-full flex flex-col justify-center items-center rounded-md mt-1 '>
+                <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
+                  توضیحات
+                </div>
+                <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
+                  text-center break-all">
+                  {paymentOrdersModal.order.description}
+                </div>
+              </li>
+            </ul>
           </PortalModal>
         )
       }
