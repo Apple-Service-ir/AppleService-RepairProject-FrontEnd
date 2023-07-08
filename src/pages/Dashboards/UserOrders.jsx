@@ -5,6 +5,7 @@ import { mainUrl } from "../../../config.json"
 import { get, post } from '../../utility'
 import AuthContext from './../../context/AuthContext'
 import LoadingContext from './../../context/LoadingContext'
+
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 
@@ -12,7 +13,9 @@ function UserOrders() {
   const authContext = useContext(AuthContext)
   const loadingContext = useContext(LoadingContext)
 
-  const [orders, setOrders] = useState([])
+  const [allOrders, setAllOrders] = useState(
+    { all: [], pending: {}, working: {}, paymentWoring: {}, paymentDone: {} }
+  )
   const [modal, setModal] = useState({ show: false, order: {} })
 
   useEffect(() => {
@@ -21,16 +24,39 @@ function UserOrders() {
       document.title = "سفارشات - داشبورد اپل سرویس"
       get(`/orders/log?token=${authContext.userToken}`)
         .then((response) => {
-          setOrders(response.data.orders)
+          const pendingOrder = response.data.orders.find(order => order.status === 'pending')
+          const workingOrder = response.data.orders.find(order => order.status === 'working')
+          const paymentWorkingOrder = response.data.orders.find(
+            order => order.status === 'payment-working'
+          )
+          let doneOrders = response.data.orders.filter(order => order.status === 'done')
+          const paymentDoneOrder = response.data.orders.find(
+            order => order.status === 'payment-done'
+          )
+          let cancelledOrders = response.data.orders.filter(order => order.status === 'cancelled')
+
+          setAllOrders(
+            {
+              all: [...doneOrders, ...cancelledOrders],
+              pending: pendingOrder || {},
+              working: workingOrder || {},
+              paymentWoring: paymentWorkingOrder || {},
+              paymentDone: paymentDoneOrder || {},
+            }
+          )
         })
         .finally(() => loadingContext.setProgressIsLoadingHandler(false))
     }
   }, [authContext.userToken])
 
-  const deleteOrder = orderId => {
+  const cancelOrder = orderId => {
     post('/orders/cancel', { orderId, token: authContext.userToken })
       .then(response => {
-        setOrders(response.data.orders)
+        setAllOrders(prev => ({
+          ...prev,
+          pending: {},
+          all: [response.data.order, ...prev.all]
+        }))
         toast.success("سفارش شما با موفقیت لغو شد")
       }).catch((err) => {
         toast.error(err.response.data.err)
@@ -41,130 +67,179 @@ function UserOrders() {
     <>
       <div className='w-full flex flex-col justify-center items-center gap-6 show-fade'>
         {
-          orders.length > 0 && orders.map(order => {
-            if (order.status === 'pending') {
-              return (
-                <div key={order.id}
-                  className={`bg-blue-200 w-full flex flex-col justify-center items-center gap-3
-                    rounded-xl p-3`}>
-                  <div className={`bg-blue-300 flex justify-center items-center gap-3 px-9 py-2
+          Object.keys(allOrders.pending).length > 0 && (
+            <div className={`bg-blue-200 w-full flex flex-col justify-center items-center gap-3
+              rounded-xl p-3`}>
+              <div className={`bg-blue-300 flex justify-center items-center gap-3 px-9 py-2
                     rounded-full relative shadow-sm shadow-blue-500`}>
-                    <span>کد سفارش:</span>
-                    <button className='flex justify-center items-center relative group'>
-                      <span>#{order.id}</span>
-                      <span className='tooltip'>کپی کنید!</span>
-                    </button>
-                    <div className={`bg-blue-500 text-white w-3/4 text-center text-xs p-0.5 rounded-b-full
+                <span>کد سفارش:</span>
+                <button className='flex justify-center items-center relative group'>
+                  <span>#{allOrders.pending.id}</span>
+                  <span className='tooltip'>کپی کنید!</span>
+                </button>
+                <div className={`bg-blue-500 text-white w-3/4 text-center text-xs p-0.5 rounded-b-full
                       absolute top-full shadow-sm shadow-blue-700`}>
-                      {order.status === 'pending' ? 'در انتظار تایید' : 'در حال انجام'}
-                    </div>
-                  </div>
-                  <ul className='w-full flex flex-col mt-6'>
-                    <ul className={`border-blue-300 border-t-2 border-dashed w-full
+                  {allOrders.pending.status === 'pending' ? 'در انتظار تایید' : 'در حال انجام'}
+                </div>
+              </div>
+              <ul className='w-full flex flex-col mt-6'>
+                <ul className={`border-blue-300 border-t-2 border-dashed w-full
                       flex flex-col justify-center items-start gap-3 p-3
                       sm:flex-row sm:items-center`}>
-                      <li className='flex justify-center items-center gap-3'>
-                        <span className='sansbold'>نام دستگاه: </span>
-                        <span className='text-sm'>{order.phoneName}</span>
-                      </li>
-                      <span className='hidden sm:block'>-</span>
-                      <li className='flex justify-center items-center gap-3'>
-                        <span className='sansbold'>قطعات:</span>
-                        <span className='text-sm'>{order.partName}</span>
-                      </li>
-                    </ul>
-                    <li className={`border-blue-300 border-t-2 border-dashed w-full
+                  <li className='flex justify-center items-center gap-3'>
+                    <span className='sansbold'>نام دستگاه: </span>
+                    <span className='text-sm'>{allOrders.pending.phoneName}</span>
+                  </li>
+                  <span className='hidden sm:block'>-</span>
+                  <li className='flex justify-center items-center gap-3'>
+                    <span className='sansbold'>قطعات:</span>
+                    <span className='text-sm'>{allOrders.pending.partName}</span>
+                  </li>
+                </ul>
+                <li className={`border-blue-300 border-t-2 border-dashed w-full
                       flex gap-3 p-3`}>
-                      <span className='sansbold'>آدرس:</span>
-                      <p className='text-sm'>{order.address}</p>
-                    </li>
-                    <li className={`border-blue-300 border-t-2 border-dashed w-full
+                  <span className='sansbold'>آدرس:</span>
+                  <p className='text-sm'>{allOrders.pending.address}</p>
+                </li>
+                <li className={`border-blue-300 border-t-2 border-dashed w-full
                       flex gap-3 p-3`}>
-                      <span className='sansbold'>توضیحات:</span>
-                      <p className='text-sm'>{order.description}</p>
-                    </li>
-                    {
-                      order.adminMessage && (
-                        <li className={`border-blue-300 border-t-2 border-dashed w-full
+                  <span className='sansbold'>توضیحات:</span>
+                  <p className='text-sm'>{allOrders.pending.description}</p>
+                </li>
+                {
+                  allOrders.pending.adminMessage && (
+                    <li className={`border-blue-300 border-t-2 border-dashed w-full
                           flex gap-3 p-3`}>
-                          <span className='sansbold'>پیام پشتیبانی:</span>
-                          <p className='text-sm'>{order.adminMessage}</p>
-                        </li>
-                      )
-                    }
-                  </ul>
-                  <button className='badge-btn badge-danger px-6'
-                    onClick={() => deleteOrder(order.id)}>لغو سفارش</button>
-                </div>
-              )
-            }
-            else if (order.status === 'working') {
-              return (
-                <div key={order.id}
-                  className={`bg-yellow-200 w-full flex flex-col justify-center items-center gap-3
-                    rounded-xl p-3`}>
-                  <div className={`bg-yellow-300 flex justify-center items-center gap-3 px-9 py-2
+                      <span className='sansbold'>پیام پشتیبانی:</span>
+                      <p className='text-sm'>{allOrders.pending.adminMessage}</p>
+                    </li>
+                  )
+                }
+              </ul>
+              <button className='badge-btn badge-danger px-6'
+                onClick={() => cancelOrder(allOrders.pending.id)}>لغو سفارش</button>
+            </div>
+          )
+        }
+        {
+          Object.keys(allOrders.working).length > 0 && (
+            <div className={`bg-yellow-200 w-full flex flex-col justify-center items-center gap-3
+              rounded-xl p-3`}>
+              <div className={`bg-yellow-300 flex justify-center items-center gap-3 px-9 py-2
                     rounded-full relative shadow-sm shadow-yellow-500`}>
-                    <span>کد سفارش:</span>
-                    <span>{order.id} #</span>
-                    <div className={`bg-yellow-500 text-white w-3/4 text-center text-xs
+                <span>کد سفارش:</span>
+                <span>{allOrders.working.id} #</span>
+                <div className={`bg-yellow-500 text-white w-3/4 text-center text-xs
                       p-0.5 rounded-b-full
                       absolute top-full shadow-sm shadow-yellow-700`}>
-                      {order.status === 'pending' ? 'در انتظار تایید' : 'در حال انجام'}
-                    </div>
-                  </div>
-                  <ul className='w-full flex flex-col mt-6'>
-                    <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex justify-center items-center gap-3 p-3`}>
-                      <span className='sansbold'>نام دستگاه: </span>
-                      <span className='text-sm'>{order.phoneName}</span>
-                      <span>-</span>
-                      <span className='sansbold'>قطعات:</span>
-                      <span className='text-sm'>{order.partName}</span>
-                    </li>
-                    <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
-                      <span className='sansbold'>آدرس:</span>
-                      <p className='text-sm'>{order.address}</p>
-                    </li>
-                    <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
-                      <span className='sansbold'>توضیحات:</span>
-                      <p className='text-sm'>{order.description}</p>
-                    </li>
-                    {
-                      order.adminMessage && (
-                        <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                          flex gap-3 p-3`}>
-                          <span className='sansbold'>پیام پشتیبانی:</span>
-                          <p className='text-sm'>{order.adminMessage}</p>
-                        </li>
-                      )
-                    }
-                    <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
-                      <span className='sansbold'>مشخصات تعمیرکار:</span>
-                      <p className='text-sm'>
-                        {order.repairman.firstName} {order.repairman.lastName} - {order.repairman.phone}
-                      </p>
-                    </li>
-                  </ul>
+                  {allOrders.working.status === 'pending' ? 'در انتظار تایید' : 'در حال انجام'}
                 </div>
-              )
-            }
-          })
+              </div>
+              <ul className='w-full flex flex-col mt-6'>
+                <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                      flex justify-center items-center gap-3 p-3`}>
+                  <span className='sansbold'>نام دستگاه: </span>
+                  <span className='text-sm'>{allOrders.working.phoneName}</span>
+                  <span>-</span>
+                  <span className='sansbold'>قطعات:</span>
+                  <span className='text-sm'>{allOrders.working.partName}</span>
+                </li>
+                <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                      flex gap-3 p-3`}>
+                  <span className='sansbold'>آدرس:</span>
+                  <p className='text-sm'>{allOrders.working.address}</p>
+                </li>
+                <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                      flex gap-3 p-3`}>
+                  <span className='sansbold'>توضیحات:</span>
+                  <p className='text-sm'>{allOrders.working.description}</p>
+                </li>
+                {
+                  allOrders.working.adminMessage && (
+                    <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                          flex gap-3 p-3`}>
+                      <span className='sansbold'>پیام پشتیبانی:</span>
+                      <p className='text-sm'>{allOrders.working.adminMessage}</p>
+                    </li>
+                  )
+                }
+                <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                      flex gap-3 p-3`}>
+                  <span className='sansbold'>مشخصات تعمیرکار:</span>
+                  <p className='text-sm'>
+                    {allOrders.working.repairman.firstName} {allOrders.working.repairman.lastName} - {allOrders.working.repairman.phone}
+                  </p>
+                </li>
+              </ul>
+            </div>
+          )
         }
-
         {
-          orders[0] && orders.find(order => order.status == "done" || order.status == "cancelled") && (
+          allOrders.all.length > 0 && (
             <h2 className='w-full text-right text-xl sansbold'>لیست سفارشات تمام شده</h2>
           )
         }
         {
-          orders.length === 0 ? (
+          allOrders.all.length > 0 ? (
+            <div className="w-full overflow-x-auto rounded-xl">
+              <table className='table'>
+                <thead className='thead'>
+                  <tr className='thead__tr'>
+                    <th className='thead__tr__th w-2/12'>کد سفارش</th>
+                    <th className='thead__tr__th w-3/12'>نام دستگاه</th>
+                    <th className='thead__tr__th w-3/12'>قطعات</th>
+                    <th className='thead__tr__th w-2/12'>هزینه نهایی</th>
+                    <th className='thead__tr__th w-2/12'>تاریخ</th>
+                  </tr>
+                </thead>
+                <tbody className='tbody'>
+                  {
+                    allOrders.all.map(order => (
+                      <tr
+                        key={order.id}
+                        className='tbody__tr cursor-pointer'
+                        onClick={() => setModal({ show: true, order })}
+                      >
+                        <td className='tbody__tr__td w-2/12'>
+                          <div className='td__wrapper justify-center'>
+                            {
+                              order.status === 'done' ? (
+                                <button className='badge badge-success select-text'>{order.id} #</button>
+                              ) : (
+                                <button className='badge badge-danger select-text'>{order.id} #</button>
+                              )
+                            }
+                          </div>
+                        </td>
+                        <td className='tbody__tr__td w-3/12 text-sm'>{order.phoneName}</td>
+                        <td className='tbody__tr__td w-3/12'>
+                          <div className="td__wrapper">
+                            <span className='text-xs'>{order.partName}</span>
+                          </div>
+                        </td>
+                        <td className='tbody__tr__td w-2/12 text-sm'>
+                          {
+                            order.total ? (
+                              <>
+                                {modal.order.total}
+                                <small className='italic opacity-75 mx-1'>تومان</small>
+                              </>
+                            ) : '-'
+                          }
+                        </td>
+                        <td className='tbody__tr__td w-2/12 text-sm'>
+                          {new Date(order.createdAt).toLocaleDateString('fa-IR')}
+                        </td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            </div>
+          ) : (
             <Alert
               theme={'danger'}
-              title={'شما هیچ سفارشی ندارید!'}
+              title={'شما هیچ سفارش تمام شده ای ندارید!'}
               link={'/order'}
               linkTitle={'ثبت سفارش'}
               icon={(
@@ -173,71 +248,8 @@ function UserOrders() {
                 </svg>
               )}
             />
-          ) : (
-            orders[0] && orders.find(order => order.status == "done" || order.status == "cancelled") && (
-              <div className="w-full overflow-x-auto rounded-xl">
-                <table className='table'>
-                  <thead className='thead'>
-                    <tr className='thead__tr'>
-                      <th className='thead__tr__th w-2/12'>کد سفارش</th>
-                      <th className='thead__tr__th w-3/12'>نام دستگاه</th>
-                      <th className='thead__tr__th w-3/12'>قطعات</th>
-                      <th className='thead__tr__th w-2/12'>هزینه نهایی</th>
-                      <th className='thead__tr__th w-2/12'>تاریخ</th>
-                    </tr>
-                  </thead>
-                  <tbody className='tbody'>
-                    {
-                      orders.map(order => {
-                        if (order.status === 'done' || order.status === "cancelled") {
-                          return (
-                            <tr
-                              key={order.id}
-                              className='tbody__tr cursor-pointer'
-                              onClick={() => setModal({ show: true, order })}
-                            >
-                              <td className='tbody__tr__td w-2/12'>
-                                <div className='td__wrapper justify-center'>
-                                  {
-                                    order.status === 'done' ? (
-                                      <button className='badge badge-success select-text'>{order.id} #</button>
-                                    ) : (
-                                      <button className='badge badge-danger select-text'>{order.id} #</button>
-                                    )
-                                  }
-                                </div>
-                              </td>
-                              <td className='tbody__tr__td w-3/12 text-sm'>{order.phoneName}</td>
-                              <td className='tbody__tr__td w-3/12'>
-                                <div className="td__wrapper">
-                                  <span className='text-xs'>{order.partName}</span>
-                                </div>
-                              </td>
-                              <td className='tbody__tr__td w-2/12 text-sm'>
-                                {
-                                  order.total ? (
-                                    <>
-                                      {modal.order.total}
-                                      <small className='italic opacity-75 mx-1'>تومان</small>
-                                    </>
-                                  ) : '-'
-                                }
-                              </td>
-                              <td className='tbody__tr__td w-2/12 text-sm'>
-                                {new Date(order.createdAt).toLocaleDateString('fa-IR')}
-                              </td>
-                            </tr>
-                          )
-                        }
-                      })
-                    }
-                  </tbody>
-                </table>
-              </div>
-            )
           )
         }
-        <Toaster />
       </div >
 
       {
@@ -374,6 +386,8 @@ function UserOrders() {
           </PortalModal>
         )
       }
+
+      <Toaster />
     </>
   )
 }
