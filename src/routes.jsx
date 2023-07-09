@@ -22,6 +22,8 @@ import AdminDevices from "./pages/Dashboards/AdminDevices.jsx"
 import AdminParts from "./pages/Dashboards/AdminParts.jsx"
 import AdminCities from "./pages/Dashboards/AdminCities.jsx"
 
+import TransActionResponse from "./pages/TransActionResponse/TransActionResponse.jsx"
+
 const routes = [
   { path: '/', element: <Home /> },
   {
@@ -75,7 +77,8 @@ const routes = [
       { path: '/admin/parts', element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminParts /> </PrivateRoute> },
       { path: '/admin/cities', element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminCities /> </PrivateRoute> },
     ]
-  }
+  },
+  { path: '/transaction', element: <TransActionResponse /> },
 ]
 
 export { routes }

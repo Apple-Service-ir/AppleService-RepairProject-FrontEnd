@@ -70,6 +70,10 @@ input[type="number"] {
 }
 
 @layer components {
+  .current-screen-height {
+    height: calc(100vh - 4rem);
+  }
+
   .chat-r{
     border-radius: 7px 7px 0 7px;
   }
