@@ -49,7 +49,7 @@ function RepairManGetOrder() {
           })
         })
         .finally(() => loadingContext.setProgressIsLoadingHandler(false))
-  }, [authContext.userInfo])
+  }, [authContext.userToken])
 
   const submitOrderHandler = async (event, hasPrice, orderId) => {
     event.preventDefault()
