@@ -16,7 +16,7 @@ function TransActionResponse() {
         </a>
       </div>
       <div className="current-screen-height flex justify-center items-center">
-        <TransActionBox status={false} />
+        <TransActionBox status={true} />
       </div>
     </div>
   )

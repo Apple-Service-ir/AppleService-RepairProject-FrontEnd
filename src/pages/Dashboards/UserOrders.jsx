@@ -63,6 +63,17 @@ function UserOrders() {
       })
   }
 
+  const workingPayHandler = orderId => {
+    const requestBody = {
+      token: authContext.userToken,
+      id: orderId
+    }
+    post('/payment/pay')
+      .then(response => {
+        console.log(response)
+      })
+  }
+
   return (
     <>
       <div className='w-full flex flex-col justify-center items-center gap-6 show-fade'>
@@ -173,69 +184,6 @@ function UserOrders() {
           )
         }
         {
-          Object.keys(allOrders.paymentDone).length > 0 && (
-            <div className={`bg-green-200 w-full flex flex-col justify-center items-center gap-3
-              rounded-xl p-3`}>
-              <div className={`bg-green-300 flex justify-center items-center gap-3 px-9 py-2
-                rounded-full relative shadow-sm shadow-green-500`}>
-                <span>کد سفارش:</span>
-                <button className='flex justify-center items-center relative group'>
-                  <span>#{allOrders.paymentDone.id}</span>
-                  <span className='tooltip'>کپی کنید!</span>
-                </button>
-                <div className={`bg-green-500 text-white w-3/4 text-center text-xs p-0.5 rounded-b-full
-                  absolute top-full shadow-sm shadow-green-700`}>در انتظار پرداخت</div>
-              </div>
-              <ul className='w-full flex flex-col mt-6'>
-                <ul className={`border-green-300 border-t-2 border-dashed w-full
-                      flex flex-col justify-center items-start gap-3 p-3
-                      sm:flex-row sm:items-center`}>
-                  <li className='flex justify-center items-center gap-3'>
-                    <span className='sansbold'>نام دستگاه: </span>
-                    <span className='text-sm'>{allOrders.paymentDone.phoneName}</span>
-                  </li>
-                  <span className='hidden sm:block'>-</span>
-                  <li className='flex justify-center items-center gap-3'>
-                    <span className='sansbold'>قطعات:</span>
-                    <span className='text-sm'>{allOrders.paymentDone.partName}</span>
-                  </li>
-                </ul>
-                <li className={`border-green-300 border-t-2 border-dashed w-full
-                  flex gap-3 p-3`}>
-                  <span className='sansbold'>آدرس:</span>
-                  <p className='text-sm'>{allOrders.paymentDone.address}</p>
-                </li>
-                <li className={`border-green-300 border-t-2 border-dashed w-full
-                  flex gap-3 p-3`}>
-                  <span className='sansbold'>توضیحات:</span>
-                  <p className='text-sm'>{allOrders.paymentDone.description}</p>
-                </li>
-                {
-                  allOrders.paymentDone.adminMessage && (
-                    <li className={`border-green-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
-                      <span className='sansbold'>پیام پشتیبانی:</span>
-                      <p className='text-sm'>{allOrders.paymentDone.adminMessage}</p>
-                    </li>
-                  )
-                }
-              </ul>
-              <li className={`border-green-300 border-t-2 border-dashed w-full
-                flex gap-3 p-3 pb-0`}>
-                <span className='sansbold'>هزینه تعمیر:</span>
-                <span>
-                  {
-                    allOrders.paymentDone.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
-                  }
-                  <small className='italic mr-1'>تومان</small>
-                </span>
-              </li>
-              <button className='badge-btn badge-success px-6'
-                onClick={() => { }}>پرداخت</button>
-            </div>
-          )
-        }
-        {
           Object.keys(allOrders.paymentWoring).length > 0 && (
             <div className={`bg-yellow-200 w-full flex flex-col justify-center items-center gap-3
               rounded-xl p-3`}>
@@ -294,6 +242,69 @@ function UserOrders() {
                 </span>
               </li>
               <button className='badge-btn badge-warning px-6'
+                onClick={() => workingPayHandler(allOrders.paymentWoring)}>پرداخت</button>
+            </div>
+          )
+        }
+        {
+          Object.keys(allOrders.paymentDone).length > 0 && (
+            <div className={`bg-green-200 w-full flex flex-col justify-center items-center gap-3
+              rounded-xl p-3`}>
+              <div className={`bg-green-300 flex justify-center items-center gap-3 px-9 py-2
+                rounded-full relative shadow-sm shadow-green-500`}>
+                <span>کد سفارش:</span>
+                <button className='flex justify-center items-center relative group'>
+                  <span>#{allOrders.paymentDone.id}</span>
+                  <span className='tooltip'>کپی کنید!</span>
+                </button>
+                <div className={`bg-green-500 text-white w-3/4 text-center text-xs p-0.5 rounded-b-full
+                  absolute top-full shadow-sm shadow-green-700`}>در انتظار پرداخت</div>
+              </div>
+              <ul className='w-full flex flex-col mt-6'>
+                <ul className={`border-green-300 border-t-2 border-dashed w-full
+                      flex flex-col justify-center items-start gap-3 p-3
+                      sm:flex-row sm:items-center`}>
+                  <li className='flex justify-center items-center gap-3'>
+                    <span className='sansbold'>نام دستگاه: </span>
+                    <span className='text-sm'>{allOrders.paymentDone.phoneName}</span>
+                  </li>
+                  <span className='hidden sm:block'>-</span>
+                  <li className='flex justify-center items-center gap-3'>
+                    <span className='sansbold'>قطعات:</span>
+                    <span className='text-sm'>{allOrders.paymentDone.partName}</span>
+                  </li>
+                </ul>
+                <li className={`border-green-300 border-t-2 border-dashed w-full
+                  flex gap-3 p-3`}>
+                  <span className='sansbold'>آدرس:</span>
+                  <p className='text-sm'>{allOrders.paymentDone.address}</p>
+                </li>
+                <li className={`border-green-300 border-t-2 border-dashed w-full
+                  flex gap-3 p-3`}>
+                  <span className='sansbold'>توضیحات:</span>
+                  <p className='text-sm'>{allOrders.paymentDone.description}</p>
+                </li>
+                {
+                  allOrders.paymentDone.adminMessage && (
+                    <li className={`border-green-300 border-t-2 border-dashed w-full
+                      flex gap-3 p-3`}>
+                      <span className='sansbold'>پیام پشتیبانی:</span>
+                      <p className='text-sm'>{allOrders.paymentDone.adminMessage}</p>
+                    </li>
+                  )
+                }
+              </ul>
+              <li className={`border-green-300 border-t-2 border-dashed w-full
+                flex gap-3 p-3 pb-0`}>
+                <span className='sansbold'>هزینه تعمیر:</span>
+                <span>
+                  {
+                    allOrders.paymentDone.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                  }
+                  <small className='italic mr-1'>تومان</small>
+                </span>
+              </li>
+              <button className='badge-btn badge-success px-6'
                 onClick={() => { }}>پرداخت</button>
             </div>
           )
