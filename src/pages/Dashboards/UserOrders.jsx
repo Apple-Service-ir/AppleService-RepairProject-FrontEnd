@@ -120,6 +120,59 @@ function UserOrders() {
           )
         }
         {
+          Object.keys(allOrders.working).length > 0 && (
+            <div className={`bg-yellow-200 w-full flex flex-col justify-center items-center gap-3
+              rounded-xl p-3`}>
+              <div className={`bg-yellow-300 flex justify-center items-center gap-3 px-9 py-2
+                    rounded-full relative shadow-sm shadow-yellow-500`}>
+                <span>کد سفارش:</span>
+                <span>{allOrders.working.id} #</span>
+                <div className={`bg-yellow-500 text-white w-3/4 text-center text-xs
+                      p-0.5 rounded-b-full
+                      absolute top-full shadow-sm shadow-yellow-700`}>
+                  {allOrders.working.status === 'pending' ? 'در انتظار تایید' : 'در حال انجام'}
+                </div>
+              </div>
+              <ul className='w-full flex flex-col mt-6'>
+                <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                      flex justify-center items-center gap-3 p-3`}>
+                  <span className='sansbold'>نام دستگاه: </span>
+                  <span className='text-sm'>{allOrders.working.phoneName}</span>
+                  <span>-</span>
+                  <span className='sansbold'>قطعات:</span>
+                  <span className='text-sm'>{allOrders.working.partName}</span>
+                </li>
+                <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                      flex gap-3 p-3`}>
+                  <span className='sansbold'>آدرس:</span>
+                  <p className='text-sm'>{allOrders.working.address}</p>
+                </li>
+                <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                      flex gap-3 p-3`}>
+                  <span className='sansbold'>توضیحات:</span>
+                  <p className='text-sm'>{allOrders.working.description}</p>
+                </li>
+                {
+                  allOrders.working.adminMessage && (
+                    <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                          flex gap-3 p-3`}>
+                      <span className='sansbold'>پیام پشتیبانی:</span>
+                      <p className='text-sm'>{allOrders.working.adminMessage}</p>
+                    </li>
+                  )
+                }
+                <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                      flex gap-3 p-3`}>
+                  <span className='sansbold'>مشخصات تعمیرکار:</span>
+                  <p className='text-sm'>
+                    {allOrders.working.repairman.firstName} {allOrders.working.repairman.lastName} - {allOrders.working.repairman.phone}
+                  </p>
+                </li>
+              </ul>
+            </div>
+          )
+        }
+        {
           Object.keys(allOrders.paymentDone).length > 0 && (
             <div className={`bg-green-200 w-full flex flex-col justify-center items-center gap-3
               rounded-xl p-3`}>
@@ -174,6 +227,7 @@ function UserOrders() {
                   {
                     allOrders.paymentDone.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
                   }
+                  <small className='italic mr-1'>تومان</small>
                 </span>
               </li>
               <button className='badge-btn badge-success px-6'
@@ -182,55 +236,65 @@ function UserOrders() {
           )
         }
         {
-          Object.keys(allOrders.working).length > 0 && (
+          Object.keys(allOrders.paymentWoring).length > 0 && (
             <div className={`bg-yellow-200 w-full flex flex-col justify-center items-center gap-3
               rounded-xl p-3`}>
               <div className={`bg-yellow-300 flex justify-center items-center gap-3 px-9 py-2
-                    rounded-full relative shadow-sm shadow-yellow-500`}>
+                rounded-full relative shadow-sm shadow-yellow-500`}>
                 <span>کد سفارش:</span>
-                <span>{allOrders.working.id} #</span>
-                <div className={`bg-yellow-500 text-white w-3/4 text-center text-xs
-                      p-0.5 rounded-b-full
-                      absolute top-full shadow-sm shadow-yellow-700`}>
-                  {allOrders.working.status === 'pending' ? 'در انتظار تایید' : 'در حال انجام'}
-                </div>
+                <button className='flex justify-center items-center relative group'>
+                  <span>#{allOrders.paymentWoring.id}</span>
+                  <span className='tooltip'>کپی کنید!</span>
+                </button>
+                <div className={`bg-yellow-500 text-white w-3/4 text-center text-xs p-0.5 rounded-b-full
+                  absolute top-full shadow-sm shadow-yellow-700`}>در انتظار پرداخت</div>
               </div>
               <ul className='w-full flex flex-col mt-6'>
+                <ul className={`border-yellow-300 border-t-2 border-dashed w-full
+                      flex flex-col justify-center items-start gap-3 p-3
+                      sm:flex-row sm:items-center`}>
+                  <li className='flex justify-center items-center gap-3'>
+                    <span className='sansbold'>نام دستگاه: </span>
+                    <span className='text-sm'>{allOrders.paymentWoring.phoneName}</span>
+                  </li>
+                  <span className='hidden sm:block'>-</span>
+                  <li className='flex justify-center items-center gap-3'>
+                    <span className='sansbold'>قطعات:</span>
+                    <span className='text-sm'>{allOrders.paymentWoring.partName}</span>
+                  </li>
+                </ul>
                 <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex justify-center items-center gap-3 p-3`}>
-                  <span className='sansbold'>نام دستگاه: </span>
-                  <span className='text-sm'>{allOrders.working.phoneName}</span>
-                  <span>-</span>
-                  <span className='sansbold'>قطعات:</span>
-                  <span className='text-sm'>{allOrders.working.partName}</span>
-                </li>
-                <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
+                  flex gap-3 p-3`}>
                   <span className='sansbold'>آدرس:</span>
-                  <p className='text-sm'>{allOrders.working.address}</p>
+                  <p className='text-sm'>{allOrders.paymentWoring.address}</p>
                 </li>
                 <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
+                  flex gap-3 p-3`}>
                   <span className='sansbold'>توضیحات:</span>
-                  <p className='text-sm'>{allOrders.working.description}</p>
+                  <p className='text-sm'>{allOrders.paymentWoring.description}</p>
                 </li>
                 {
-                  allOrders.working.adminMessage && (
+                  allOrders.paymentWoring.adminMessage && (
                     <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                          flex gap-3 p-3`}>
+                      flex gap-3 p-3`}>
                       <span className='sansbold'>پیام پشتیبانی:</span>
-                      <p className='text-sm'>{allOrders.working.adminMessage}</p>
+                      <p className='text-sm'>{allOrders.paymentWoring.adminMessage}</p>
                     </li>
                   )
                 }
-                <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
-                  <span className='sansbold'>مشخصات تعمیرکار:</span>
-                  <p className='text-sm'>
-                    {allOrders.working.repairman.firstName} {allOrders.working.repairman.lastName} - {allOrders.working.repairman.phone}
-                  </p>
-                </li>
               </ul>
+              <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                flex gap-3 p-3 pb-0`}>
+                <span className='sansbold'>هزینه تعمیر:</span>
+                <span>
+                  {
+                    allOrders.paymentWoring.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                  }
+                  <small className='italic mr-1'>تومان</small>
+                </span>
+              </li>
+              <button className='badge-btn badge-warning px-6'
+                onClick={() => { }}>پرداخت</button>
             </div>
           )
         }
