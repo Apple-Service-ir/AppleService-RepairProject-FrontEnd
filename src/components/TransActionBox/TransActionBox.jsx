@@ -1,8 +1,8 @@
 import React from 'react'
 
-function TransActionBox({ status }) {
+function TransActionBox({ status, order }) {
   return (
-    <div className='w-11/12 flex flex-col justify-center items-center md:w-[600px] '>
+    <div className='w-11/12 flex flex-col justify-center items-center md:w-[750px] '>
       <div className={`${status ? 'bg-green-200' : 'bg-red-200'} bg-blue-200 w-full
         flex flex-col justify-center items-center gap-3 p-6 pt-12 rounded-xl relative
         sm:p-9 sm:pt-16`}>
@@ -28,9 +28,34 @@ function TransActionBox({ status }) {
             )
           }
         </div>
-        <p className='text-center'>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Debitis, animi!
-        </p>
+        {
+          (status && Object.keys(order).length > 0) && (
+            <ul className='w-full flex justify-center items-center gap-6 mt-3'>
+              <li className='sansbold'>
+                کد سفارش:
+                <span className='text-sm mr-2'>{order.id}</span>
+              </li>
+              <li className='sansbold'>
+                دستگاه و قطعه:
+                <span className='text-sm mr-2'>{order.phoneName} - {order.partName}</span>
+              </li>
+              <li className='sansbold'>
+                هزینه پرداخت شده:
+                <span className='text-sm mr-2'>
+                  {order.total.toLocaleString()}
+                  <small className='italic mr-1'>تومان</small>
+                </span>
+              </li>
+            </ul>
+          )
+        }
+        {
+          !status && (
+            <p className='text-center mt-3 opacity-75'>
+              تراکنش ناموفق بود، لطفا برای پیگیری از پنل کاربری تان تیکت نصب کنید
+            </p>
+          )
+        }
       </div>
     </div>
   )

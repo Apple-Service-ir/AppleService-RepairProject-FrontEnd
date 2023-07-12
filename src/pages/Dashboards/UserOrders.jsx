@@ -68,11 +68,13 @@ function UserOrders() {
       token: authContext.userToken,
       id: orderId
     }
-    post('/payment/pay')
+    post('/payments/pay', requestBody)
       .then(response => {
-        console.log(response)
+        location.href = response.data.url
       })
+      .catch(error => console.error(error.response.data.err))
   }
+
 
   return (
     <>
@@ -134,19 +136,21 @@ function UserOrders() {
           Object.keys(allOrders.working).length > 0 && (
             <div className={`bg-yellow-200 w-full flex flex-col justify-center items-center gap-3
               rounded-xl p-3`}>
-              <div className={`bg-yellow-300 flex justify-center items-center gap-3 px-9 py-2
-                    rounded-full relative shadow-sm shadow-yellow-500`}>
+              <div className={`bg-yellow-300 flex justify-center items-center gap-3 px-12 py-2
+                  rounded-full relative shadow-sm shadow-yellow-500`}>
                 <span>کد سفارش:</span>
                 <span>{allOrders.working.id} #</span>
                 <div className={`bg-yellow-500 text-white w-3/4 text-center text-xs
-                      p-0.5 rounded-b-full
-                      absolute top-full shadow-sm shadow-yellow-700`}>
-                  {allOrders.working.status === 'pending' ? 'در انتظار تایید' : 'در حال انجام'}
+                  p-0.5 rounded-b-full
+                  absolute top-full shadow-sm shadow-yellow-700`}>
+                  {
+                    allOrders.working.total ? 'در حال انجام - پرداخت شده' : 'در حال انجام'
+                  }
                 </div>
               </div>
               <ul className='w-full flex flex-col mt-6'>
                 <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex justify-center items-center gap-3 p-3`}>
+                    flex justify-center items-center gap-3 p-3`}>
                   <span className='sansbold'>نام دستگاه: </span>
                   <span className='text-sm'>{allOrders.working.phoneName}</span>
                   <span>-</span>
@@ -154,31 +158,43 @@ function UserOrders() {
                   <span className='text-sm'>{allOrders.working.partName}</span>
                 </li>
                 <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
+                    flex gap-3 p-3`}>
                   <span className='sansbold'>آدرس:</span>
                   <p className='text-sm'>{allOrders.working.address}</p>
                 </li>
                 <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
+                    flex gap-3 p-3`}>
                   <span className='sansbold'>توضیحات:</span>
                   <p className='text-sm'>{allOrders.working.description}</p>
                 </li>
                 {
                   allOrders.working.adminMessage && (
                     <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                          flex gap-3 p-3`}>
+                        flex gap-3 p-3`}>
                       <span className='sansbold'>پیام پشتیبانی:</span>
                       <p className='text-sm'>{allOrders.working.adminMessage}</p>
                     </li>
                   )
                 }
                 <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
+                    flex gap-3 p-3`}>
                   <span className='sansbold'>مشخصات تعمیرکار:</span>
                   <p className='text-sm'>
                     {allOrders.working.repairman.firstName} {allOrders.working.repairman.lastName} - {allOrders.working.repairman.phone}
                   </p>
                 </li>
+                {
+                  allOrders.working.total && (
+                    <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                      flex gap-3 p-3`}>
+                      <span className='sansbold'>هزینه پرداخت شده:</span>
+                      <p className='text-sm'>
+                        {allOrders.working.total.toLocaleString()}
+                        <small className='italic mr-1'>تومان</small>
+                      </p>
+                    </li>
+                  )
+                }
               </ul>
             </div>
           )
@@ -236,13 +252,14 @@ function UserOrders() {
                 <span className='sansbold'>هزینه تعمیر:</span>
                 <span>
                   {
+                    allOrders.paymentWoring.transactions.filter(action => action.status === 'pending')[0] &&
                     allOrders.paymentWoring.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
                   }
                   <small className='italic mr-1'>تومان</small>
                 </span>
               </li>
               <button className='badge-btn badge-warning px-6'
-                onClick={() => workingPayHandler(allOrders.paymentWoring)}>پرداخت</button>
+                onClick={() => workingPayHandler(allOrders.paymentWoring.id)}>پرداخت</button>
             </div>
           )
         }

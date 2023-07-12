@@ -78,7 +78,7 @@ const routes = [
       { path: '/admin/cities', element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminCities /> </PrivateRoute> },
     ]
   },
-  { path: '/transaction', element: <TransActionResponse /> },
+  { path: '/payments/done', element: <TransActionResponse /> },
 ]
 
 export { routes }
