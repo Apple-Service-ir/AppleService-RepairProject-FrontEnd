@@ -305,10 +305,10 @@ function RepairManGetOrder() {
         }
         {
           Object.keys(orders.inWorking).length ? (
-            <div className='w-full'>
+            <div className='w-full overflow-x-auto'>
               <h1 className='w-full text-right text-xl sansbold mb-3'>سفارش درحال تعمیر</h1>
-              <ul className="bg-yellow-200 w-full h-12 flex justify-between items-center 
-                pr-6 rounded-xl relative mb-3">
+              <ul className="bg-yellow-200 w-[825px] h-12 flex justify-between items-center 
+                pr-6 rounded-xl relative mb-3 sm:w-full">
                 <span className='px-2 text-sm opacity-90'>{orders.inWorking.id} #</span>
                 <li>
                   نام دستگاه:
@@ -362,12 +362,12 @@ function RepairManGetOrder() {
             </div>
           ) : ''
         }
-        <div className="w-full">
+        <div className="w-full overflow-x-auto">
           <h1 className='w-full text-right text-xl sansbold mb-3'>سفارش های در انتظار تایید</h1>
           {
             orders.pending.length > 0 ? orders.pending.map(order => (
-              <ul key={order.id} className="bg-green-200 w-full h-12 flex justify-between items-center 
-                pr-6 rounded-xl relative mb-3">
+              <ul key={order.id} className="bg-green-200 w-[750px] h-12 flex justify-between items-center 
+                pr-6 rounded-xl relative mb-3 sm:w-full">
                 <span className='px-2 text-sm opacity-90'>{order.id} #</span>
                 <li>
                   نام دستگاه:
@@ -572,7 +572,8 @@ function RepairManGetOrder() {
                         <input
                           className='input'
                           id='submit-price-input'
-                          type="decimal"
+                          type="number"
+                          inputMode='decimal'
                           placeholder='قیمت به تومان'
                           ref={submitPriceInputRef}
                         />
@@ -623,7 +624,8 @@ function RepairManGetOrder() {
                 <input
                   className='input'
                   id='payment-input'
-                  type="decimal"
+                  type="number"
+                  inputMode='decimal'
                   placeholder='قیمت به تومان'
                   ref={priceInputRef}
                 />
@@ -670,7 +672,8 @@ function RepairManGetOrder() {
                 <input
                   className='input'
                   id='payment-input'
-                  type="decimal"
+                  type="number"
+                  inputMode='decimal'
                   placeholder='قیمت به تومان'
                   ref={donePriceInputRef}
                 />

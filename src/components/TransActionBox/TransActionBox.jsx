@@ -2,7 +2,7 @@ import React from 'react'
 
 function TransActionBox({ status, order }) {
   return (
-    <div className='w-11/12 flex flex-col justify-center items-center md:w-[750px] '>
+    <div className='w-11/12 flex flex-col justify-center items-center md:w-[775px] '>
       <div className={`${status ? 'bg-green-200' : 'bg-red-200'} bg-blue-200 w-full
         flex flex-col justify-center items-center gap-3 p-6 pt-12 rounded-xl relative
         sm:p-9 sm:pt-16`}>
@@ -30,7 +30,8 @@ function TransActionBox({ status, order }) {
         </div>
         {
           (status && Object.keys(order).length > 0) && (
-            <ul className='w-full flex justify-center items-center gap-6 mt-3'>
+            <ul className='w-full flex flex-col justify-center items-start gap-3 mt-3 opacity-75
+              sm:flex-row sm:gap-6 sm:items-center'>
               <li className='sansbold'>
                 کد سفارش:
                 <span className='text-sm mr-2'>{order.id}</span>
