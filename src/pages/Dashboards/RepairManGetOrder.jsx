@@ -475,6 +475,21 @@ function RepairManGetOrder() {
                   </li>
                 )
               }
+              {
+                submitOrderModal.order.status === 'working'
+                && submitOrderModal.order.total && (
+                  <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                    <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                      پرداخت شده
+                    </div>
+                    <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                      {
+                        submitOrderModal.order.total.toLocaleString()
+                      }
+                    </div>
+                  </li>
+                )
+              }
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
                   مشتری
@@ -773,6 +788,21 @@ function RepairManGetOrder() {
                   }
                 </div>
               </li>
+
+              {
+                paymentOrdersModal.order.total && (
+                  <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                    <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                      پرداخت شده
+                    </div>
+                    <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                      {
+                        paymentOrdersModal.order.total.toLocaleString()
+                      }
+                    </div>
+                  </li>
+                )
+              }
 
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
