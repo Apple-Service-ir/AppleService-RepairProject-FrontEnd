@@ -105,9 +105,9 @@ function AdminOrders() {
                           <td className='tbody__tr__td w-2/12'>
                             <div className='td__wrapper justify-center'>
                               {
-                                order.status === 'done' ? (
+                                ['done', 'payment-done'].includes(order.status) ? (
                                   <button className='badge badge-success select-text'>{order.id} #</button>
-                                ) : order.status === 'working' ? (
+                                ) : ['working', 'payment-working'].includes(order.status) ? (
                                   <button className='badge badge-warning select-text'>{order.id} #</button>
                                 ) : order.status === 'pending' ? (
                                   <button className='badge badge-blue select-text'>{order.id} #</button>
@@ -161,8 +161,7 @@ function AdminOrders() {
         modal.show && (
           <PortalModal closeHandler={() => setModal({ show: false, order: {} })}>
             <ul className="w-[500px] max-h-[80vh] overflow-y-scroll rounded-md">
-              <li className='w-full rounded-md
-                flex justify-center items-center gap-1'>
+              <li className='w-full flex justify-center items-center gap-1'>
                 <OrderStatusBtn
                   status={'cancelled'}
                   isLoading={orderStatusLoaders.cancelled}
@@ -183,6 +182,25 @@ function AdminOrders() {
                   clickHandler={() => changeStatus(modal.order.id, 'done')}
                 >
                   اتمام تعمیر
+                </OrderStatusBtn>
+              </li>
+
+              <li className='w-full flex justify-center items-center gap-1 mt-1'>
+                <OrderStatusBtn
+                  customStyles={'w-full'}
+                  status={'working'}
+                  isLoading={orderStatusLoaders.done}
+                  // clickHandler={() => changeStatus(modal.order.id, 'payment-working')}
+                >
+                  تایید کردن - با پرداخت
+                </OrderStatusBtn>
+                <OrderStatusBtn
+                  customStyles={'w-full'}
+                  status={'done'}
+                  isLoading={orderStatusLoaders.done}
+                  // clickHandler={() => changeStatus(modal.order.id, 'payment-done')}
+                >
+                  اتمام تعمیر - با پرداخت
                 </OrderStatusBtn>
               </li>
 
@@ -219,7 +237,9 @@ function AdminOrders() {
                       : modal.order.status === 'working' ? 'تایید شده'
                         : modal.order.status === 'cancelled' ? 'لغو شده'
                           : modal.order.status === 'done' ? 'انجام شده'
-                            : ''
+                            : modal.order.status === 'payment-working' ? 'تایید شده - در انتظار پرداخت'
+                              : modal.order.status === 'payment-working' ? 'انجام شده - در انتظار پرداخت'
+                                : ''
                   }
                 </div>
               </li>
@@ -230,9 +250,7 @@ function AdminOrders() {
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                   {
-                    modal.order.user ?
-                      `${modal.order.user.firstName} ${modal.order.user.lastName}`
-                      : '-'
+                    `${modal.order.user.firstName} ${modal.order.user.lastName} - ${modal.order.user.phone}`
                   }
                 </div>
               </li>
@@ -243,8 +261,8 @@ function AdminOrders() {
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                   {
-                    modal.order.repairMan ?
-                      `${modal.order.repairMan.firstName} ${modal.order.repairMan.lastName}`
+                    modal.order.repairman ?
+                      `${modal.order.repairman.firstName} ${modal.order.repairman.lastName} - ${modal.order.repairman.phone}`
                       : '-'
                   }
                 </div>
@@ -277,16 +295,34 @@ function AdminOrders() {
                 </div>
               </li>
 
+              {
+                ['payment-working', 'payment-done'].includes(modal.order.status) && (
+                  <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                    <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                      در انتظار پرداخت
+                    </div>
+                    <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                      {
+                        modal.order.transactions.filter(action => action.status === 'pending')[0] &&
+                        modal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                      }
+                      <small className='italic mr-1'>تومان</small>
+                    </div>
+                  </li>
+
+                )
+              }
+
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  قیمت
+                  پرداخت شده
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                   {
                     modal.order.total ? (
                       <>
-                        {modal.order.total}
-                        <small className='italic opacity-75 mx-1'>تومان</small>
+                        {modal.order.total.toLocaleString()}
+                        <small className='italic mr-1'>تومان</small>
                       </>
                     ) : '-'
                   }

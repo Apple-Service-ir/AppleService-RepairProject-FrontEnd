@@ -326,6 +326,7 @@ function UserOrders() {
                   <span className='sansbold'>در انتظار پرداخت:</span>
                   <span className='text-sm'>
                     {
+                      allOrders.paymentDone.transactions.filter(action => action.status === 'pending')[0] &&
                       allOrders.paymentDone.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
                     }
                     <small className='italic mr-1'>تومان</small>
