@@ -321,17 +321,29 @@ function UserOrders() {
                     </li>
                   )
                 }
+                <li className={`border-green-300 border-t-2 border-dashed w-full
+                  flex gap-3 p-3`}>
+                  <span className='sansbold'>در انتظار پرداخت:</span>
+                  <span className='text-sm'>
+                    {
+                      allOrders.paymentDone.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                    }
+                    <small className='italic mr-1'>تومان</small>
+                  </span>
+                </li>
+                {
+                  allOrders.paymentDone.total && (
+                    <li className={`border-green-300 border-t-2 border-dashed w-full
+                    flex gap-3 p-3 pb-0`}>
+                      <span className='sansbold'>پرداخت شده:</span>
+                      <span className='text-sm'>
+                        {allOrders.paymentDone.total.toLocaleString()}
+                        <small className='italic mr-1'>تومان</small>
+                      </span>
+                    </li>
+                  )
+                }
               </ul>
-              <li className={`border-green-300 border-t-2 border-dashed w-full
-                flex gap-3 p-3 pb-0`}>
-                <span className='sansbold'>هزینه تعمیر:</span>
-                <span>
-                  {
-                    allOrders.paymentDone.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
-                  }
-                  <small className='italic mr-1'>تومان</small>
-                </span>
-              </li>
               <button className='badge-btn badge-success px-6'
                 onClick={() => donePayHandler(allOrders.paymentDone.id)}>پرداخت</button>
             </div>
