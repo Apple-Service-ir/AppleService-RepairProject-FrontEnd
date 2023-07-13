@@ -75,6 +75,18 @@ function UserOrders() {
       .catch(error => console.error(error.response.data.err))
   }
 
+  const donePayHandler = orderId => {
+    const requestBody = {
+      token: authContext.userToken,
+      id: orderId
+    }
+    post('/payments/pay', requestBody)
+      .then(response => {
+        location.href = response.data.url
+      })
+      .catch(error => console.error(error.response.data.err))
+  }
+
   return (
     <>
       <div className='w-full flex flex-col justify-center items-center gap-6 show-fade'>
@@ -186,7 +198,7 @@ function UserOrders() {
                   allOrders.working.total && (
                     <li className={`border-yellow-300 border-t-2 border-dashed w-full
                       flex gap-3 p-3`}>
-                      <span className='sansbold'>هزینه پرداخت شده:</span>
+                      <span className='sansbold'>پرداخت شده:</span>
                       <p className='text-sm'>
                         {allOrders.working.total.toLocaleString()}
                         <small className='italic mr-1'>تومان</small>
@@ -214,8 +226,8 @@ function UserOrders() {
               </div>
               <ul className='w-full flex flex-col mt-6'>
                 <ul className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex flex-col justify-center items-start gap-3 p-3
-                      sm:flex-row sm:items-center`}>
+                  flex flex-col justify-center items-start gap-3 p-3
+                  sm:flex-row sm:items-center`}>
                   <li className='flex justify-center items-center gap-3'>
                     <span className='sansbold'>نام دستگاه: </span>
                     <span className='text-sm'>{allOrders.paymentWoring.phoneName}</span>
@@ -321,7 +333,7 @@ function UserOrders() {
                 </span>
               </li>
               <button className='badge-btn badge-success px-6'
-                onClick={() => { }}>پرداخت</button>
+                onClick={() => donePayHandler(allOrders.paymentDone.id)}>پرداخت</button>
             </div>
           )
         }
@@ -372,8 +384,8 @@ function UserOrders() {
                           {
                             order.total ? (
                               <>
-                                {modal.order.total}
-                                <small className='italic opacity-75 mx-1'>تومان</small>
+                                {order.total}
+                                <small className='italic mr-1'>تومان</small>
                               </>
                             ) : '-'
                           }
