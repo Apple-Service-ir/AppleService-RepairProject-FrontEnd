@@ -221,24 +221,30 @@ function AdminOrders() {
                     </OrderStatusBtn>
                   </li>
                 ) : (
-                  <li className='w-full flex justify-center items-center gap-1'>
-                    <OrderStatusBtn
-                      customClass={'w-full'}
-                      status={'cancelled'}
-                      isLoading={false}
-                      clickHandler={() => setShowCancelOrderModal(true)}
-                    >
-                      لغو تعمیر
-                    </OrderStatusBtn>
-                    <OrderStatusBtn
-                      customClass={'w-full'}
-                      status={'done'}
-                      isLoading={false}
-                      clickHandler={() => setShowDoneOrderModal(true)}
-                    >
-                      اتمام تعمیر
-                    </OrderStatusBtn>
-                  </li>
+                  <>
+                    <li className='w-full flex justify-center items-center gap-1'>
+                      {
+                        modal.order.status !== 'cancelled' && (
+                          <OrderStatusBtn
+                            customClass={'w-full'}
+                            status={'cancelled'}
+                            isLoading={false}
+                            clickHandler={() => setShowCancelOrderModal(true)}
+                          >
+                            لغو تعمیر
+                          </OrderStatusBtn>
+                        )
+                      }
+                      <OrderStatusBtn
+                        customClass={'w-full'}
+                        status={'done'}
+                        isLoading={false}
+                        clickHandler={() => setShowDoneOrderModal(true)}
+                      >
+                        اتمام تعمیر
+                      </OrderStatusBtn>
+                    </li>
+                  </>
                 )
               }
 
