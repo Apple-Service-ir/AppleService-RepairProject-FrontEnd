@@ -188,10 +188,16 @@ function UserOrders() {
                   )
                 }
                 <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                    flex gap-3 p-3`}>
-                  <span className='sansbold'>مشخصات تعمیرکار:</span>
+                  flex gap-3 p-3`}>
+                  <span className='sansbold'>تعمیرکار:</span>
                   <p className='text-sm'>
-                    {allOrders.working.repairman.firstName} {allOrders.working.repairman.lastName} - {allOrders.working.repairman.phone}
+                    {
+                      allOrders.working.repairman.firstName
+                      + ' '
+                      + allOrders.working.repairman.lastName
+                      + ' - '
+                      + allOrders.working.repairman.phone
+                    }
                   </p>
                 </li>
                 {
@@ -257,6 +263,19 @@ function UserOrders() {
                     </li>
                   )
                 }
+                <li className={`border-yellow-300 border-t-2 border-dashed w-full
+                  flex gap-3 p-3`}>
+                  <span className='sansbold'>تعمیرکار:</span>
+                  <p className='text-sm'>
+                    {
+                      allOrders.paymentWoring.repairman.firstName
+                      + ' '
+                      + allOrders.paymentWoring.repairman.lastName
+                      + ' - '
+                      + allOrders.paymentWoring.repairman.phone
+                    }
+                  </p>
+                </li>
               </ul>
               <li className={`border-yellow-300 border-t-2 border-dashed w-full
                 flex gap-3 p-3 pb-0`}>
