@@ -10,12 +10,16 @@ import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import OrderStatusBtn from '../../components/OrderStatusBtn/OrderStatusBtn'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
+import { Link } from 'react-router-dom'
 
 function AdminOrders() {
   const authContext = useContext(AuthContext)
   const loadingContext = useContext(LoadingContext)
 
   const [orders, setOrders] = useState([])
+  const [repairmans, setRepairmans] = useState({
+    all: [], selected: {}, currentForOrderCity: []
+  })
   const [modal, setModal] = useState({ show: false, order: {} })
   const [showAcceptOrderModal, setShowAcceptOrderModal] = useState(false)
   const [showDoneOrderModal, setShowDoneOrderModal] = useState(false)
@@ -29,23 +33,37 @@ function AdminOrders() {
   const paymentDoneInputRef = useRef()
 
   useEffect(() => {
+    document.title = "سفارشات - داشبورد مدیریت اپل سرویس"
     loadingContext.setProgressIsLoadingHandler(true)
-    if (authContext.userToken) {
-      document.title = "سفارشات - داشبورد مدیریت اپل سرویس"
-      get(`/admins/orders/all?token=${authContext.userToken}`)
+
+    const func = async () => {
+      await get(`/admins/orders/all?token=${authContext.userToken}`)
         .then(response => {
           setOrders(response.data.orders)
         })
-        .finally(() => loadingContext.setProgressIsLoadingHandler(false))
+
+      await get(`/repairmans/all?token=${authContext.userToken}`)
+        .then(response => {
+          setRepairmans(prev => ({
+            ...prev,
+            all: response.data.repairmans
+          }))
+        })
+
+      loadingContext.setProgressIsLoadingHandler(false)
     }
+
+    if (authContext.userToken) func()
   }, [authContext.userToken])
 
   const acceptOrderHandler = async (event, orderId, status) => {
     event.preventDefault()
 
-    if (status === 'payment-working' && paymentAcceptInputRef.current.value < 100_000) {
+    if (status === 'payment-working' && paymentAcceptInputRef.current.value < 100_000)
       return toast.error('حداقل قیمت 100 هزار تومان می باشد')
-    }
+
+    if (!Object.keys(repairmans.selected).length)
+      return toast.error('لطفا برای سفارش یک تعمیرکار انتخاب کنید')
 
     setPaymentOrderStatusLoading({
       paymentAccept: status === 'payment-working',
@@ -56,6 +74,7 @@ function AdminOrders() {
       token: authContext.userToken,
       id: orderId,
       status,
+      repairmanId: repairmans.selected.id,
       adminMessage: orderDesc || null,
       ...(status === 'payment-working' && { price: +paymentAcceptInputRef.current.value })
     }
@@ -295,7 +314,18 @@ function AdminOrders() {
                     <OrderStatusBtn
                       status={'working'}
                       isLoading={false}
-                      clickHandler={() => setShowAcceptOrderModal(true)}
+                      clickHandler={() => {
+                        setShowAcceptOrderModal(true)
+                        setRepairmans(prev => {
+                          const currentForOrderCity = prev.all.filter(repairman => {
+                            if (repairman.city === modal.order.city) {
+                              return repairman
+                            }
+                          })
+
+                          return { ...prev, currentForOrderCity }
+                        })
+                      }}
                     >
                       تایید کردن
                     </OrderStatusBtn>
@@ -502,59 +532,104 @@ function AdminOrders() {
             closeHandler={() => setShowAcceptOrderModal(false)}
             asAlert={true}
           >
-            <form className='bg-white w-96 flex flex-col justify-center items-center gap-3 p-6 rounded-xl'>
-              <label
-                className='text-blue-500 sansbold text-center'
-                htmlFor="payment-input"
-              >
-                آیا می خواهید قبل از تعمیر پیش پرداخت بگیرید؟
-              </label>
-              <div className='w-full bg-input'>
-                <input
-                  className='input'
-                  type="number"
-                  inputMode='decimal'
-                  placeholder='قیمت به تومان'
-                  ref={paymentAcceptInputRef}
-                />
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
-                </svg>
-              </div>
-              <label
-                className='text-blue-500 sansbold text-center'
-              >
-                آیا سفارش توضیحات دارد؟
-              </label>
-              <div className='w-full bg-textarea'>
-                <textarea
-                  className='textarea'
-                  placeholder='توضیحات را وارد کنید'
-                  value={orderDesc}
-                  onChange={event => setOrderDesc(event.target.value)}
-                >
-                </textarea>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-textarea">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                </svg>
-              </div>
-              <div className="w-full flex justify-center items-center gap-3">
-                <SubmitBtn
-                  customClass={'w-1/2'}
-                  isLoading={paymentOrderStatusLoding.paymentAccept}
-                  clickHandler={event => acceptOrderHandler(event, modal.order.id, 'payment-working')}
-                >
-                  تایید قیمت
-                </SubmitBtn>
-                <SubmitBtn
-                  type={'outline'}
-                  customClass={'w-1/2'}
-                  isLoading={paymentOrderStatusLoding.accept}
-                  clickHandler={event => acceptOrderHandler(event, modal.order.id, 'working')}
-                >
-                  خیر، ادامه
-                </SubmitBtn>
-              </div>
+            <form className='bg-white w-96 max-h-[80vh] p-6 rounded-xl overflow-y-auto'>
+              {
+                repairmans.currentForOrderCity.length > 0 ? (
+                  <>
+                    <label className='text-blue-500 block sansbold text-center'>
+                      برای این سفارش یک تعمیرکار انتخاب کنید
+                    </label>
+                    <div className='w-full max-h-44 overflow-y-auto mt-3'>
+                      {
+                        repairmans.currentForOrderCity.map(repairman => (
+                          <div
+                            key={repairman.id}
+                            className={`bg-blue-100 text-blue-500 w-full flex justify-center items-center 
+                              p-3 mt-1 rounded-md cursor-pointer duration-100 first:mt-0
+                              hover:bg-blue-500 hover:text-white active:scale-95
+                              ${repairman.id === repairmans.selected.id && 'bg-blue-500 text-white'}`}
+                            onClick={() => {
+                              setRepairmans(prev => ({
+                                ...prev,
+                                selected: repairman
+                              }))
+                            }}
+                          >
+                            {
+                              repairman.firstName + ' ' + repairman.lastName + ' - ' + repairman.phone
+                            }
+                          </div>
+                        ))
+                      }
+                    </div>
+                    <label className='text-blue-500 block sansbold text-center mt-6'>
+                      آیا می خواهید قبل از تعمیر پیش پرداخت بگیرید؟
+                    </label>
+                    <div className='w-full bg-input mt-3'>
+                      <input
+                        className='input'
+                        type="number"
+                        inputMode='decimal'
+                        placeholder='قیمت به تومان'
+                        ref={paymentAcceptInputRef}
+                      />
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                      </svg>
+                    </div>
+                    <label
+                      className='text-blue-500 block sansbold text-center mt-6'
+                    >
+                      آیا سفارش توضیحات دارد؟
+                    </label>
+                    <div className='w-full bg-textarea mt-3'>
+                      <textarea
+                        className='textarea'
+                        placeholder='توضیحات را وارد کنید'
+                        value={orderDesc}
+                        onChange={event => setOrderDesc(event.target.value)}
+                      >
+                      </textarea>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-textarea">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                      </svg>
+                    </div>
+                    <div className="w-full flex justify-center items-center gap-3 mt-3">
+                      <SubmitBtn
+                        customClass={'w-1/2'}
+                        isLoading={paymentOrderStatusLoding.paymentAccept}
+                        clickHandler={event => acceptOrderHandler(event, modal.order.id, 'payment-working')}
+                      >
+                        تایید قیمت
+                      </SubmitBtn>
+                      <SubmitBtn
+                        type={'outline'}
+                        customClass={'w-1/2'}
+                        isLoading={paymentOrderStatusLoding.accept}
+                        clickHandler={event => acceptOrderHandler(event, modal.order.id, 'working')}
+                      >
+                        خیر، ادامه
+                      </SubmitBtn>
+                    </div>
+                  </>
+                ) : (
+                  <div className='bg-yellow-200 w-full h-40 flex flex-col justify-center items-center
+                    gap-3 mx-auto rounded-xl'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-yellow-500 w-12 h-12">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                    <span className='text-yellow-500 text-sm'>
+                      هیچ تعمیر کاری برای این شهر وجود ندارد
+                    </span>
+                    <Link
+                      className='text-yellow-500 text-sm underline hover:brightness-75'
+                      to={'/admin/users'}
+                    >
+                      اضافه کردن تعمیرکار
+                    </Link>
+                  </div>
+                )
+              }
             </form>
           </PortalModal>
         )
