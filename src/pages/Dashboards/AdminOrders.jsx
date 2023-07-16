@@ -529,7 +529,16 @@ function AdminOrders() {
       {
         (modal.show && showAcceptOrderModal) && (
           <PortalModal
-            closeHandler={() => setShowAcceptOrderModal(false)}
+            closeHandler={() => {
+              setShowAcceptOrderModal(false)
+              setRepairmans(prev => ({
+                ...prev,
+                currentForOrderCity: [],
+                selected: {}
+              }))
+              setOrderDesc('')
+              paymentAcceptInputRef.current.value = ''
+            }}
             asAlert={true}
           >
             <form className='bg-white w-96 max-h-[80vh] p-6 rounded-xl overflow-y-auto'>
@@ -638,7 +647,10 @@ function AdminOrders() {
       {
         (modal.show && showCancelOrderModal) && (
           <PortalModal
-            closeHandler={() => setShowCancelOrderModal(false)}
+            closeHandler={() => {
+              setShowCancelOrderModal(false)
+              setOrderDesc('')
+            }}
             asAlert={true}
           >
             <form className='bg-white w-96 flex flex-col justify-center items-center gap-3 p-6 rounded-xl'>
@@ -675,7 +687,11 @@ function AdminOrders() {
       {
         (modal.show && showDoneOrderModal) && (
           <PortalModal
-            closeHandler={() => setShowDoneOrderModal(false)}
+            closeHandler={() => {
+              setShowDoneOrderModal(false)
+              setOrderDesc('')
+              paymentDoneInputRef.current.value = ''
+            }}
             asAlert={true}
           >
             <form className='bg-white w-96 flex flex-col justify-center items-center gap-3 p-6 rounded-xl'>
