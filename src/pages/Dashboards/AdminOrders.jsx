@@ -25,6 +25,7 @@ function AdminOrders() {
   })
   const [orderDesc, setOrderDesc] = useState('')
 
+  const paymentAcceptInputRef = useRef()
   const paymentDoneInputRef = useRef()
 
   useEffect(() => {
@@ -42,7 +43,7 @@ function AdminOrders() {
   const acceptOrderHandler = async (event, orderId, status) => {
     event.preventDefault()
 
-    if (status === 'payment-working' && paymentDoneInputRef.current.value < 100_000) {
+    if (status === 'payment-working' && paymentAcceptInputRef.current.value < 100_000) {
       return toast.error('حداقل قیمت 100 هزار تومان می باشد')
     }
 
@@ -56,7 +57,7 @@ function AdminOrders() {
       id: orderId,
       status,
       adminMessage: orderDesc || null,
-      ...(status === 'payment-working' && { price: +paymentDoneInputRef.current.value })
+      ...(status === 'payment-working' && { price: +paymentAcceptInputRef.current.value })
     }
     await post('/admins/orders/status', requestBody)
       .then(response => {
@@ -79,7 +80,8 @@ function AdminOrders() {
       .catch(error => toast.error(error.response.data.err))
 
     setPaymentOrderStatusLoading({
-      cancel: false
+      paymentAccept: false,
+      accept: false
     })
   }
 
@@ -117,6 +119,51 @@ function AdminOrders() {
 
     setPaymentOrderStatusLoading({
       cancel: false
+    })
+  }
+
+  const doneOrderHandler = async (event, orderId, status) => {
+    event.preventDefault()
+
+    if (status === 'payment-done' && paymentDoneInputRef.current.value < 100_000) {
+      return toast.error('حداقل قیمت 100 هزار تومان می باشد')
+    }
+
+    setPaymentOrderStatusLoading({
+      paymentDone: status === 'payment-done',
+      done: status === 'done'
+    })
+
+    const requestBody = {
+      token: authContext.userToken,
+      id: orderId,
+      status,
+      adminMessage: orderDesc || null,
+      ...(status === 'payment-done' && { price: +paymentDoneInputRef.current.value })
+    }
+    await post('/admins/orders/status', requestBody)
+      .then(response => {
+        console.log(response.data)
+        setOrders(prev => {
+          const newOrders = prev.map(order => {
+            if (order.id === orderId) {
+              return response.data.order
+            }
+            else {
+              return order
+            }
+          })
+          return newOrders
+        })
+
+        setModal(prev => ({ ...prev, order: response.data.order }))
+        toast.success('تغییر وضعیت با موفقیت انجام شد')
+      })
+      .catch(error => toast.error(error.response.data.err))
+
+    setPaymentOrderStatusLoading({
+      paymentDone: false,
+      done: false
     })
   }
 
@@ -429,7 +476,7 @@ function AdminOrders() {
                   type="number"
                   inputMode='decimal'
                   placeholder='قیمت به تومان'
-                  ref={paymentDoneInputRef}
+                  ref={paymentAcceptInputRef}
                 />
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
@@ -506,6 +553,70 @@ function AdminOrders() {
               >
                 لغو سفارش
               </SubmitBtn>
+            </form>
+          </PortalModal>
+        )
+      }
+
+      {
+        (modal.show && showDoneOrderModal) && (
+          <PortalModal
+            closeHandler={() => setShowDoneOrderModal(false)}
+            asAlert={true}
+          >
+            <form className='bg-white w-96 flex flex-col justify-center items-center gap-3 p-6 rounded-xl'>
+              <label
+                className='text-blue-500 sansbold text-center'
+                htmlFor="payment-input"
+              >
+                آیا می خواهید برای اتمام تعمیر هزینه بگیرید؟
+              </label>
+              <div className='w-full bg-input'>
+                <input
+                  className='input'
+                  type="number"
+                  inputMode='decimal'
+                  placeholder='قیمت به تومان'
+                  ref={paymentDoneInputRef}
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-input">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                </svg>
+              </div>
+              <label
+                className='text-blue-500 sansbold text-center'
+              >
+                آیا سفارش توضیحات دارد؟
+              </label>
+              <div className='w-full bg-textarea'>
+                <textarea
+                  className='textarea'
+                  placeholder='توضیحات را وارد کنید'
+                  value={orderDesc}
+                  onChange={event => setOrderDesc(event.target.value)}
+                >
+                </textarea>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="svg-textarea">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                </svg>
+              </div>
+              <div className="w-full flex justify-center items-center gap-3">
+                <SubmitBtn
+                  customClass={'w-1/2'}
+                  isLoading={paymentOrderStatusLoding.paymentAccept}
+                  clickHandler={event => doneOrderHandler(event, modal.order.id, 'payment-done')}
+                >
+                  تایید قیمت
+                </SubmitBtn>
+                <SubmitBtn
+                  type={'outline'}
+                  customClass={'w-1/2'}
+                  isLoading={paymentOrderStatusLoding.accept}
+                  clickHandler={event => doneOrderHandler(event, modal.order.id, 'done')}
+                >
+                  خیر، ادامه
+                </SubmitBtn>
+              </div>
             </form>
           </PortalModal>
         )
