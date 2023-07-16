@@ -21,7 +21,7 @@ function AdminOrders() {
   const [showDoneOrderModal, setShowDoneOrderModal] = useState(false)
   const [showCancelOrderModal, setShowCancelOrderModal] = useState(false)
   const [paymentOrderStatusLoding, setPaymentOrderStatusLoading] = useState({
-    paymentAccept: false, accept: false, paymentDone: false, done: false, cancel: false
+    paymentAccept: false, accept: false, paymentDone: false, done: false, cancel: false, pending: false
   })
   const [orderDesc, setOrderDesc] = useState('')
 
@@ -167,6 +167,40 @@ function AdminOrders() {
     })
   }
 
+  const pendingOrderHandler = async orderId => {
+    setPaymentOrderStatusLoading({
+      pending: true
+    })
+
+    const requestBody = {
+      token: authContext.userToken,
+      id: orderId,
+      status: 'pending'
+    }
+    await post('/admins/orders/status', requestBody)
+      .then(response => {
+        setOrders(prev => {
+          const newOrders = prev.map(order => {
+            if (order.id === orderId) {
+              return response.data.order
+            }
+            else {
+              return order
+            }
+          })
+          return newOrders
+        })
+
+        setModal(prev => ({ ...prev, order: response.data.order }))
+        toast.success('تغییر وضعیت با موفقیت انجام شد')
+      })
+      .catch(error => toast.error(error.response.data.err))
+
+    setPaymentOrderStatusLoading({
+      pending: false
+    })
+  }
+
   return (
     <>
       <div className='w-full flex flex-col items-center show-fade'>
@@ -259,7 +293,6 @@ function AdminOrders() {
                 modal.order.status === 'pending' ? (
                   <li className='w-full flex justify-center items-center gap-1'>
                     <OrderStatusBtn
-                      customClass={'w-full'}
                       status={'working'}
                       isLoading={false}
                       clickHandler={() => setShowAcceptOrderModal(true)}
@@ -267,31 +300,37 @@ function AdminOrders() {
                       تایید کردن
                     </OrderStatusBtn>
                   </li>
-                ) : (
-                  <>
-                    <li className='w-full flex justify-center items-center gap-1'>
-                      {
-                        modal.order.status !== 'cancelled' && (
-                          <OrderStatusBtn
-                            customClass={'w-full'}
-                            status={'cancelled'}
-                            isLoading={false}
-                            clickHandler={() => setShowCancelOrderModal(true)}
-                          >
-                            لغو تعمیر
-                          </OrderStatusBtn>
-                        )
-                      }
-                      <OrderStatusBtn
-                        customClass={'w-full'}
-                        status={'done'}
-                        isLoading={false}
-                        clickHandler={() => setShowDoneOrderModal(true)}
-                      >
-                        اتمام تعمیر
-                      </OrderStatusBtn>
-                    </li>
-                  </>
+                ) : modal.order.status !== 'cancelled' && (
+                  <li className='w-full flex justify-center items-center gap-1'>
+                    <OrderStatusBtn
+                      status={'cancelled'}
+                      isLoading={false}
+                      clickHandler={() => setShowCancelOrderModal(true)}
+                    >
+                      لغو تعمیر
+                    </OrderStatusBtn>
+                    <OrderStatusBtn
+                      status={'done'}
+                      isLoading={false}
+                      clickHandler={() => setShowDoneOrderModal(true)}
+                    >
+                      اتمام تعمیر
+                    </OrderStatusBtn>
+                  </li>
+                )
+              }
+
+              {
+                modal.order.status === 'cancelled' && (
+                  <li className='w-full flex justify-center items-center gap-1'>
+                    <OrderStatusBtn
+                      status={'pending'}
+                      isLoading={paymentOrderStatusLoding.pending}
+                      clickHandler={() => pendingOrderHandler(modal.order.id)}
+                    >
+                      تغییر به در انتظار تایید
+                    </OrderStatusBtn>
+                  </li>
                 )
               }
 

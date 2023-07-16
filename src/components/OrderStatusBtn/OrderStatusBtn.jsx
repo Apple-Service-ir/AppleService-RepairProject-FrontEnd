@@ -8,6 +8,12 @@ function OrderStatusBtn(props) {
   let btnStyles = ''
   let loaderBefore = ''
   switch (status) {
+    case 'pending': {
+      btnStyles = 'text-blue-500 hover:bg-blue-500'
+      loaderBefore = 'before:bg-blue-400'
+      break;
+    }
+
     case 'done': {
       btnStyles = 'text-green-500 hover:bg-green-500'
       loaderBefore = 'before:bg-green-400'
@@ -33,7 +39,7 @@ function OrderStatusBtn(props) {
 
   return (
     <button
-      className={`${btnStyles} bg-white w-1/3 h-12 text-sm py-2 px-6 rounded-md
+      className={`${btnStyles} bg-white w-full h-12 text-sm py-2 px-6 rounded-md
         flex justify-center items-center
         hover:text-white ${isLoading && 'cursor-default'} ${customClass}`}
       onClick={clickHandler}
