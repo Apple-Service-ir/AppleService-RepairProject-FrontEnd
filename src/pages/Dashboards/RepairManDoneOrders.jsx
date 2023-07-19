@@ -19,7 +19,9 @@ function RepairManDoneOrders() {
       loadingContext.setProgressIsLoadingHandler(true)
       get(`/repairmans/orders/get?token=${authContext.userToken}`)
         .then(response => {
-          const currentOrders = response.data.orders.filter(order => order.repairmanId === authContext.userInfo.id)
+          const currentOrders = response.data.orders.filter(
+            order => order.repairmanId === authContext.userInfo.id && order.status === 'done'
+          )
           setOrders(currentOrders)
         })
         .finally(() => loadingContext.setProgressIsLoadingHandler(false))
