@@ -156,9 +156,12 @@ function OrderStatusBox({ order, clickHandler }) {
         </li>
       </ul>
       {
-        ['pending', 'payment-working', 'payment-done'].includes(order.status) && (
+        (
+          ['pending', 'payment-working', 'payment-done'].includes(order.status)
+          && !location.pathname.includes('repairman')
+        ) && (
           <button
-            className={`badge-btn ${btn} mt-3`}
+            className={`badge-btn ${btn}`}
             onClick={clickHandler}
           >
             {
