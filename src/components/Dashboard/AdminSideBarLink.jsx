@@ -1,15 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 
+import LoadingContext from '../../context/LoadingContext'
+
 function AdminSideBarLink({ link, title, svg }) {
+  const loadingContext = useContext(LoadingContext)
+
   return (
     <NavLink
-      to={link}
       className={path =>
         (path.isActive && location.pathname.endsWith(link))
           ? 'sidebar-link-active'
           : 'sidebar-link'
       }
+      to={link}
+      onClick={() => {
+        loadingContext.setProgressIsLoadingHandler(true)
+      }}
     >
       {title}
       {svg}

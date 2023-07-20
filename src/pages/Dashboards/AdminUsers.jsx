@@ -47,7 +47,6 @@ function AdminUsers() {
   const profileRef = useRef()
 
   useEffect(() => {
-    loadingContext.setProgressIsLoadingHandler(true)
     if (authContext.userToken) {
       document.title = "کاربران - داشبورد مدیریت اپل سرویس"
       get(`/admins/users/all?token=${authContext.userToken}`)

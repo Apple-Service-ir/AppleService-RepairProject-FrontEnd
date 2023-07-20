@@ -24,7 +24,6 @@ function AdminParts() {
 
   useEffect(() => {
     document.title = "مدیریت قطعات - داشبورد مدیریت اپل سرویس"
-    loadingContext.setProgressIsLoadingHandler(true)
     get('/list/parts')
       .then(response => setParts(response.data))
       .finally(() => loadingContext.setProgressIsLoadingHandler(false))

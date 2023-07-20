@@ -1,8 +1,9 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Outlet, Link, NavLink } from 'react-router-dom'
 import { toast, Toaster } from 'react-hot-toast'
 
 import AuthContext from '../../context/AuthContext'
+import LoadingContext from '../../context/LoadingContext'
 import { post } from '../../utility'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import useGetCities from './../../Hooks/useGetCities'
@@ -12,6 +13,7 @@ import SubmitBtn from './../../components/SubmitBtn/SubmitBtn'
 function UserDashboard() {
   const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
   const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const [defaultCity, allCities] = useGetCities()
   const [showEditInformationModal, setShowEditInformationModal] = useState(false)
@@ -21,6 +23,10 @@ function UserDashboard() {
     city: { value: userInfo.city, validation: true },
   })
   const [submitEditLoading, setSubmitEditLoading] = useState(false)
+
+  useEffect(() => {
+    loadingContext.setProgressIsLoadingHandler(false)
+  }, [])
 
   const changeUserInformationHandler = async event => {
     setSubmitEditLoading(true)
@@ -76,22 +82,31 @@ function UserDashboard() {
             </span>
             <div className="w-full flex flex-col justify-center items-center gap-3 mt-3">
               <NavLink
-                to='orders'
                 className={link => link.isActive ? 'btn btn-white w-full' : 'btn btn-out-white w-full'}
+                to='orders'
+                onClick={() => {
+                  loadingContext.setProgressIsLoadingHandler(true)
+                }}
               >
                 سفارشات
               </NavLink>
               <NavLink
-                to='tickets'
                 className={link => link.isActive ? 'btn btn-white w-full' : 'btn btn-out-white w-full'}
+                to='tickets'
+                onClick={() => {
+                  loadingContext.setProgressIsLoadingHandler(true)
+                }}
               >
                 تیکت پشتیبانی
               </NavLink>
               {
                 ['admin', 'supporter'].includes(authContext.userInfo.role) && (
                   <NavLink
-                    to='/admin'
                     className={link => link.isActive ? 'btn btn-white w-full' : 'btn btn-out-white w-full'}
+                    to='/admin'
+                    onClick={() => {
+                      loadingContext.setProgressIsLoadingHandler(true)
+                    }}
                   >
                     داشبورد مدیریت
                   </NavLink>
@@ -100,8 +115,11 @@ function UserDashboard() {
               {
                 authContext.userInfo.role === 'repairman' && (
                   <NavLink
-                    to='repairman'
                     className={link => link.isActive ? 'btn btn-white w-full' : 'btn btn-out-white w-full'}
+                    to='repairman'
+                    onClick={() => {
+                      loadingContext.setProgressIsLoadingHandler(true)
+                    }}
                   >
                     ناحیه تعمیرکار
                   </NavLink>

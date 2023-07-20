@@ -24,7 +24,6 @@ function AdminCities() {
 
   useEffect(() => {
     document.title = "مدیریت شهر ها - داشبورد مدیریت اپل سرویس"
-    loadingContext.setProgressIsLoadingHandler(true)
     get('/list/cities')
       .then(response => setCities(response.data))
       .finally(() => loadingContext.setProgressIsLoadingHandler(false))

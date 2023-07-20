@@ -25,7 +25,6 @@ function UserTickets() {
   const bottomRef = useRef()
 
   useEffect(() => {
-    loadingContext.setProgressIsLoadingHandler(true)
     if (authContext.userToken) {
       document.title = "تیکت ها - داشبورد اپل سرویس"
       get(`/tickets/all?token=${authContext.userToken}`)

@@ -19,7 +19,6 @@ function UserOrders() {
   const [modal, setModal] = useState({ show: false, order: {} })
 
   useEffect(() => {
-    loadingContext.setProgressIsLoadingHandler(true)
     if (authContext.userToken) {
       document.title = "سفارشات - داشبورد اپل سرویس"
       get(`/orders/log?token=${authContext.userToken}`)

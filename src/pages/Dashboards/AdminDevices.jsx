@@ -29,7 +29,6 @@ function AdminDevices() {
 
   useEffect(() => {
     document.title = "مدیریت دستگاه ها - داشبورد مدیریت اپل سرویس"
-    loadingContext.setProgressIsLoadingHandler(true)
     get('/list/devices')
       .then(response => {
         setDatas(prev => ({

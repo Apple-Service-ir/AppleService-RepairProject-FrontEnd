@@ -34,7 +34,6 @@ function AdminOrders() {
 
   useEffect(() => {
     document.title = "سفارشات - داشبورد مدیریت اپل سرویس"
-    loadingContext.setProgressIsLoadingHandler(true)
 
     const func = async () => {
       await get(`/admins/orders/all?token=${authContext.userToken}`)

@@ -2,10 +2,12 @@ import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import AuthContext from '../../context/AuthContext'
+import LoadingContext from '../../context/LoadingContext'
 import { useState } from 'react'
 
 export function Header() {
   const authcontext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
 
   function closeMobileMenu() {
@@ -52,26 +54,37 @@ export function Header() {
         </div>
         <ul className='hidden justify-center items-center gap-9 lg:flex'>
           <li>
-            <NavLink to='/'
-              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
+            <NavLink
+              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}
+              to='/'
+            >
               صفحه اصلی
             </NavLink>
           </li>
           <li>
-            <NavLink to='/order'
-              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
+            <NavLink
+              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}
+              to='/order'
+              onClick={() => {
+                loadingContext.setProgressIsLoadingHandler(true)
+              }}
+            >
               ثبت سفارش
             </NavLink>
           </li>
           <li>
-            <NavLink to='/contact-us'
-              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
+            <NavLink
+              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}
+              to='/contact-us'
+            >
               ارتباط با ما
             </NavLink>
           </li>
           <li>
-            <NavLink to='/report'
-              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}>
+            <NavLink
+              className={link => link.isActive ? 'header__navlink-active' : 'header__navlink'}
+              to='/report'
+            >
               ثبت شکایات
             </NavLink>
           </li>
@@ -81,6 +94,9 @@ export function Header() {
             <NavLink
               className={link => link.isActive ? 'btn btn-white' : 'btn btn-out-white'}
               to='/dashboard'
+              onClick={() => {
+                loadingContext.setProgressIsLoadingHandler(true)
+              }}
             >
               {authcontext.userInfo.firstName} {authcontext.userInfo.lastName}
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="duration-0 w-5 h-5">
@@ -88,7 +104,15 @@ export function Header() {
               </svg>
             </NavLink>
           ) : (
-            <NavLink className='btn btn-out-white' to='/register'>ثبت نام / ورورد</NavLink>
+            <NavLink
+              className='btn btn-out-white'
+              to='/register'
+              onClick={() => {
+                loadingContext.setProgressIsLoadingHandler(true)
+              }}
+            >
+              ثبت نام / ورورد
+            </NavLink>
           )
         }
       </div>
@@ -106,30 +130,49 @@ export function Header() {
         >
           <ul className='w-full flex flex-col justify-center items-center gap-3 p-3'>
             <li className='w-full'>
-              <NavLink to='/'
+              <NavLink
                 className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
-                onClick={closeMobileMenu}>
+                to='/'
+                onClick={() => {
+                  closeMobileMenu()
+                }}
+              >
                 صفحه اصلی
               </NavLink>
             </li>
             <li className='w-full'>
-              <NavLink to='/order'
+              <NavLink
                 className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
-                onClick={closeMobileMenu}>
+                to='/order'
+                onClick={() => {
+                  closeMobileMenu()
+                  loadingContext.setProgressIsLoadingHandler(true)
+                }}
+              >
                 ثبت سفارش
               </NavLink>
             </li>
             <li className='w-full'>
-              <NavLink to='/contact-us'
+              <NavLink
                 className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
-                onClick={closeMobileMenu}>
+                to='/contact-us'
+                onClick={() => {
+                  closeMobileMenu()
+                  loadingContext.setProgressIsLoadingHandler(true)
+                }}
+              >
                 ارتباط با ما
               </NavLink>
             </li>
             <li className='w-full'>
-              <NavLink to='/report'
+              <NavLink
                 className={link => link.isActive ? 'btn btn-blue w-full' : 'btn btn-out-blue w-full'}
-                onClick={closeMobileMenu}>
+                to='/report'
+                onClick={() => {
+                  closeMobileMenu()
+                  loadingContext.setProgressIsLoadingHandler(true)
+                }}
+              >
                 ثبت شکایات
               </NavLink>
             </li>

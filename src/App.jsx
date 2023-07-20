@@ -43,6 +43,7 @@ function App() {
 
   useEffect(() => {
     const localStorageToken = localStorage.getItem('e-service-token')
+    setProgressIsLoadingHandler(true)
     get(`/informations/get?token=${localStorageToken}`)
       .then(response => {
         setIslogin(true)
@@ -57,6 +58,7 @@ function App() {
         localStorage.removeItem('e-service-userInfo')
       })
       .finally(() => {
+        setProgressIsLoadingHandler(false)
         setScreenLoading(false)
       })
   }, [])
@@ -139,11 +141,11 @@ function App() {
       }
 
       {
-        progressIsLoading && createPortal(
+        createPortal(
           <div
-            className='bg-white w-full h-0.5 fixed top-0 left-0 z-50 page-progress-loading
+            className={`${progressIsLoading ? 'block' : 'hidden'} bg-white w-full h-0.5 fixed top-0 left-0 z-50 page-progress-loading
               before:bg-blue-500 before:content-[""] before:w-full before:h-0.5 before:absolute
-              before:top-full before:left-0'
+              before:top-full before:left-0`}
             ref={progressIsLoadingRef}
           >
           </div>,

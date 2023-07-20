@@ -28,7 +28,6 @@ export default function Order() {
 
 
   useEffect(() => {
-    loadingContext.setProgressIsLoadingHandler(true)
     const func = async () => {
       document.title = "ثبت سفارش - اپل سرویس"
 

@@ -2,19 +2,22 @@ import React, { useContext, useRef, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { toast, Toaster } from 'react-hot-toast'
 
-import { postForm } from '../../utility'
 import AuthContext from '../../context/AuthContext'
+import LoadingContext from '../../context/LoadingContext'
+import { postForm } from '../../utility'
 import useGetCities from './../../Hooks/useGetCities'
 import AdminSideBarLink from '../../components/Dashboard/AdminSideBarLink'
 import AdminSideBarMobile from '../../components/Dashboard/AdminMobileSideBarLink'
 import PortalModal from './../../components/PortalModal/PortalModal'
 import config from '../../../config.json'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
+import { useEffect } from 'react'
 
 
 function AdminDashboard() {
   const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
   const authContext = useContext(AuthContext)
+  const loadingContext = useContext(LoadingContext)
 
   const [defaultCity, allCities] = useGetCities()
   const [showMobileMenu, setShowMobileMenu] = useState(false)
@@ -29,6 +32,10 @@ function AdminDashboard() {
   const [submitEditLoading, setSubmitEditLoading] = useState(false)
 
   const profileRef = useRef()
+
+  useEffect(() => {
+    loadingContext.setProgressIsLoadingHandler(false)
+  }, [])
 
   document.body.addEventListener('click', event => { event.target.dataset.mobilebtn !== 'true' && setShowMobileMenu(false) })
 

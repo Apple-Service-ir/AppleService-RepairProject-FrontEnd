@@ -20,7 +20,6 @@ function AdminTickets() {
   const bottomRef = useRef()
 
   useEffect(() => {
-    loadingContext.setProgressIsLoadingHandler(true)
     if (authContext.userToken) {
       document.title = "تیکت ها - داشبورد مدیریت اپل سرویس"
       get(`/tickets/all?admin=true&token=${authContext.userToken}`)

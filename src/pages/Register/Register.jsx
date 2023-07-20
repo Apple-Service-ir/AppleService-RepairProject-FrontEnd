@@ -29,8 +29,6 @@ export default function Register() {
 
   useEffect(() => {
     document.title = "ورود - اپل سرویس"
-
-    loadingContext.setProgressIsLoadingHandler(true)
     get('/list/cities')
       .then(response => {
         setCities(response.data)
@@ -442,7 +440,10 @@ export default function Register() {
         md:flex">
         <img className='h-full w-full object-cover absolute top-0 z-10 brightness-50'
           src="https://ariavash.ir/fa/storage/2020/09/%D8%AA%D8%B9%D9%85%DB%8C%D8%B1%D8%A7%D8%AA-%D9%85%D9%88%D8%A8%D8%A7%DB%8C%D9%84-%D8%A8%D8%A7%D8%B2%D8%A7%D8%B1-%DA%A9%D8%A7%D8%B1-1200x900.jpg" alt="repair" />
-        <Link to='/' className='btn btn-out-white z-20'>
+        <Link
+          className='btn btn-out-white z-20'
+          to='/'
+        >
           بازگشت به صفحه اصلی
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="duration-0 w-6 h-6">
             <path className='duration-0' strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
