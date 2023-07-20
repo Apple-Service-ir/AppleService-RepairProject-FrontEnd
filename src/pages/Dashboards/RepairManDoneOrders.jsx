@@ -114,6 +114,53 @@ function RepairManDoneOrders() {
                   {modal.order.id} #
                 </div>
               </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  وضعیت
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  تمام شده
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  پرداخت شده
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {
+                    modal.order.total ? (
+                      <>
+                        {
+                          modal.order.total.toLocaleString()
+                        }
+                        <small className='mr-1 italic'>تومان</small>
+                      </>
+                    )
+                      : '-'
+                  }
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  در انتطار پرداخت
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {
+                    modal.order.transactions.filter(action => action.status === 'pending')[0] ? (
+                      <>
+                        {
+                          modal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                        }
+                        <small className='italic mr-1'>تومان</small>
+                      </>
+                    ) : '-'
+                  }
+                </div>
+              </li>
+
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
                   مشتری
@@ -154,35 +201,6 @@ function RepairManDoneOrders() {
 
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  در انتظار پرداخت
-                </div>
-                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {
-                    modal.order.transactions.filter(action => action.status === 'pending')[0] ? (
-                      modal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
-                    ) : '-'
-                  }
-                </div>
-              </li>
-
-              <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  قیمت
-                </div>
-                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {
-                    modal.order.total ? (
-                      <>
-                        {modal.order.total}
-                        <small className='italic opacity-75 mx-1'>تومان</small>
-                      </>
-                    ) : '-'
-                  }
-                </div>
-              </li>
-
-              <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
                   تصویر
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
@@ -194,27 +212,15 @@ function RepairManDoneOrders() {
                 </div>
               </li>
 
-              {
-                modal.order.adminMessage && (
-                  <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
-                    <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
-                      پیام پشتیبانی
-                    </div>
-                    <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
-                      text-center break-all">
-                      {modal.order.adminMessage}
-                    </div>
-                  </li>
-                )
-              }
-
               <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
-                  آدرس
+                  پیام پشتیبانی
                 </div>
                 <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
                   text-center break-all">
-                  {modal.order.address}
+                  {
+                    modal.order.adminMessage || '-'
+                  }
                 </div>
               </li>
 
@@ -227,6 +233,17 @@ function RepairManDoneOrders() {
                   {modal.order.description}
                 </div>
               </li>
+
+              <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
+                  آدرس
+                </div>
+                <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
+                  text-center break-all">
+                  {modal.order.address}
+                </div>
+              </li>
+
             </ul>
           </PortalModal>
         )
