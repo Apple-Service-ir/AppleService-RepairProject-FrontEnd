@@ -215,14 +215,6 @@
     group-hover:visible group-hover:opacity-100;
   }
 
-  .bg-title {
-    @apply h-12 flex justify-center items-center gap-3 py-3 px-6 rounded-full border select-none;
-  }
-
-  .title-blue {
-    @apply border-blue-500 text-blue-500;
-  }
-
   .bg-input {
     @apply h-12 relative;
   }
