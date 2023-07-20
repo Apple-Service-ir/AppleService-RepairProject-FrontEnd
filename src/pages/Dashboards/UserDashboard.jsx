@@ -72,9 +72,15 @@ function UserDashboard() {
               <path d="M14.6792 15.0601C15.4892 15.0601 15.9592 14.1601 15.5092 13.4901C14.8292 12.4801 13.5092 11.8 11.9992 11.8C10.4892 11.8 9.16918 12.4801 8.48918 13.4901C8.03918 14.1601 8.5092 15.0601 9.3192 15.0601H14.6792Z" fill="white" />
             </svg>
             <span className='text-white border-blue-400 border-b w-full text-center text-xl sansbold
-            tracking-wide flex justify-center items-center gap-2 pt-1 pb-2'>
-              <div className='w-5 h-5 group cursor-pointer' onClick={() => setShowEditInformationModal(true)}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-white w-5 h-5">
+              tracking-wide flex justify-center items-center gap-2 pt-1 pb-2'>
+              <div
+                className='w-5 h-5 group cursor-pointer'
+                onClick={() => setShowEditInformationModal(true)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5 group-hover:-translate-y-1"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                 </svg>
               </div>
