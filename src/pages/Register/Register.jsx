@@ -35,7 +35,7 @@ export default function Register() {
       .then(response => {
         setCities(response.data)
       })
-      .catch(error => toast.error(error.response.data.err))
+      .catch(error => console.error(error.response.data.err))
       .finally(() => loadingContext.setProgressIsLoadingHandler(false))
   }, [])
 
