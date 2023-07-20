@@ -7,6 +7,7 @@ import LoadingContext from './../../context/LoadingContext'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import OrderDetails from '../../components/OrderDetails/OrderDetails'
+import OrderStatusBox from '../../components/OrderStatusBox/OrderStatusBox'
 
 function UserOrders() {
   const authContext = useContext(AuthContext)
@@ -23,6 +24,7 @@ function UserOrders() {
       document.title = "سفارشات - داشبورد اپل سرویس"
       get(`/orders/log?token=${authContext.userToken}`)
         .then((response) => {
+          console.log(response)
           const pendingOrder = response.data.orders.find(order => order.status === 'pending')
           const workingOrder = response.data.orders.find(order => order.status === 'working')
           const paymentWorkingOrder = response.data.orders.find(
@@ -91,288 +93,45 @@ function UserOrders() {
       <div className='w-full flex flex-col justify-center items-center gap-6 show-fade'>
         {
           Object.keys(allOrders.pending).length > 0 && (
-            <div className={`bg-blue-200 w-full flex flex-col justify-center items-center gap-3
-              rounded-xl p-3`}>
-              <div className={`bg-blue-300 flex justify-center items-center gap-3 px-9 py-2
-                    rounded-full relative shadow-sm shadow-blue-500`}>
-                <span>کد سفارش:</span>
-                <button className='flex justify-center items-center relative group'>
-                  <span>#{allOrders.pending.id}</span>
-                  <span className='tooltip'>کپی کنید!</span>
-                </button>
-                <div className={`bg-blue-500 text-white w-3/4 text-center text-xs p-0.5 rounded-b-full
-                  absolute top-full shadow-sm shadow-blue-700`}>در انتظار تایید</div>
-              </div>
-              <ul className='w-full flex flex-col mt-6'>
-                <ul className={`border-blue-300 border-t-2 border-dashed w-full
-                      flex flex-col justify-center items-start gap-3 p-3
-                      sm:flex-row sm:items-center`}>
-                  <li className='flex justify-center items-center gap-3'>
-                    <span className='sansbold'>نام دستگاه: </span>
-                    <span className='text-sm'>{allOrders.pending.phoneName}</span>
-                  </li>
-                  <span className='hidden sm:block'>-</span>
-                  <li className='flex justify-center items-center gap-3'>
-                    <span className='sansbold'>قطعات:</span>
-                    <span className='text-sm'>{allOrders.pending.partName}</span>
-                  </li>
-                </ul>
-                <li className={`border-blue-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
-                  <span className='sansbold'>آدرس:</span>
-                  <p className='text-sm'>{allOrders.pending.address}</p>
-                </li>
-                <li className={`border-blue-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
-                  <span className='sansbold'>توضیحات:</span>
-                  <p className='text-sm'>{allOrders.pending.description}</p>
-                </li>
-                {
-                  allOrders.pending.adminMessage && (
-                    <li className={`border-blue-300 border-t-2 border-dashed w-full
-                          flex gap-3 p-3`}>
-                      <span className='sansbold'>پیام پشتیبانی:</span>
-                      <p className='text-sm'>{allOrders.pending.adminMessage}</p>
-                    </li>
-                  )
-                }
-              </ul>
-              <button className='badge-btn badge-danger px-6'
-                onClick={() => cancelOrder(allOrders.pending.id)}>لغو سفارش</button>
-            </div>
+            <OrderStatusBox
+              order={allOrders.pending}
+              clickHandler={() => cancelOrder(allOrders.pending.id)}
+            />
           )
         }
+
         {
           Object.keys(allOrders.working).length > 0 && (
-            <div className={`bg-yellow-200 w-full flex flex-col justify-center items-center gap-3
-              rounded-xl p-3`}>
-              <div className={`bg-yellow-300 flex justify-center items-center gap-3 px-12 py-2
-                  rounded-full relative shadow-sm shadow-yellow-500`}>
-                <span>کد سفارش:</span>
-                <span>{allOrders.working.id} #</span>
-                <div className={`bg-yellow-500 text-white w-3/4 text-center text-xs
-                  p-0.5 rounded-b-full
-                  absolute top-full shadow-sm shadow-yellow-700`}>
-                  {
-                    allOrders.working.total ? 'در حال انجام - پرداخت شده' : 'در حال انجام'
-                  }
-                </div>
-              </div>
-              <ul className='w-full flex flex-col mt-6'>
-                <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                    flex justify-center items-center gap-3 p-3`}>
-                  <span className='sansbold'>نام دستگاه: </span>
-                  <span className='text-sm'>{allOrders.working.phoneName}</span>
-                  <span>-</span>
-                  <span className='sansbold'>قطعات:</span>
-                  <span className='text-sm'>{allOrders.working.partName}</span>
-                </li>
-                <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                    flex gap-3 p-3`}>
-                  <span className='sansbold'>آدرس:</span>
-                  <p className='text-sm'>{allOrders.working.address}</p>
-                </li>
-                <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                    flex gap-3 p-3`}>
-                  <span className='sansbold'>توضیحات:</span>
-                  <p className='text-sm'>{allOrders.working.description}</p>
-                </li>
-                {
-                  allOrders.working.adminMessage && (
-                    <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                        flex gap-3 p-3`}>
-                      <span className='sansbold'>پیام پشتیبانی:</span>
-                      <p className='text-sm'>{allOrders.working.adminMessage}</p>
-                    </li>
-                  )
-                }
-                <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                  flex gap-3 p-3`}>
-                  <span className='sansbold'>تعمیرکار:</span>
-                  <p className='text-sm'>
-                    {
-                      allOrders.working.repairman.firstName
-                      + ' '
-                      + allOrders.working.repairman.lastName
-                      + ' - '
-                      + allOrders.working.repairman.phone
-                    }
-                  </p>
-                </li>
-                {
-                  allOrders.working.total && (
-                    <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
-                      <span className='sansbold'>پرداخت شده:</span>
-                      <p className='text-sm'>
-                        {allOrders.working.total.toLocaleString()}
-                        <small className='italic mr-1'>تومان</small>
-                      </p>
-                    </li>
-                  )
-                }
-              </ul>
-            </div>
+            <OrderStatusBox
+              order={allOrders.working}
+            />
           )
         }
+
         {
           Object.keys(allOrders.paymentWoring).length > 0 && (
-            <div className={`bg-yellow-200 w-full flex flex-col justify-center items-center gap-3
-              rounded-xl p-3`}>
-              <div className={`bg-yellow-300 flex justify-center items-center gap-3 px-9 py-2
-                rounded-full relative shadow-sm shadow-yellow-500`}>
-                <span>کد سفارش:</span>
-                <button className='flex justify-center items-center relative group'>
-                  <span>#{allOrders.paymentWoring.id}</span>
-                  <span className='tooltip'>کپی کنید!</span>
-                </button>
-                <div className={`bg-yellow-500 text-white w-3/4 text-center text-xs p-0.5 rounded-b-full
-                  absolute top-full shadow-sm shadow-yellow-700`}>در انتظار پرداخت</div>
-              </div>
-              <ul className='w-full flex flex-col mt-6'>
-                <ul className={`border-yellow-300 border-t-2 border-dashed w-full
-                  flex flex-col justify-center items-start gap-3 p-3
-                  sm:flex-row sm:items-center`}>
-                  <li className='flex justify-center items-center gap-3'>
-                    <span className='sansbold'>نام دستگاه: </span>
-                    <span className='text-sm'>{allOrders.paymentWoring.phoneName}</span>
-                  </li>
-                  <span className='hidden sm:block'>-</span>
-                  <li className='flex justify-center items-center gap-3'>
-                    <span className='sansbold'>قطعات:</span>
-                    <span className='text-sm'>{allOrders.paymentWoring.partName}</span>
-                  </li>
-                </ul>
-                <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                  flex gap-3 p-3`}>
-                  <span className='sansbold'>آدرس:</span>
-                  <p className='text-sm'>{allOrders.paymentWoring.address}</p>
-                </li>
-                <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                  flex gap-3 p-3`}>
-                  <span className='sansbold'>توضیحات:</span>
-                  <p className='text-sm'>{allOrders.paymentWoring.description}</p>
-                </li>
-                {
-                  allOrders.paymentWoring.adminMessage && (
-                    <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
-                      <span className='sansbold'>پیام پشتیبانی:</span>
-                      <p className='text-sm'>{allOrders.paymentWoring.adminMessage}</p>
-                    </li>
-                  )
-                }
-                <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                  flex gap-3 p-3`}>
-                  <span className='sansbold'>تعمیرکار:</span>
-                  <p className='text-sm'>
-                    {
-                      allOrders.paymentWoring.repairman.firstName
-                      + ' '
-                      + allOrders.paymentWoring.repairman.lastName
-                      + ' - '
-                      + allOrders.paymentWoring.repairman.phone
-                    }
-                  </p>
-                </li>
-              </ul>
-              <li className={`border-yellow-300 border-t-2 border-dashed w-full
-                flex gap-3 p-3 pb-0`}>
-                <span className='sansbold'>هزینه تعمیر:</span>
-                <span>
-                  {
-                    allOrders.paymentWoring.transactions.filter(action => action.status === 'pending')[0] &&
-                    allOrders.paymentWoring.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
-                  }
-                  <small className='italic mr-1'>تومان</small>
-                </span>
-              </li>
-              <button className='badge-btn badge-warning px-6'
-                onClick={() => workingPayHandler(allOrders.paymentWoring.id)}>پرداخت</button>
-            </div>
+            <OrderStatusBox
+              order={allOrders.paymentWoring}
+              clickHandler={() => workingPayHandler(allOrders.paymentWoring.id)}
+            />
           )
         }
+
         {
           Object.keys(allOrders.paymentDone).length > 0 && (
-            <div className={`bg-green-200 w-full flex flex-col justify-center items-center gap-3
-              rounded-xl p-3`}>
-              <div className={`bg-green-300 flex justify-center items-center gap-3 px-9 py-2
-                rounded-full relative shadow-sm shadow-green-500`}>
-                <span>کد سفارش:</span>
-                <button className='flex justify-center items-center relative group'>
-                  <span>#{allOrders.paymentDone.id}</span>
-                  <span className='tooltip'>کپی کنید!</span>
-                </button>
-                <div className={`bg-green-500 text-white w-3/4 text-center text-xs p-0.5 rounded-b-full
-                  absolute top-full shadow-sm shadow-green-700`}>در انتظار پرداخت</div>
-              </div>
-              <ul className='w-full flex flex-col mt-6'>
-                <ul className={`border-green-300 border-t-2 border-dashed w-full
-                      flex flex-col justify-center items-start gap-3 p-3
-                      sm:flex-row sm:items-center`}>
-                  <li className='flex justify-center items-center gap-3'>
-                    <span className='sansbold'>نام دستگاه: </span>
-                    <span className='text-sm'>{allOrders.paymentDone.phoneName}</span>
-                  </li>
-                  <span className='hidden sm:block'>-</span>
-                  <li className='flex justify-center items-center gap-3'>
-                    <span className='sansbold'>قطعات:</span>
-                    <span className='text-sm'>{allOrders.paymentDone.partName}</span>
-                  </li>
-                </ul>
-                <li className={`border-green-300 border-t-2 border-dashed w-full
-                  flex gap-3 p-3`}>
-                  <span className='sansbold'>آدرس:</span>
-                  <p className='text-sm'>{allOrders.paymentDone.address}</p>
-                </li>
-                <li className={`border-green-300 border-t-2 border-dashed w-full
-                  flex gap-3 p-3`}>
-                  <span className='sansbold'>توضیحات:</span>
-                  <p className='text-sm'>{allOrders.paymentDone.description}</p>
-                </li>
-                {
-                  allOrders.paymentDone.adminMessage && (
-                    <li className={`border-green-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
-                      <span className='sansbold'>پیام پشتیبانی:</span>
-                      <p className='text-sm'>{allOrders.paymentDone.adminMessage}</p>
-                    </li>
-                  )
-                }
-                <li className={`border-green-300 border-t-2 border-dashed w-full
-                  flex gap-3 p-3`}>
-                  <span className='sansbold'>در انتظار پرداخت:</span>
-                  <span className='text-sm'>
-                    {
-                      allOrders.paymentDone.transactions.filter(action => action.status === 'pending')[0] &&
-                      allOrders.paymentDone.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
-                    }
-                    <small className='italic mr-1'>تومان</small>
-                  </span>
-                </li>
-                {
-                  allOrders.paymentDone.total && (
-                    <li className={`border-green-300 border-t-2 border-dashed w-full
-                    flex gap-3 p-3 pb-0`}>
-                      <span className='sansbold'>پرداخت شده:</span>
-                      <span className='text-sm'>
-                        {allOrders.paymentDone.total.toLocaleString()}
-                        <small className='italic mr-1'>تومان</small>
-                      </span>
-                    </li>
-                  )
-                }
-              </ul>
-              <button className='badge-btn badge-success px-6'
-                onClick={() => donePayHandler(allOrders.paymentDone.id)}>پرداخت</button>
-            </div>
+            <OrderStatusBox
+              order={allOrders.paymentDone}
+              clickHandler={() => donePayHandler(allOrders.paymentDone.id)}
+            />
           )
         }
+
         {
           allOrders.all.length > 0 && (
             <h2 className='w-full text-right text-xl sansbold'>لیست سفارشات تمام شده</h2>
           )
         }
+
         {
           allOrders.all.length > 0 ? (
             <div className="w-full overflow-x-auto rounded-xl">
