@@ -271,8 +271,10 @@ function AdminOrders() {
                             {
                               order.total ? (
                                 <>
-                                  {modal.order.total}
-                                  <small className='italic opacity-75 mx-1'>تومان</small>
+                                  {
+                                    order.total.toLocaleString()
+                                  }
+                                  <small className='italic mr-1'>تومان</small>
                                 </>
                               ) : '-'
                             }

@@ -416,7 +416,9 @@ function UserOrders() {
                           {
                             order.total ? (
                               <>
-                                {order.total}
+                                {
+                                  order.total.toLocaleString()
+                                }
                                 <small className='italic mr-1'>تومان</small>
                               </>
                             ) : '-'
