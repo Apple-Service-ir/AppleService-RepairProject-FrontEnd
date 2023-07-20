@@ -14,6 +14,13 @@
     src: url("./../public/fonts/sansbold.woff2");
     font-weight: bolder;
   }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+    @apply transition duration-200 scroll-smooth;
+    font-family: "sans"
+  }
   
   *::-webkit-scrollbar {
     width: 5px;
@@ -25,8 +32,13 @@
   }
   
   *::-webkit-scrollbar-thumb {
-    @apply bg-slate-400;
+    @apply bg-slate-300;
     border-radius: 5px;
+  }
+
+  *:focus,
+  *:active {
+    outline: 0;
   }
 
   input[type="number"]::-webkit-inner-spin-button,
@@ -35,7 +47,7 @@
     margin: 0;
   }
   
-input[type="number"] {
+  input[type="number"] {
     -moz-appearance: textfield;
   }
   
@@ -43,13 +55,6 @@ input[type="number"] {
     -webkit-appearance: none;
     -moz-appearance: none;
     margin: 0;
-  }
-  
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: #94A3B8 #00000000;
-    @apply transition duration-200 scroll-smooth;
-    font-family: "sans"
   }
 
   .thead__tr__th:first-child,
