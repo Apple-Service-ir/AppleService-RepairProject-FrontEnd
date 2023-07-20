@@ -10,6 +10,7 @@ import Alert from '../../components/Alert/Alert'
 import OrderStatusBtn from '../../components/OrderStatusBtn/OrderStatusBtn'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
 import OrderDetails from '../../components/OrderDetails/OrderDetails'
+import OrderStatusBox from '../../components/OrderStatusBox/OrderStatusBox'
 
 function RepairManGetOrder() {
   const authContext = useContext(AuthContext)
@@ -190,76 +191,9 @@ function RepairManGetOrder() {
       <div className='w-full flex flex-col justify-center items-center gap-6 show-fade'>
         {
           orders.inPaymentDone.length === 1 && (
-            <div className="w-full">
-              <h1 className='w-full text-right text-xl sansbold mb-3'>سفارش های در انتظار پرداخت</h1>
-              <div className={`bg-green-200 w-full flex flex-col justify-center items-center gap-3
-                rounded-xl p-3`}>
-                <div className={`bg-green-300 flex justify-center items-center gap-3 px-12 py-2
-                  rounded-full relative shadow-sm shadow-green-500`}>
-                  <span>کد سفارش:</span>
-                  <span>{orders.inPaymentDone[0].id} #</span>
-                  <div className={`bg-green-500 text-white w-3/4 text-center text-xs
-                  p-0.5 rounded-b-full
-                  absolute top-full shadow-sm shadow-green-700`}>تمام شده - در انتظار پرداخت</div>
-                </div>
-                <ul className='w-full flex flex-col mt-6'>
-                  <li className={`border-green-300 border-t-2 border-dashed w-full
-                  flex justify-center items-center gap-3 p-3`}>
-                    <span className='sansbold'>نام دستگاه: </span>
-                    <span className='text-sm'>{orders.inPaymentDone[0].phoneName}</span>
-                    <span>-</span>
-                    <span className='sansbold'>قطعات:</span>
-                    <span className='text-sm'>{orders.inPaymentDone[0].partName}</span>
-                  </li>
-                  <li className={`border-green-300 border-t-2 border-dashed w-full
-                    flex gap-3 p-3`}>
-                    <span className='sansbold'>آدرس:</span>
-                    <p className='text-sm'>{orders.inPaymentDone[0].address}</p>
-                  </li>
-                  <li className={`border-green-300 border-t-2 border-dashed w-full
-                    flex gap-3 p-3`}>
-                    <span className='sansbold'>توضیحات:</span>
-                    <p className='text-sm'>{orders.inPaymentDone[0].description}</p>
-                  </li>
-                  <li className={`border-green-300 border-t-2 border-dashed w-full
-                    flex gap-3 p-3`}>
-                    <span className='sansbold'>در انتظار پرداخت:</span>
-                    <span className='text-sm'>
-                      {
-                        orders.inPaymentDone[0].transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
-                      }
-                    </span>
-                  </li>
-                  {
-                    orders.inPaymentDone[0].total && (
-                      <li className={`border-green-300 border-t-2 border-dashed w-full
-                        flex gap-3 p-3`}>
-                        <span className='sansbold'>پرداخت شده:</span>
-                        <span className='text-sm'>
-                          {orders.inPaymentDone[0].total.toLocaleString()}
-                        </span>
-                      </li>
-                    )
-                  }
-                  {
-                    orders.inPaymentDone[0].adminMessage && (
-                      <li className={`border-green-300 border-t-2 border-dashed w-full
-                      flex gap-3 p-3`}>
-                        <span className='sansbold'>پیام پشتیبانی:</span>
-                        <p className='text-sm'>{orders.inPaymentDone[0].adminMessage}</p>
-                      </li>
-                    )
-                  }
-                  <li className={`border-green-300 border-t-2 border-dashed w-full
-                  flex gap-3 p-3`}>
-                    <span className='sansbold'>مشخصات مشتری:</span>
-                    <p className='text-sm'>
-                      {orders.inPaymentDone[0].user.firstName} {orders.inPaymentDone[0].user.lastName} - {orders.inPaymentDone[0].user.phone}
-                    </p>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <OrderStatusBox
+              order={orders.inPaymentDone[0]}
+            />
           )
         }
         {
