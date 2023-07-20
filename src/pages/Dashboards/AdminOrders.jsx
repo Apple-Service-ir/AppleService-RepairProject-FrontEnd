@@ -488,19 +488,17 @@ function AdminOrders() {
                 </div>
               </li>
 
-              {
-                modal.order.adminMessage && (
-                  <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
-                    <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
-                      پیام شما
-                    </div>
-                    <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
-                      text-center break-all">
-                      {modal.order.adminMessage}
-                    </div>
-                  </li>
-                )
-              }
+              <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
+                  پیام شما
+                </div>
+                <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
+                  text-center break-all">
+                  {
+                    modal.order.adminMessage || '-'
+                  }
+                </div>
+              </li>
 
               <li className='w-full flex flex-col justify-center items-center rounded-md mt-1 '>
                 <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">

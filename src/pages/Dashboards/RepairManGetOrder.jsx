@@ -471,36 +471,61 @@ function RepairManGetOrder() {
                   {submitOrderModal.order.id} #
                 </div>
               </li>
-              {
-                submitOrderModal.order.status === 'payment-working' && (
-                  <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                    <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                      در انتطار پرداخت
-                    </div>
-                    <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                      {
-                        submitOrderModal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
-                      }
-                      <small className='mr-1 italic'>تومان</small>
-                    </div>
-                  </li>
-                )
-              }
-              {
-                submitOrderModal.order.status === 'working'
-                && submitOrderModal.order.total && (
-                  <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                    <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                      پرداخت شده
-                    </div>
-                    <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                      {
-                        submitOrderModal.order.total.toLocaleString()
-                      }
-                    </div>
-                  </li>
-                )
-              }
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  وضعیت
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {
+                    submitOrderModal.order.status === 'pending' ? 'در انتظار تعمیر'
+                      : submitOrderModal.order.status === 'working' ? 'تایید شده'
+                        : submitOrderModal.order.status === 'cancelled' ? 'لغو شده'
+                          : submitOrderModal.order.status === 'done' ? 'انجام شده'
+                            : submitOrderModal.order.status === 'payment-working' ? 'تایید شده - در انتظار پرداخت'
+                              : submitOrderModal.order.status === 'payment-working' ? 'انجام شده - در انتظار پرداخت'
+                                : ''
+                  }
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  پرداخت شده
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {
+                    submitOrderModal.order.total ? (
+                      <>
+                        {
+                          submitOrderModal.order.total.toLocaleString()
+                        }
+                        <small className='mr-1 italic'>تومان</small>
+                      </>
+                    )
+                      : '-'
+                  }
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  در انتطار پرداخت
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {
+                    submitOrderModal.order.transactions.filter(action => action.status === 'pending')[0] ? (
+                      <>
+                        {
+                          submitOrderModal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                        }
+                        <small className='italic mr-1'>تومان</small>
+                      </>
+                    ) : '-'
+                  }
+                </div>
+              </li>
+
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
                   مشتری
@@ -511,6 +536,7 @@ function RepairManGetOrder() {
                   }
                 </div>
               </li>
+
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
                   دستگاه
@@ -528,6 +554,7 @@ function RepairManGetOrder() {
                   {submitOrderModal.order.partName}
                 </div>
               </li>
+
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
                   تاریخ
@@ -552,27 +579,15 @@ function RepairManGetOrder() {
                 </div>
               </li>
 
-              {
-                submitOrderModal.order.adminMessage && (
-                  <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
-                    <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
-                      پیام پشتیبانی
-                    </div>
-                    <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
-                      text-center break-all">
-                      {submitOrderModal.order.adminMessage}
-                    </div>
-                  </li>
-                )
-              }
-
               <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
-                  آدرس
+                  پیام پشتیبانی
                 </div>
                 <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
                   text-center break-all">
-                  {submitOrderModal.order.address}
+                  {
+                    submitOrderModal.order.adminMessage || '-'
+                  }
                 </div>
               </li>
 
@@ -585,6 +600,17 @@ function RepairManGetOrder() {
                   {submitOrderModal.order.description}
                 </div>
               </li>
+
+              <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
+                  آدرس
+                </div>
+                <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
+                  text-center break-all">
+                  {submitOrderModal.order.address}
+                </div>
+              </li>
+
               {
                 (submitOrderModal.order.status === 'working'
                   || submitOrderModal.order.status === 'payment-working') && (
