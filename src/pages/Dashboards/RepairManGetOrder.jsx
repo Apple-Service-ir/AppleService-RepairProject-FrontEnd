@@ -9,6 +9,7 @@ import { get, post } from '../../utility'
 import Alert from '../../components/Alert/Alert'
 import OrderStatusBtn from '../../components/OrderStatusBtn/OrderStatusBtn'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
+import OrderDetails from '../../components/OrderDetails/OrderDetails'
 
 function RepairManGetOrder() {
   const authContext = useContext(AuthContext)
@@ -463,153 +464,8 @@ function RepairManGetOrder() {
                   </li>
                 )
               }
-              <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  کد سفارش
-                </div>
-                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {submitOrderModal.order.id} #
-                </div>
-              </li>
 
-              <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  وضعیت
-                </div>
-                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {
-                    submitOrderModal.order.status === 'pending' ? 'در انتظار تعمیر'
-                      : submitOrderModal.order.status === 'working' ? 'تایید شده'
-                        : submitOrderModal.order.status === 'cancelled' ? 'لغو شده'
-                          : submitOrderModal.order.status === 'done' ? 'انجام شده'
-                            : submitOrderModal.order.status === 'payment-working' ? 'تایید شده - در انتظار پرداخت'
-                              : submitOrderModal.order.status === 'payment-working' ? 'انجام شده - در انتظار پرداخت'
-                                : ''
-                  }
-                </div>
-              </li>
-
-              <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  پرداخت شده
-                </div>
-                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {
-                    submitOrderModal.order.total ? (
-                      <>
-                        {
-                          submitOrderModal.order.total.toLocaleString()
-                        }
-                        <small className='mr-1 italic'>تومان</small>
-                      </>
-                    )
-                      : '-'
-                  }
-                </div>
-              </li>
-
-              <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  در انتطار پرداخت
-                </div>
-                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {
-                    submitOrderModal.order.transactions.filter(action => action.status === 'pending')[0] ? (
-                      <>
-                        {
-                          submitOrderModal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
-                        }
-                        <small className='italic mr-1'>تومان</small>
-                      </>
-                    ) : '-'
-                  }
-                </div>
-              </li>
-
-              <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  مشتری
-                </div>
-                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {
-                    `${submitOrderModal.order.user.firstName} ${submitOrderModal.order.user.lastName} - ${submitOrderModal.order.user.phone}`
-                  }
-                </div>
-              </li>
-
-              <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  دستگاه
-                </div>
-                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {submitOrderModal.order.phoneName}
-                </div>
-              </li>
-
-              <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  قطعه
-                </div>
-                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {submitOrderModal.order.partName}
-                </div>
-              </li>
-
-              <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  تاریخ
-                </div>
-                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {new Date(submitOrderModal.order.createdAt).toLocaleDateString('fa-IR')}
-                </div>
-              </li>
-
-              <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  تصویر
-                </div>
-                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  <a
-                    className='underline'
-                    href={`${mainUrl.replace('/api', '')}/uploads/${submitOrderModal.order.picture}`}
-                    target='_blank'
-                  >
-                    مشاهده
-                  </a>
-                </div>
-              </li>
-
-              <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
-                  پیام پشتیبانی
-                </div>
-                <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
-                  text-center break-all">
-                  {
-                    submitOrderModal.order.adminMessage || '-'
-                  }
-                </div>
-              </li>
-
-              <li className='w-full flex flex-col justify-center items-center rounded-md mt-1 '>
-                <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
-                  توضیحات
-                </div>
-                <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
-                  text-center break-all">
-                  {submitOrderModal.order.description}
-                </div>
-              </li>
-
-              <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
-                  آدرس
-                </div>
-                <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
-                  text-center break-all">
-                  {submitOrderModal.order.address}
-                </div>
-              </li>
+              <OrderDetails order={submitOrderModal.order} />
 
               {
                 (submitOrderModal.order.status === 'working'
