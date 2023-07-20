@@ -19,6 +19,7 @@ function RepairManDoneOrders() {
       loadingContext.setProgressIsLoadingHandler(true)
       get(`/repairmans/orders/get?token=${authContext.userToken}`)
         .then(response => {
+          console.log(response.data.orders)
           const currentOrders = response.data.orders.filter(
             order => order.repairmanId === authContext.userInfo.id && order.status === 'done'
           )
@@ -71,7 +72,7 @@ function RepairManDoneOrders() {
                             {
                               order.total ? (
                                 <>
-                                  {modal.order.total}
+                                  {order.total}
                                   <small className='italic opacity-75 mx-1'>تومان</small>
                                 </>
                               ) : '-'
@@ -157,7 +158,9 @@ function RepairManDoneOrders() {
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                   {
-                    modal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                    modal.order.transactions.filter(action => action.status === 'pending')[0] ? (
+                      modal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                    ) : '-'
                   }
                 </div>
               </li>
