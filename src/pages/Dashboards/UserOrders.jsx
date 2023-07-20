@@ -466,11 +466,42 @@ function UserOrders() {
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                   {
-                    modal.order.status === 'pending' ? 'در انتظار تعمیر'
-                      : modal.order.status === 'working' ? 'تایید شده'
-                        : modal.order.status === 'cancelled' ? 'لغو شده'
-                          : modal.order.status === 'done' ? 'انجام شده'
-                            : ''
+                    modal.order.status === 'done' ? 'تمام شده'
+                      : 'لغو شده'
+                  }
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  پرداخت شده
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {
+                    modal.order.total ? (
+                      <>
+                        {modal.order.total}
+                        <small className='italic mr-1'>تومان</small>
+                      </>
+                    ) : '-'
+                  }
+                </div>
+              </li>
+
+              <li className='w-full flex justify-center items-center rounded-md mt-1'>
+                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
+                  در انتظار پرداخت
+                </div>
+                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
+                  {
+                    modal.order.transactions.filter(action => action.status === 'pending')[0] ? (
+                      <>
+                        {
+                          modal.order.transactions.filter(action => action.status === 'pending').map(action => action.price).reduce((prev, current) => prev + current).toLocaleString()
+                        }
+                        <small className='italic mr-1'>تومان</small>
+                      </>
+                    ) : '-'
                   }
                 </div>
               </li>
@@ -481,7 +512,7 @@ function UserOrders() {
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                   {
-                    modal.order.repairman ?
+                    modal.order.repairmanId ?
                       `${modal.order.repairman.firstName} ${modal.order.repairman.lastName} - ${modal.order.repairman.phone}`
                       : '-'
                   }
@@ -517,22 +548,6 @@ function UserOrders() {
 
               <li className='w-full flex justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
-                  قیمت
-                </div>
-                <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
-                  {
-                    modal.order.total ? (
-                      <>
-                        {modal.order.total}
-                        <small className='italic opacity-75 mx-1'>تومان</small>
-                      </>
-                    ) : '-'
-                  }
-                </div>
-              </li>
-
-              <li className='w-full flex justify-center items-center rounded-md mt-1'>
-                <div className="bg-blue-100 text-blue-500 w-4/12 p-3 rounded-r-md text-center">
                   تصویر
                 </div>
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
@@ -558,6 +573,16 @@ function UserOrders() {
                 )
               }
 
+              <li className='w-full flex flex-col justify-center items-center rounded-md mt-1 '>
+                <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
+                  توضیحات
+                </div>
+                <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
+                  text-center break-all">
+                  {modal.order.description}
+                </div>
+              </li>
+
               <li className='w-full flex flex-col justify-center items-center rounded-md mt-1'>
                 <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
                   آدرس
@@ -568,15 +593,6 @@ function UserOrders() {
                 </div>
               </li>
 
-              <li className='w-full flex flex-col justify-center items-center rounded-md mt-1 '>
-                <div className="bg-blue-100 text-blue-500 w-full p-3 rounded-t-md text-center">
-                  توضیحات
-                </div>
-                <div className="bg-white w-full flex justify-center items-center p-3 rounded-b-md
-                  text-center break-all">
-                  {modal.order.description}
-                </div>
-              </li>
             </ul>
           </PortalModal>
         )
