@@ -33,7 +33,6 @@ function RepairManGetOrder() {
   const donePriceInputRef = useRef()
 
   useEffect(() => {
-    loadingContext.setProgressIsLoadingHandler(true)
     if (authContext.userToken)
       get(`/repairmans/orders/get?token=${authContext.userToken}`)
         .then(response => {

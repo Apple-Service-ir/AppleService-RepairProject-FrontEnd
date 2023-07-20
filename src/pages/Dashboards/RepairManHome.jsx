@@ -1,8 +1,16 @@
-import React from 'react'
+import React, { useEffect, useContext } from 'react'
+
+import LoadingContext from './../../context/LoadingContext'
 
 function RepairManHome() {
+  const loadingContext = useContext(LoadingContext)
+
+  useEffect(() => {
+    loadingContext.setProgressIsLoadingHandler(false)
+  }, [])
+
   return (
-    <h1 className='text-5xl m-10'>پنل تعمیر کار</h1>
+    <div>پنل تعمیر کار</div>
   )
 }
 

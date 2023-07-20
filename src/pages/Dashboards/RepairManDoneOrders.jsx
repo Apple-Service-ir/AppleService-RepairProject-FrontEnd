@@ -16,7 +16,6 @@ function RepairManDoneOrders() {
 
   useEffect(() => {
     if (authContext.userToken) {
-      loadingContext.setProgressIsLoadingHandler(true)
       get(`/repairmans/orders/get?token=${authContext.userToken}`)
         .then(response => {
           console.log(response.data.orders)
