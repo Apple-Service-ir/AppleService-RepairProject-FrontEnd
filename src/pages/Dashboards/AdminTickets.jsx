@@ -1,7 +1,7 @@
 import React, { useContext, useState, useRef, useEffect } from 'react'
 import { Toaster, toast } from 'react-hot-toast'
 
-import { get, post } from '../../utility'
+import { get, post } from '../../utils/connection'
 import AuthContext from '../../context/AuthContext'
 import LoadingContext from '../../context/LoadingContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
@@ -22,7 +22,7 @@ function AdminTickets() {
   useEffect(() => {
     if (authContext.userToken) {
       document.title = "تیکت ها - داشبورد مدیریت اپل سرویس"
-      get(`/tickets/all?admin=true&token=${authContext.userToken}`)
+      get('/tickets/all?admin=true', authContext.userToken)
         .then(response => {
           setTickets(response.data.tickets)
         })
@@ -34,10 +34,10 @@ function AdminTickets() {
     event.stopPropagation()
 
     if (ticket.status !== 'closed') {
-      await post('/tickets/close', {
-        token: authContext.userToken,
+      const requestBody = {
         id: ticket.id
-      })
+      }
+      await post('/tickets/close', authContext.userToken, requestBody)
         .then(() => {
           setTickets(prev => {
             const filteredTickets = prev.map(item => {
