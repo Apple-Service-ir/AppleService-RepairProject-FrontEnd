@@ -3,7 +3,7 @@ import { toast, Toaster } from 'react-hot-toast'
 
 import AuthContext from '../../context/AuthContext'
 import LoadingContext from '../../context/LoadingContext'
-import { get, post } from '../../utility'
+import { get, post } from '../../utils/connection'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
@@ -30,10 +30,10 @@ function AdminParts() {
   }, [])
 
   const removePartHandler = async partId => {
-    await post('/admins/parts/delete', {
-      token: authContext.userToken,
+    const requestBody = {
       id: partId
-    })
+    }
+    await post('/admins/parts/delete', authContext.userToken, requestBody)
       .then(() => {
         setParts(prev => {
           return prev.filter(part => part.id !== partId)
@@ -79,10 +79,10 @@ function AdminParts() {
     const partNameValidator = partNameValidatorHandler(partName.value)
     if (partNameValidator.status) {
       setCreatePartLoading(true)
-      await post('/admins/parts/create', {
-        token: authContext.userToken,
+      const requestBody = {
         name: partNameValidator.name
-      })
+      }
+      await post('/admins/parts/create', authContext.userToken, requestBody)
         .then(response => {
           setParts(prev => [response.data.part, ...prev])
           setPartName({ value: '', validation: false })
@@ -103,11 +103,11 @@ function AdminParts() {
     if (partNameValidator.status) {
       setEditPartLoading(true)
 
-      await post('/admins/parts/edit', {
-        token: authContext.userToken,
+      const requestBody = {
         id: modal.part.id,
         data: { name: partNameValidator.name },
-      })
+      }
+      await post('/admins/parts/edit', authContext.userToken, requestBody)
         .then(() => {
           setParts(prev => {
             const newParts = prev.map(part => {
