@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { get } from '../utility'
+import { get } from '../utils/connection'
 
 function useGetCities() {
   const [allCities, setAllCities] = useState([])
