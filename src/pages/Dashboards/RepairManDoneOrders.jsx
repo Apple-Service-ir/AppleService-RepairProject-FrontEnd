@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../../context/AuthContext'
 import LoadingContext from '../../context/LoadingContext'
-import { get } from '../../utility'
+import { get } from '../../utils/connection'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import OrderDetails from '../../components/OrderDetails/OrderDetails'
@@ -16,7 +16,7 @@ function RepairManDoneOrders() {
 
   useEffect(() => {
     if (authContext.userToken) {
-      get(`/repairmans/orders/get?token=${authContext.userToken}`)
+      get('/repairmans/orders/get', authContext.userToken)
         .then(response => {
           console.log(response.data.orders)
           const currentOrders = response.data.orders.filter(
