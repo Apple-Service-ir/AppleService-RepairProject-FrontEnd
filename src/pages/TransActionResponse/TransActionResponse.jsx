@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+
+import { post } from '../../utils/connection'
 import TransActionBox from '../../components/TransActionBox/TransActionBox'
-import { post } from '../../utility'
-import { useState } from 'react'
 
 function TransActionResponse() {
   const [searchParams] = useSearchParams()
@@ -14,7 +14,7 @@ function TransActionResponse() {
     const authority = searchParams.get('Authority')
     if (status === 'OK') {
       setOrderStatus(true)
-      post('/payments/verify', { authority })
+      post('/payments/verify', _, { authority })
         .then(response => {
           setOrder(response.data.order)
         })
