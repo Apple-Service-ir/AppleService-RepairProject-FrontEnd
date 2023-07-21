@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useContext } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 
-import { get, postForm } from '../../utility';
+import { get, postForm } from '../../utils/connection';
 import AuthContext from './../../context/AuthContext'
 import LoadingContext from './../../context/LoadingContext'
 import useGetCities from './../../Hooks/useGetCities'
@@ -31,17 +31,19 @@ export default function Order() {
     const func = async () => {
       document.title = "ثبت سفارش - اپل سرویس"
 
-      await get('/list/devices').then(response => {
-        const mapped = response.data.phones.map(item => {
-          return { id: item.id, value: `${item.brand} ${item.model}`, brand: item.brand }
+      await get('/list/devices')
+        .then(response => {
+          const mapped = response.data.phones.map(item => {
+            return { id: item.id, value: `${item.brand} ${item.model}`, brand: item.brand }
+          })
+          setDatas(prev => ({ ...prev, all: mapped, brands: response.data.brands }))
         })
-        setDatas(prev => ({ ...prev, all: mapped, brands: response.data.brands }))
-      })
 
-      await get('/list/parts').then(response => {
-        const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
-        setDatas(prev => ({ ...prev, parts: mapped }))
-      })
+      await get('/list/parts')
+        .then(response => {
+          const mapped = response.data.map(item => ({ id: item.id, value: item.name }))
+          setDatas(prev => ({ ...prev, parts: mapped }))
+        })
 
       loadingContext.setProgressIsLoadingHandler(false)
     }
@@ -52,22 +54,20 @@ export default function Order() {
   async function postOrder() {
     setSubmitLoading(true)
 
-    const formData = new FormData()
-    formData.append('token', authContext.userToken)
-    formData.append('address', form.address.value)
-    formData.append('city', form.city.value || defaultCity.id)
-    formData.append('phoneId', selectedDatas.devices.id)
-    formData.append('partId', selectedDatas.parts.id)
-    formData.append('description', form.desc.value)
-    formData.append('picture', form.file.value);
-
     for (const field in form)
       if (!form[field].validation) {
         setSubmitLoading(false)
         return toast.error('لطفا فیلد هارا به درستی وارد کنید')
       }
 
-    await postForm('/orders/submit', formData)
+    const formData = new FormData()
+    formData.append('address', form.address.value)
+    formData.append('city', form.city.value || defaultCity.id)
+    formData.append('phoneId', selectedDatas.devices.id)
+    formData.append('partId', selectedDatas.parts.id)
+    formData.append('description', form.desc.value)
+    formData.append('picture', form.file.value);
+    await postForm('/orders/submit', authContext.userToken, formData)
       .then(() => {
         setSelectedDatas(prev => ({ ...prev, devices: {}, parts: {} }))
         setForm(prev => ({
