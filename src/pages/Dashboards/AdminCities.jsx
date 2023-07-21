@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 
-import { get, post } from '../../utility'
+import { get, post } from '../../utils/connection'
 import AuthContext from '../../context/AuthContext'
 import LoadingContext from '../../context/LoadingContext'
 import Alert from '../../components/Alert/Alert'
@@ -41,10 +41,9 @@ function AdminCities() {
     setCreateCityLoader(true)
 
     const requestBody = {
-      token: authContext.userToken,
       name: cityName.value
     }
-    await post('/admins/cities/create', requestBody)
+    await post('/admins/cities/create', authContext.userToken, requestBody)
       .then(response => {
         setCities(prev => [response.data.city, ...prev])
         toast.success('شهر با موفقیت اضافه شد')
@@ -56,11 +55,10 @@ function AdminCities() {
 
   const removeCityHandler = async cityId => {
     const requestBody = {
-      token: authContext.userToken,
       id: cityId
     }
-    await post('/admins/cities/delete', requestBody)
-      .then((r) => {
+    await post('/admins/cities/delete', authContext.userToken, requestBody)
+      .then(() => {
         setCities(prev => {
           return prev.filter(city => city.id !== cityId)
         })
@@ -78,11 +76,10 @@ function AdminCities() {
     setEditCityLoader(true)
 
     const requestBody = {
-      token: authContext.userToken,
       id: modal.city.id,
       data: { name: editCityName.value },
     }
-    await post('/admins/cities/edit', requestBody)
+    await post('/admins/cities/edit', authContext.userToken, requestBody)
       .then(() => {
         setCities(prev => {
           const newCities = prev.map(city => {
