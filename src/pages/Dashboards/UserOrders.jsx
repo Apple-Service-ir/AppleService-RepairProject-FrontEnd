@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 
-import { get, post } from '../../utility'
+import { get, post } from '../../utils/connection'
 import AuthContext from './../../context/AuthContext'
 import LoadingContext from './../../context/LoadingContext'
 import Alert from '../../components/Alert/Alert'
@@ -21,7 +21,7 @@ function UserOrders() {
   useEffect(() => {
     if (authContext.userToken) {
       document.title = "سفارشات - داشبورد اپل سرویس"
-      get(`/orders/log?token=${authContext.userToken}`)
+      get('/orders/log', authContext.userToken)
         .then((response) => {
           console.log(response)
           const pendingOrder = response.data.orders.find(order => order.status === 'pending')
@@ -50,7 +50,10 @@ function UserOrders() {
   }, [authContext.userToken])
 
   const cancelOrder = orderId => {
-    post('/orders/cancel', { orderId, token: authContext.userToken })
+    const requestBody = {
+      orderId
+    }
+    post('/orders/cancel', authContext.userToken, requestBody)
       .then(response => {
         setAllOrders(prev => ({
           ...prev,
@@ -65,10 +68,9 @@ function UserOrders() {
 
   const workingPayHandler = orderId => {
     const requestBody = {
-      token: authContext.userToken,
       id: orderId
     }
-    post('/payments/pay', requestBody)
+    post('/payments/pay', authContext.userToken, requestBody)
       .then(response => {
         location.href = response.data.url
       })
@@ -77,10 +79,9 @@ function UserOrders() {
 
   const donePayHandler = orderId => {
     const requestBody = {
-      token: authContext.userToken,
       id: orderId
     }
-    post('/payments/pay', requestBody)
+    post('/payments/pay', authContext.userToken, requestBody)
       .then(response => {
         location.href = response.data.url
       })
