@@ -50,7 +50,8 @@ function App() {
         setUserInfo(response.data.user)
         setUserToken(response.data.token)
         localStorage.setItem('e-service-userInfo', JSON.stringify(response.data.user))
-      }).catch(() => {
+      }).catch(error => {
+        console.error(error.response.data.err)
         setUserToken(null)
         setIslogin(false)
         setUserInfo({})
