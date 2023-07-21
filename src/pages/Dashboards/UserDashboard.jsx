@@ -4,7 +4,7 @@ import { toast, Toaster } from 'react-hot-toast'
 
 import AuthContext from '../../context/AuthContext'
 import LoadingContext from '../../context/LoadingContext'
-import { post } from '../../utility'
+import { post } from '../../utils/connection'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import useGetCities from './../../Hooks/useGetCities'
 import SubmitBtn from './../../components/SubmitBtn/SubmitBtn'
@@ -38,14 +38,14 @@ function UserDashboard() {
         return toast.error('لطفا فیلد ها را کامل کنید')
       }
 
-    await post("/informations/edit", {
-      token: authContext.userToken,
+    const requstBody = {
       data: JSON.stringify({
         firstName: editInformationForm.firstName.value,
         lastName: editInformationForm.lastName.value,
         city: editInformationForm.city.value || defaultCity.id
       })
-    })
+    }
+    await post("/informations/edit", authContext.userToken, requstBody)
       .then(response => {
         authContext.setUserInfoHandler(response.data.user)
         localStorage.setItem('e-service-userInfo', JSON.stringify(
