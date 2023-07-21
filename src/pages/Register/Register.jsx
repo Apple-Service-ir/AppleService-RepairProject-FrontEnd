@@ -59,7 +59,10 @@ export default function Register() {
   }, [formPage])
 
   const generateAgainOtp = () => {
-    post(`/auth?action=generate&mode=${prevPage}`, { phone: form.phone.value })
+    const requstBody = {
+      phone: form.phone.value
+    }
+    post(`/auth?action=generate&mode=${prevPage}`, _, requstBody)
       .then(() => {
         toast.success(`کد تایید مجدد ارسال شد`)
         setOtpNumber({ value: '', validation: false })
@@ -79,21 +82,25 @@ export default function Register() {
     setRegisterLoadings({ login: true, signin: false, otp: false })
 
     setOtpNumber({ value: '', validation: false })
-    await post('/auth?action=generate&mode=login', { phone: form.phone.value }).then(response => {
-      toast.success(`کد تایید ارسال شد`)
-      response.data.nextPage && setFormPage('otpPage')
-    }).catch((err) => {
-      setFormPage('register')
-      toast(err.response.data.err, {
-        icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
-            className="bg-yellow-300 stroke-white w-7 h-7 p-1 rounded-full">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-          </svg>
-        )
+    const requstBody = {
+      phone: form.phone.value
+    }
+    await post('/auth?action=generate&mode=login', _, requstBody)
+      .then(response => {
+        toast.success(`کد تایید ارسال شد`)
+        response.data.nextPage && setFormPage('otpPage')
+      }).catch((err) => {
+        setFormPage('register')
+        toast(err.response.data.err, {
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
+              className="bg-yellow-300 stroke-white w-7 h-7 p-1 rounded-full">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          )
+        })
+        err.response.data.nextPage && setFormPage('otpPage')
       })
-      err.response.data.nextPage && setFormPage('otpPage')
-    })
 
     setRegisterLoadings({ login: false, signin: false, otp: false })
   }
@@ -102,7 +109,10 @@ export default function Register() {
     setRegisterLoadings({ login: false, signin: true, otp: false })
 
     setOtpNumber({ value: '', validation: false })
-    await post('/auth?action=generate&mode=register', { phone: form.phone.value })
+    const requstBody = {
+      phone: form.phone.value
+    }
+    await post('/auth?action=generate&mode=register', _, requstBody)
       .then(response => {
         toast.success(`کد تایید ارسال شد`)
         response.data.nextPage && setFormPage('otpPage')
@@ -140,33 +150,37 @@ export default function Register() {
 
     setRegisterLoadings({ login: false, signin: false, otp: true })
 
-    await post(`/auth?action=submit&mode=${prevPage}`, {
+    const requstBody = {
       code: otpNumber.value,
       phone: form.phone.value,
       mode: prevPage
-    }).then(async (response) => {
-      let token = response.data.token || null
-      let userData = response.data.user || null
+    }
+    await post(`/auth?action=submit&mode=${prevPage}`, requstBody)
+      .then(async (response) => {
+        let token = response.data.token || null
+        let userData = response.data.user || null
 
-      if (prevPage === 'register') {
-        await post(`/register`, {
-          firstName: form.firstName.value,
-          lastName: form.lastName.value,
-          phone: form.phone.value,
-          city: form.city.value
-        }).then((response) => {
-          token = response.data.token
-          userData = response.data.user
-        }).catch(err => {
-          toast.error(err.response.data.err)
-        })
-      }
+        if (prevPage === 'register') {
+          const requstBody = {
+            firstName: form.firstName.value,
+            lastName: form.lastName.value,
+            phone: form.phone.value,
+            city: form.city.value
+          }
+          await post(`/register`, requstBody)
+            .then((response) => {
+              token = response.data.token
+              userData = response.data.user
+            }).catch(err => {
+              toast.error(err.response.data.err)
+            })
+        }
 
-      authContext.login(token, userData)
-      navigate('/')
-    }).catch(err => {
-      toast.error(err.response.data.err)
-    })
+        authContext.login(token, userData)
+        navigate('/')
+      }).catch(err => {
+        toast.error(err.response.data.err)
+      })
 
     setRegisterLoadings({ login: false, signin: false, otp: false })
 
