@@ -32,7 +32,7 @@ const routes = [
   },
   {
     path: '/register',
-    element: <PrivateRoute reDirectPath='/' privateRole={'isUserNotLoggedIn'}> <Register /> </PrivateRoute>
+    element: <PrivateRoute reDirectPath='/dashboard' privateRole={'isUserNotLoggedIn'}> <Register /> </PrivateRoute>
   },
   {
     path: '/dashboard',
@@ -60,7 +60,7 @@ const routes = [
     path: '/admin',
     element:
       <PrivateRoute
-        reDirectPath={'/'}
+        reDirectPath={'/dashboard'}
         privateRole={'isSupporter'}
       >
         <AdminDashboard />
