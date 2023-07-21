@@ -364,6 +364,7 @@ function AdminOrders() {
                   </li>
                 )
               }
+              
               <OrderDetails order={modal.order} />
             </ul>
           </PortalModal>

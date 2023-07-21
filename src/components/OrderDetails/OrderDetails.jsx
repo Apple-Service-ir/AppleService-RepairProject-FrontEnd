@@ -25,7 +25,7 @@ function OrderDetails({ order }) {
                 : order.status === 'cancelled' ? 'لغو شده'
                   : order.status === 'done' ? 'انجام شده'
                     : order.status === 'payment-working' ? 'تایید شده - در انتظار پرداخت'
-                      : order.status === 'payment-working' ? 'انجام شده - در انتظار پرداخت'
+                      : order.status === 'payment-done' ? 'انجام شده - در انتظار پرداخت'
                         : ''
           }
         </div>
