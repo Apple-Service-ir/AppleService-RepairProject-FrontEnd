@@ -62,7 +62,7 @@ export default function Register() {
     const requstBody = {
       phone: form.phone.value
     }
-    post(`/auth?action=generate&mode=${prevPage}`, _, requstBody)
+    post(`/auth?action=generate&mode=${prevPage}`, '', requstBody)
       .then(() => {
         toast.success(`کد تایید مجدد ارسال شد`)
         setOtpNumber({ value: '', validation: false })
@@ -85,7 +85,7 @@ export default function Register() {
     const requstBody = {
       phone: form.phone.value
     }
-    await post('/auth?action=generate&mode=login', _, requstBody)
+    await post('/auth?action=generate&mode=login', '', requstBody)
       .then(response => {
         toast.success(`کد تایید ارسال شد`)
         response.data.nextPage && setFormPage('otpPage')
@@ -112,7 +112,7 @@ export default function Register() {
     const requstBody = {
       phone: form.phone.value
     }
-    await post('/auth?action=generate&mode=register', _, requstBody)
+    await post('/auth?action=generate&mode=register', '', requstBody)
       .then(response => {
         toast.success(`کد تایید ارسال شد`)
         response.data.nextPage && setFormPage('otpPage')
@@ -155,7 +155,7 @@ export default function Register() {
       phone: form.phone.value,
       mode: prevPage
     }
-    await post(`/auth?action=submit&mode=${prevPage}`, requstBody)
+    await post(`/auth?action=submit&mode=${prevPage}`, '', requstBody)
       .then(async (response) => {
         let token = response.data.token || null
         let userData = response.data.user || null
@@ -167,7 +167,7 @@ export default function Register() {
             phone: form.phone.value,
             city: form.city.value
           }
-          await post(`/register`, requstBody)
+          await post(`/register`, '', requstBody)
             .then((response) => {
               token = response.data.token
               userData = response.data.user
