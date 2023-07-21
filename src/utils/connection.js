@@ -9,7 +9,7 @@ const get = async (url, token) => {
   return await connection({
     method: 'get',
     url,
-    ...(token && { headers: { auth: `Bearer ${token}` } })
+    ...(token && { headers: { Authorization: `Bearer ${token}` } })
   })
 }
 
@@ -17,7 +17,7 @@ const post = async (url, token, data) => {
   return await connection({
     method: 'post',
     url,
-    ...(token && { headers: { auth: `Bearer ${token}` } }),
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
     data
   })
 }
@@ -26,7 +26,7 @@ const postForm = async (url, token, data) => {
   return await connection({
     method: 'post',
     url,
-    ...(token && { headers: { auth: `Bearer ${token}` } }),
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
     data
   })
 }
