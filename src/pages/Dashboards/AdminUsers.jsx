@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 
-import config from '../../../config.json'
+import { baseURL } from '../../../config.json'
 import AuthContext from './../../context/AuthContext'
 import LoadingContext from './../../context/LoadingContext'
-import { get, post, postForm } from './../../utility'
+import { get, post, postForm } from './../../utils/connection'
 import Alert from '../../components/Alert/Alert'
 import useGetCities from './../../Hooks/useGetCities'
 import PortalModal from './../../components/PortalModal/PortalModal'
@@ -49,13 +49,13 @@ function AdminUsers() {
   useEffect(() => {
     if (authContext.userToken) {
       document.title = "کاربران - داشبورد مدیریت اپل سرویس"
-      get(`/admins/users/all?token=${authContext.userToken}`)
+      get('/admins/users/all', authContext.userToken)
         .then(response => {
           setUsers(response.data.users)
         })
         .finally(() => loadingContext.setProgressIsLoadingHandler(false))
     }
-  }, [authContext.userInfo])
+  }, [authContext.userToken])
 
   const submitHandler = async event => {
     setSubmitLoading(true)
@@ -67,14 +67,14 @@ function AdminUsers() {
         return toast.error('لطفا فیلد هارا کامل پر کنید')
       }
 
-    await post('/admins/users/create', {
-      token: authContext.userToken,
+    const requestBody = {
       firstName: userForm.firstName.value,
       lastName: userForm.lastName.value,
       phone: userForm.phone.value,
       city: userForm.city.value || defaultCity.id,
       role: userForm.role.value
-    })
+    }
+    await post('/admins/users/create', authContext.userToken, requestBody)
       .then(response => {
         setUsers(prev => [response.data.user, ...prev])
         setUserForm({
@@ -107,17 +107,15 @@ function AdminUsers() {
         return toast.error('لطفا فیلد ها را کامل کنید')
       }
 
-    const requestForm = new FormData()
-    requestForm.append('token', authContext.userToken)
-    requestForm.append('picture', editInformationForm.profile.file)
-    requestForm.append('id', editInformationForm.id.value)
-    requestForm.append('data', JSON.stringify({
+    const formData = new FormData()
+    formData.append('picture', editInformationForm.profile.file)
+    formData.append('id', editInformationForm.id.value)
+    formData.append('data', JSON.stringify({
       firstName: editInformationForm.firstName.value,
       lastName: editInformationForm.lastName.value,
       city: editInformationForm.city.value || defaultCity.id
     }))
-
-    await postForm("/informations/edit", requestForm)
+    await postForm("/informations/edit", authContext.userToken, formData)
       .then(response => {
         setUsers(prev => {
           const newUsers = prev.map(user => {
@@ -157,22 +155,22 @@ function AdminUsers() {
     setDeleteLoading(true)
     event.preventDefault()
 
-    await post("/admins/users/delete", {
-      token: authContext.userToken,
+    const requestBody = {
       id: editInformationForm.id.value
-    }).then(() => {
-      setUsers(prev => prev.filter(user => user.id !== editInformationForm.id.value))
-
-      setEditInformationForm({
-        id: { value: '', validation: true },
-        profile: { file: '', validation: true },
-        firstName: { value: '', validation: true },
-        lastName: { value: '', validation: true },
-        phone: { value: '', validation: true },
-        city: { value: '', validation: true },
-      })
-      toast.success('کاربر با موفقیت حذف شد')
-    }).catch(error => toast.error(error.response.data.err))
+    }
+    await post("/admins/users/delete", authContext.userToken, requestBody)
+      .then(() => {
+        setUsers(prev => prev.filter(user => user.id !== editInformationForm.id.value))
+        setEditInformationForm({
+          id: { value: '', validation: true },
+          profile: { file: '', validation: true },
+          firstName: { value: '', validation: true },
+          lastName: { value: '', validation: true },
+          phone: { value: '', validation: true },
+          city: { value: '', validation: true },
+        })
+        toast.success('کاربر با موفقیت حذف شد')
+      }).catch(error => toast.error(error.response.data.err))
 
     setShowEditInformationModal({ show: false, id: null })
     setDeleteLoading(false)
@@ -471,7 +469,7 @@ function AdminUsers() {
                     <img
                       className='w-full h-full rounded-full
                         absolute top-0 left-0 object-cover object-top show-fade'
-                      src={profileUrl || config.mainUrl.replace("/api", "") + '/uploads/' + editInformationForm.profile.file}
+                      src={profileUrl || baseURL + '/uploads/' + editInformationForm.profile.file}
                       alt="user profile"
                     />
                   )
