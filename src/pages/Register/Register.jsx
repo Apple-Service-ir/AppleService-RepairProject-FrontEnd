@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast';
 
-import { get, post } from '../../utility'
+import { get, post } from '../../utils/connection'
 import AuthContext from '../../context/AuthContext';
 import LoadingContext from '../../context/LoadingContext'
 import SubmitBtn from './../../components/SubmitBtn/SubmitBtn'
