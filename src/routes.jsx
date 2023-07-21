@@ -24,16 +24,21 @@ import AdminCities from "./pages/Dashboards/AdminCities.jsx"
 
 import TransActionResponse from "./pages/TransActionResponse/TransActionResponse.jsx"
 
+import NotFound from "./pages/NotFound/NotFound.jsx"
+
 const routes = [
   { path: '/', element: <Home /> },
+
   {
     path: '/order',
     element: <PrivateRoute reDirectPath='/register' privateRole={'isUserLoggedIn'}> <Order /> </PrivateRoute>
   },
+
   {
     path: '/register',
     element: <PrivateRoute reDirectPath='/dashboard' privateRole={'isUserNotLoggedIn'}> <Register /> </PrivateRoute>
   },
+
   {
     path: '/dashboard',
     element: <PrivateRoute reDirectPath='/register' privateRole={'isUserLoggedIn'}> <UserDashboard /> </PrivateRoute>,
@@ -56,6 +61,7 @@ const routes = [
       }
     ]
   },
+
   {
     path: '/admin',
     element:
@@ -78,7 +84,10 @@ const routes = [
       { path: '/admin/cities', element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminCities /> </PrivateRoute> },
     ]
   },
+
   { path: '/payments/done', element: <TransActionResponse /> },
+
+  { path: '*', element: <NotFound /> }
 ]
 
 export { routes }
