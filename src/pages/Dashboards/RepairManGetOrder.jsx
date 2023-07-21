@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 
-import { mainUrl } from '../../../config.json'
-import PortalModal from '../../components/PortalModal/PortalModal'
+import { baseURL } from '../../../config.json'
 import AuthContext from '../../context/AuthContext'
 import LoadingContext from '../../context/LoadingContext'
-import { get, post } from '../../utility'
+import { get, post } from '../../utils/connection'
+import PortalModal from '../../components/PortalModal/PortalModal'
 import Alert from '../../components/Alert/Alert'
 import OrderStatusBtn from '../../components/OrderStatusBtn/OrderStatusBtn'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
@@ -34,7 +34,7 @@ function RepairManGetOrder() {
 
   useEffect(() => {
     if (authContext.userToken)
-      get(`/repairmans/orders/get?token=${authContext.userToken}`)
+      get('/repairmans/orders/get', authContext.userToken)
         .then(response => {
           const pendingOrders = response.data.orders.filter(order => order.status === 'pending')
           const inWorkingOrder = response.data.orders.filter(order => (
@@ -62,11 +62,11 @@ function RepairManGetOrder() {
     setOrderStatusLoadings({ accept: !hasPrice, paymentAccept: hasPrice })
 
     const requestBody = {
-      token: authContext.userToken,
       id: orderId,
-      ...(hasPrice && { status: 'payment-working', price: +priceInputRef.current.value })
+      price: +priceInputRef.current.value,
+      ...(hasPrice && { status: 'payment-working' })
     }
-    await post('/repairmans/orders/accept', requestBody)
+    await post('/repairmans/orders/accept', authContext.userToken, requestBody)
       .then(response => {
         setSubmitOrderModal(prev => ({ ...prev, order: response.data.order }))
 
@@ -89,10 +89,9 @@ function RepairManGetOrder() {
     setOrderStatusLoadings({ cancel: true })
 
     const requestBody = {
-      token: authContext.userToken,
       id: orderId
     }
-    await post('/repairmans/orders/cancel', requestBody)
+    await post('/repairmans/orders/cancel', authContext.userToken, requestBody)
       .then(response => {
         setSubmitOrderModal(prev => ({ ...prev, order: response.data.order }))
 
@@ -119,11 +118,10 @@ function RepairManGetOrder() {
     setOrderStatusLoadings({ done: !hasPrice, paymentDone: hasPrice })
 
     const requestBody = {
-      token: authContext.userToken,
       id: orderId,
       ...(hasPrice && { status: 'payment-done', price: +donePriceInputRef.current.value })
     }
-    await post('/repairmans/orders/done', requestBody)
+    await post('/repairmans/orders/done', authContext.userToken, requestBody)
       .then(response => {
         setOrders(prev => ({
           ...prev,
@@ -144,11 +142,10 @@ function RepairManGetOrder() {
     setChangePriceForOrderLoading({ accept: true })
 
     const requestBody = {
-      token: authContext.userToken,
       id: orderId,
       price: submitPriceInputRef.current.value
     }
-    await post('/repairmans/orders/price/set', requestBody)
+    await post('/repairmans/orders/price/set', authContext.userToken, requestBody)
       .then(response => {
         console.log(response)
         setOrders(prev => ({
@@ -167,11 +164,10 @@ function RepairManGetOrder() {
     setChangePriceForOrderLoading({ delete: true })
 
     const requestBody = {
-      token: authContext.userToken,
       id: orderId,
       price: '0'
     }
-    await post('/repairmans/orders/price/set', requestBody)
+    await post('/repairmans/orders/price/set', authContext.userToken, requestBody)
       .then(response => {
         setOrders(prev => ({
           ...prev,
@@ -281,7 +277,7 @@ function RepairManGetOrder() {
                     <li>
                       تصویر:
                       <a
-                        href={`${mainUrl.replace('/api', '')}/uploads/${orders.inWorking.picture}`}
+                        href={`${baseURL}/uploads/${orders.inWorking.picture}`}
                         className='px-2 underline text-sm opacity-90'
                         target="_blank"
                       >
@@ -325,7 +321,7 @@ function RepairManGetOrder() {
                 <li>
                   تصویر:
                   <a
-                    href={`${mainUrl.replace('/api', '')}/uploads/${order.picture}`}
+                    href={`${baseURL}/uploads/${order.picture}`}
                     className='px-2 underline text-sm opacity-90'
                     target="_blank"
                   >
@@ -637,7 +633,7 @@ function RepairManGetOrder() {
                 <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
                   <a
                     className='underline'
-                    href={`${mainUrl.replace('/api', '')}/uploads/${paymentOrdersModal.order.picture}`}
+                    href={`${baseURL}/uploads/${paymentOrdersModal.order.picture}`}
                     target='_blank'
                   >مشاهده</a>
                 </div>
