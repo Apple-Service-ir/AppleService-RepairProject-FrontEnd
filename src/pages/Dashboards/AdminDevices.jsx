@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
-
-import { get, post } from '../../utility'
 import { toast, Toaster } from 'react-hot-toast'
+
+import { get, post } from '../../utils/connection'
 import AuthContext from './../../context/AuthContext'
 import LoadingContext from './../../context/LoadingContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
@@ -62,11 +62,11 @@ function AdminDevices() {
         return toast.error("مدل وارد شده از قبل ثبت شده است.")
       }
 
-      await post('/admins/devices/create', {
-        token: authContext.userToken,
+      const requestBody = {
         brand: deviceForm.selectBrand.value,
         model: deviceForm.model.value
-      })
+      }
+      await post('/admins/devices/create', authContext.userToken)
         .then(response => {
           setDatas(prev => ({
             ...prev,
@@ -102,10 +102,9 @@ function AdminDevices() {
 
   const removeDevice = async deviceId => {
     const requestBody = {
-      token: authContext.userToken,
       id: deviceId
     }
-    await post('/admins/devices/delete', requestBody)
+    await post('/admins/devices/delete', authContext.userToken, requestBody)
       .then(() => {
         getDatas()
         toast.success('دستگاه با موفقیت حذف شد')
@@ -122,11 +121,11 @@ function AdminDevices() {
 
     setEditDeviceLoading(true)
 
-    await post('/admins/devices/edit', {
-      token: authContext.userToken,
+    const requestBody = {
       id: editDeviceModal.id,
-      data: { brand: editDeviceModal.brand, model: editDeviceModal.model },
-    })
+      data: { brand: editDeviceModal.brand, model: editDeviceModal.model }
+    }
+    await post('/admins/devices/edit', authContext.userToken, requestBody)
       .then(() => {
         getDatas()
         setEditDeviceModal({ show: false, id: null, brand: '', model: '' })
