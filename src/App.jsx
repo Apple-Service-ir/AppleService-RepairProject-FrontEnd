@@ -4,7 +4,7 @@ import { useRoutes, useNavigate } from "react-router-dom"
 import { toast } from "react-hot-toast"
 
 import { routes } from "./routes"
-import { get, post } from "./utility"
+import { get, post } from "./utils/connection"
 import AuthContext from "./context/AuthContext"
 import LoadingContext from "./context/LoadingContext"
 import Loader from "./components/Loader/Loader"
@@ -44,7 +44,7 @@ function App() {
   useEffect(() => {
     const localStorageToken = localStorage.getItem('e-service-token')
     setProgressIsLoadingHandler(true)
-    get(`/informations/get?token=${localStorageToken}`)
+    get('/informations/get', localStorageToken)
       .then(response => {
         setIslogin(true)
         setUserInfo(response.data.user)
@@ -72,7 +72,7 @@ function App() {
   }
 
   const logOut = () => {
-    post('/logout', { token: userToken })
+    post('/logout', userToken)
       .then(() => {
         setUserToken(null)
         setIslogin(false)
