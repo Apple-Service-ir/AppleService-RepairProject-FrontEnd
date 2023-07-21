@@ -1,7 +1,7 @@
 import React, { useRef, useState, useContext, useEffect } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 
-import { get, post } from '../../utility'
+import { get, post } from '../../utils/connection'
 import AuthContext from '../../context/AuthContext'
 import LoadingContext from '../../context/LoadingContext'
 import PortalModal from '../../components/PortalModal/PortalModal'
@@ -27,13 +27,13 @@ function UserTickets() {
   useEffect(() => {
     if (authContext.userToken) {
       document.title = "تیکت ها - داشبورد اپل سرویس"
-      get(`/tickets/all?token=${authContext.userToken}`)
+      get('/tickets/all', authContext.userToken)
         .then(response => {
           setTickets(response.data.tickets)
         })
         .finally(() => loadingContext.setProgressIsLoadingHandler(false))
     }
-  }, [authContext.userInfo])
+  }, [authContext.userToken])
 
   const submitTicketHandler = async event => {
     setSubmitLoading(true)
@@ -45,20 +45,21 @@ function UserTickets() {
         return toast.error('لطفا فیلد هارا به درستی پر کنید!')
       }
 
-    await post('/tickets/new', {
-      token: authContext.userToken,
+    const requestBody = {
       subject: ticketForm.subject.value,
       text: ticketForm.text.value
-    }).then(response => {
-      setTickets(response.data.tickets)
-      setTicketForm({
-        subject: { value: '', validation: false },
-        text: { value: '', validation: false }
+    }
+    await post('/tickets/new', authContext.userToken, requestBody)
+      .then(response => {
+        setTickets(response.data.tickets)
+        setTicketForm({
+          subject: { value: '', validation: false },
+          text: { value: '', validation: false }
+        })
+        toast.success('تیکت با موفقیت ثبت شد!')
+      }).catch((err) => {
+        toast.error(err.response.data.error)
       })
-      toast.success('تیکت با موفقیت ثبت شد!')
-    }).catch((err) => {
-      toast.error(err.response.data.error)
-    })
 
     setSubmitLoading(false)
   }
@@ -66,10 +67,10 @@ function UserTickets() {
   const closeTicketHandler = async () => {
     setCloseTicketLoading(true)
 
-    await post("/tickets/close", {
-      token: authContext.userToken,
+    const requestBody = {
       id: modal.ticket.id
-    })
+    }
+    await post("/tickets/close", authContext.userToken, requestBody)
       .then(() => {
         setTickets(prev => {
           const filteredTickets = prev.map(item => {
