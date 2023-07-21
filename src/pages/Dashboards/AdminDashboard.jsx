@@ -1,17 +1,16 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useRef, useState, useEffect } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { toast, Toaster } from 'react-hot-toast'
 
+import { baseURL } from '../../../config.json'
 import AuthContext from '../../context/AuthContext'
 import LoadingContext from '../../context/LoadingContext'
-import { postForm } from '../../utility'
+import { postForm } from '../../utils/connection'
 import useGetCities from './../../Hooks/useGetCities'
 import AdminSideBarLink from '../../components/Dashboard/AdminSideBarLink'
 import AdminSideBarMobile from '../../components/Dashboard/AdminMobileSideBarLink'
 import PortalModal from './../../components/PortalModal/PortalModal'
-import config from '../../../config.json'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
-import { useEffect } from 'react'
 
 
 function AdminDashboard() {
@@ -49,16 +48,15 @@ function AdminDashboard() {
         return toast.error('لطفا فیلد ها را کامل کنید')
       }
 
-    const requestForm = new FormData()
-    requestForm.append('token', authContext.userToken)
-    requestForm.append('picture', editInformationForm.profile.file)
-    requestForm.append('data', JSON.stringify({
+    const formData = new FormData()
+    formData.append('picture', editInformationForm.profile.file)
+    formData.append('data', JSON.stringify({
       firstName: editInformationForm.firstName.value,
       lastName: editInformationForm.lastName.value,
       city: editInformationForm.city.value || defaultCity.id
     }))
 
-    await postForm("/informations/edit", requestForm).
+    await postForm("/informations/edit", authContext.userToken, formData).
       then(response => {
         authContext.setUserInfoHandler(response.data.user)
         localStorage.setItem('e-service-userInfo', JSON.stringify(
@@ -93,7 +91,7 @@ function AdminDashboard() {
                   <img
                     className='w-full h-full rounded-full
                     absolute top-0 left-0 object-cover object-top'
-                    src={config.mainUrl.replace("/api", "") + `/uploads/` + authContext.userInfo.profile}
+                    src={baseURL + `/uploads/` + authContext.userInfo.profile}
                   />
                 )
               }
@@ -207,7 +205,10 @@ function AdminDashboard() {
                   <div className="flex flex-col justify-center items-center gap-3">
                     <div className="bg-blue-400 w-20 h-20 rounded-full">
                       {authContext.userInfo.profile && (
-                        <img className='h-full object-cover rounded-full' src={config.mainUrl.replace("/api", "") + `/uploads/` + authContext.userInfo.profile} />
+                        <img
+                          className='h-full object-cover rounded-full'
+                          src={baseURL + `/uploads/` + authContext.userInfo.profile}
+                        />
                       )}
                     </div>
                     <span className='text-white flex justify-center items-center gap-1'>
@@ -355,7 +356,7 @@ function AdminDashboard() {
                     <img
                       className='w-full h-full rounded-full
                         absolute top-0 left-0 object-cover object-top show-fade'
-                      src={profileUrl || config.mainUrl.replace("/api", "") + `/uploads/` + authContext.userInfo.profile}
+                      src={profileUrl || baseURL + `/uploads/` + authContext.userInfo.profile}
                       alt="admin profile"
                     />
                   )
