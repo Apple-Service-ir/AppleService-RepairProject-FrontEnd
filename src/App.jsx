@@ -42,8 +42,13 @@ function App() {
   const progressIsLoadingRef = useRef()
 
   useEffect(() => {
-    const localStorageToken = localStorage.getItem('e-service-token')
     setProgressIsLoadingHandler(true)
+
+    const localStorageToken = localStorage.getItem('e-service-token')
+    const localStorageUserInfo = localStorage.getItem('e-service-userInfo')
+    setUserToken(localStorageToken)
+    setUserInfo(localStorageUserInfo)
+
     get('/informations/get', localStorageToken)
       .then(response => {
         setIslogin(true)
