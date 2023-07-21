@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Toaster, toast } from 'react-hot-toast'
 
-import { get, post } from '../../utility'
+import { get, post } from '../../utils/connection'
 import { useRef } from 'react'
 import AuthContext from '../../context/AuthContext'
 import LoadingContext from '../../context/LoadingContext'
@@ -364,7 +364,7 @@ function AdminOrders() {
                   </li>
                 )
               }
-              
+
               <OrderDetails order={modal.order} />
             </ul>
           </PortalModal>

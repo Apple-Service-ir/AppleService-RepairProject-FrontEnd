@@ -1,3 +1,4 @@
 {
-  "mainUrl": "BACKEND_URL"
+  "baseApiURL": "BACKEND_API_URL",
+  "baseURL": "BACKEND_URL"
 }
