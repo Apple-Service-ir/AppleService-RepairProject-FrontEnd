@@ -1,13 +1,13 @@
 import React, { useContext, useRef, useEffect } from 'react'
 
 import AuthContext from '../../context/AuthContext'
-import { post } from '../../utility'
+import { post } from '../../utils/connection'
 import { toast, Toaster } from 'react-hot-toast'
 import Loader from './../Loader/Loader'
 import { useState } from 'react'
 
 function MessageSection(props) {
-  const authcontext = useContext(AuthContext)
+  const authContext = useContext(AuthContext)
   const sendMessageRef = useRef()
   const [isLoading, setIsloading] = useState(false)
 
@@ -21,13 +21,11 @@ function MessageSection(props) {
     if (sendMessageRef.current.value.length > 0) {
       setIsloading(true)
 
-      await post('/tickets/messages/new',
-        {
-          ticketId,
-          text: sendMessageRef.current.value,
-          token: authcontext.userToken
-        }
-      ).then(response => {
+      const requestBody = {
+        ticketId,
+        text: sendMessageRef.current.value
+      }
+      await post('/tickets/messages/new', authContext.userToken, requestBody).then(response => {
         bottomRef.current.scrollTop = bottomRef.current.scrollHeight + 100
         setTickets((prev) => {
           const mapedTickets = prev.map(ticket => {
@@ -58,7 +56,7 @@ function MessageSection(props) {
           <span className='text-white sansbold'>{currentTicket.subject}</span>
         </div>
         {
-          currentTicket.clientId == authcontext.userInfo.id
+          currentTicket.clientId == authContext.userInfo.id
           && currentTicket.status != "closed"
           && (
             <button
