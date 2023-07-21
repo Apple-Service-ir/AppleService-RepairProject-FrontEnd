@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { mainUrl } from "../../../config.json"
+import { baseURL } from "../../../config.json"
 
 function OrderDetails({ order }) {
   return (
@@ -123,9 +123,11 @@ function OrderDetails({ order }) {
         <div className="bg-white w-8/12 flex justify-center items-center p-3 rounded-l-md">
           <a
             className='underline'
-            href={`${mainUrl}/uploads/${order.picture}`}
+            href={`${baseURL}/uploads/${order.picture}`}
             target='_blank'
-          >مشاهده</a>
+          >
+            مشاهده
+          </a>
         </div>
       </li>
 
