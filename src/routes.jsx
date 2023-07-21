@@ -27,67 +27,144 @@ import TransActionResponse from "./pages/TransActionResponse/TransActionResponse
 import NotFound from "./pages/NotFound/NotFound.jsx"
 
 const routes = [
-  { path: '/', element: <Home /> },
+  // HOME PAGE
+  {
+    path: '/',
+    element: <Home />
+  },
 
+  // ORDER PAGE
   {
     path: '/order',
-    element: <PrivateRoute reDirectPath='/register' privateRole={'isUserLoggedIn'}> <Order /> </PrivateRoute>
+    element: <PrivateRoute
+      reDirectPath='/register'
+      privateRole={'isUserLoggedIn'}
+    >
+      <Order />
+    </PrivateRoute>
   },
 
+  // LOGIN AND REGISTER PAGE
   {
     path: '/register',
-    element: <PrivateRoute reDirectPath='/dashboard' privateRole={'isUserNotLoggedIn'}> <Register /> </PrivateRoute>
+    element: <PrivateRoute
+      reDirectPath='/dashboard'
+      privateRole={'isUserNotLoggedIn'}
+    >
+      <Register />
+    </PrivateRoute>
   },
 
+  // USER DASHBOARD AND REPAIRMAN PANEL
   {
     path: '/dashboard',
-    element: <PrivateRoute reDirectPath='/register' privateRole={'isUserLoggedIn'}> <UserDashboard /> </PrivateRoute>,
+    element: <PrivateRoute
+      reDirectPath='/register'
+      privateRole={'isUserLoggedIn'}
+    >
+      <UserDashboard />
+    </PrivateRoute>,
     children: [
-      { path: '/dashboard', element: <UserHome /> },
-      { path: '/dashboard/orders', element: <UserOrders /> },
-      { path: '/dashboard/tickets', element: <UserTickets /> },
+      {
+        path: '/dashboard',
+        element: <UserHome />
+      },
+      {
+        path: '/dashboard/orders',
+        element: <UserOrders />
+      },
+      {
+        path: '/dashboard/tickets',
+        element: <UserTickets />
+      },
       {
         path: '/dashboard/repairman',
         element: <RepairMan />,
         children: [
           {
-            path: '/dashboard/repairman', element: <PrivateRoute reDirectPath='/dashboard' privateRole={'isRepairMan'}>
+            path: '/dashboard/repairman',
+            element: <PrivateRoute
+              reDirectPath='*'
+              privateRole={'isRepairMan'}
+            >
               <RepairManHome />
             </PrivateRoute>
           },
-          { path: '/dashboard/repairman/get', element: <RepairManGetOrder /> },
-          { path: '/dashboard/repairman/done', element: <RepairManDoneOrders /> }
+          {
+            path: '/dashboard/repairman/get',
+            element: <RepairManGetOrder />
+          },
+          {
+            path: '/dashboard/repairman/done',
+            element: <RepairManDoneOrders />
+          }
         ]
       }
     ]
   },
 
+  // ADMIN PANEL
   {
     path: '/admin',
-    element:
-      <PrivateRoute
-        reDirectPath={'/dashboard'}
-        privateRole={'isSupporter'}
-      >
-        <AdminDashboard />
-      </PrivateRoute>,
+    element: <PrivateRoute
+      reDirectPath={'*'}
+      privateRole={'isSupporter'}
+    >
+      <AdminDashboard />
+    </PrivateRoute>,
     children: [
-      { path: '/admin', element: <AdminHome /> },
+      {
+        path: '/admin',
+        element: <AdminHome />
+      },
       {
         path: '/admin/users',
         element: <AdminUsers />
       },
-      { path: '/admin/orders', element: <AdminOrders /> },
-      { path: '/admin/tickets', element: <AdminTickets /> },
-      { path: '/admin/devices', element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminDevices /> </PrivateRoute> },
-      { path: '/admin/parts', element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminParts /> </PrivateRoute> },
-      { path: '/admin/cities', element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminCities /> </PrivateRoute> },
+      {
+        path: '/admin/orders',
+        element: <AdminOrders />
+      },
+      {
+        path: '/admin/tickets',
+        element: <AdminTickets />
+      },
+      {
+        path: '/admin/devices',
+        element: <PrivateRoute reDirectPath={'/admin'} privateRole={'isAdmin'}> <AdminDevices /> </PrivateRoute>
+      },
+      {
+        path: '/admin/parts',
+        element: <PrivateRoute
+          reDirectPath={'/admin'}
+          privateRole={'isAdmin'}
+        >
+          <AdminParts />
+        </PrivateRoute>
+      },
+      {
+        path: '/admin/cities',
+        element: <PrivateRoute
+          reDirectPath={'/admin'}
+          privateRole={'isAdmin'}
+        >
+          <AdminCities />
+        </PrivateRoute>
+      },
     ]
   },
 
-  { path: '/payments/done', element: <TransActionResponse /> },
+  // TRANSACTION RESPONSE PAGE
+  {
+    path: '/payments/done',
+    element: <TransActionResponse />
+  },
 
-  { path: '*', element: <NotFound /> }
+  // 404 || NOT FOUND PAGE
+  {
+    path: '*',
+    element: <NotFound />
+  }
 ]
 
 export { routes }
