@@ -291,7 +291,7 @@ function AdminOrders() {
           ) : (
             <Alert
               theme={'danger'}
-              title={'قطعه ای ثبت نشده است.'}
+              title={'سفارشی ثبت نشده است'}
             />
           )
         }
