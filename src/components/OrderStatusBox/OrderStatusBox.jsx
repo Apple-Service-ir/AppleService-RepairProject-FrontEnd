@@ -26,7 +26,7 @@ function OrderStatusBox({ order, clickHandler }) {
       idBg = 'bg-yellow-300'
       bgStatus = 'bg-yellow-500'
       idShadow = 'shadow-sm shadow-yellow-500'
-      statusShadow = 'shadow shadow-yellow-700'
+      statusShadow = 'shadow-sm shadow-yellow-700'
       border = 'border-b-2 border-dashed border-yellow-300'
       btn = 'badge-warning'
       break;
@@ -37,7 +37,7 @@ function OrderStatusBox({ order, clickHandler }) {
       idBg = 'bg-yellow-300'
       bgStatus = 'bg-yellow-500'
       idShadow = 'shadow-sm shadow-yellow-500'
-      statusShadow = 'shadow shadow-yellow-700'
+      statusShadow = 'shadow-sm shadow-yellow-700'
       border = 'border-b-2 border-dashed border-yellow-300'
       btn = 'badge-warning'
       break;
@@ -48,7 +48,7 @@ function OrderStatusBox({ order, clickHandler }) {
       idBg = 'bg-green-300'
       bgStatus = 'bg-green-500'
       idShadow = 'shadow-sm shadow-green-500'
-      statusShadow = 'shadow shadow-green-700'
+      statusShadow = 'shadow-sm shadow-green-700'
       border = 'border-b-2 border-dashed border-green-300'
       btn = 'badge-success'
       break;
