@@ -214,7 +214,7 @@ function AdminCities() {
           ) : (
             <Alert
               theme={'danger'}
-              title={'شهر ای ثبت نشده است.'}
+              title={'شهر ای ثبت نشده است'}
             />
           )
         }

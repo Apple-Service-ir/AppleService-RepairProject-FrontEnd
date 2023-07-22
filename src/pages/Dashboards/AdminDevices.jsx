@@ -279,7 +279,7 @@ function AdminDevices() {
           ) : (
             <Alert
               theme={'danger'}
-              title={'قطعه ای ثبت نشده است.'}
+              title={'دستگاهی ثبت نشده است'}
             />
           )
         }
