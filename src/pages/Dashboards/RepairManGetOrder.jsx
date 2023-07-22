@@ -309,7 +309,8 @@ function RepairManGetOrder() {
           <h1 className='w-full text-right text-xl sansbold mb-3'>سفارش های در انتظار تایید</h1>
           {
             orders.pending.length > 0 ? orders.pending.map(order => (
-              <ul key={order.id} className="bg-green-200 w-[750px] h-12 flex justify-between items-center 
+              <ul key={order.id} className="bg-green-200 w-[750px] h-12
+                flex justify-between items-center
                 pr-6 rounded-xl relative mb-3 sm:w-full">
                 <span className='px-2 text-sm opacity-90'>{order.id} #</span>
                 <li>
