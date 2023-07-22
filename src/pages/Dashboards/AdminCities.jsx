@@ -153,7 +153,7 @@ function AdminCities() {
 
         {
           cities.length > 0 ? (
-            <div className='w-full mt-3'>
+            <div className='w-full mt-6'>
               <h1 className='w-full text-right text-xl sansbold'>
                 لیست شهر ها
               </h1>
@@ -216,10 +216,12 @@ function AdminCities() {
               </div>
             </div>
           ) : (
-            <Alert
-              theme={'danger'}
-              title={'شهر ای ثبت نشده است'}
-            />
+            <div className='w-full mt-3'>
+              <Alert
+                theme={'danger'}
+                title={'شهر ای ثبت نشده است'}
+              />
+            </div>
           )
         }
       </div>

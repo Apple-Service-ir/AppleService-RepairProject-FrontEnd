@@ -384,7 +384,7 @@ function AdminUsers() {
 
         {
           users.length > 0 ? (
-            <div className='w-full mt-3'>
+            <div className='w-full mt-6'>
               <h1 className='w-full text-right text-xl sansbold'>
                 لیست کاربران
               </h1>
@@ -442,10 +442,12 @@ function AdminUsers() {
               </div>
             </div>
           ) : (
-            <Alert
-              theme={'danger'}
-              title={'کاربری ثبت نشده است'}
-            />
+            <div className='w-full mt-3'>
+              <Alert
+                theme={'danger'}
+                title={'کاربری ثبت نشده است'}
+              />
+            </div>
           )
         }
       </div>

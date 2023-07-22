@@ -215,7 +215,7 @@ function AdminDevices() {
 
         {
           datas.devices.length > 0 ? (
-            <div className='w-full mt-3'>
+            <div className='w-full mt-6'>
               <h1 className='w-full text-right text-xl sansbold'>
                 لیست دستگاه ها
               </h1>
@@ -281,10 +281,12 @@ function AdminDevices() {
               </div>
             </div>
           ) : (
-            <Alert
-              theme={'danger'}
-              title={'دستگاهی ثبت نشده است'}
-            />
+            <div className='w-full mt-3'>
+              <Alert
+                theme={'danger'}
+                title={'دستگاهی ثبت نشده است'}
+              />
+            </div>
           )
         }
       </div >
