@@ -127,69 +127,68 @@ function UserOrders() {
         }
 
         {
-          allOrders.all.length > 0 && (
-            <h2 className='w-full text-right text-xl sansbold'>لیست سفارشات تمام شده</h2>
-          )
-        }
-
-        {
           allOrders.all.length > 0 ? (
-            <div className="w-full overflow-x-auto rounded-xl">
-              <table className='table'>
-                <thead className='thead'>
-                  <tr className='thead__tr'>
-                    <th className='thead__tr__th w-2/12'>کد سفارش</th>
-                    <th className='thead__tr__th w-3/12'>نام دستگاه</th>
-                    <th className='thead__tr__th w-3/12'>قطعات</th>
-                    <th className='thead__tr__th w-2/12'>هزینه نهایی</th>
-                    <th className='thead__tr__th w-2/12'>تاریخ</th>
-                  </tr>
-                </thead>
-                <tbody className='tbody'>
-                  {
-                    allOrders.all.map(order => (
-                      <tr
-                        key={order.id}
-                        className='tbody__tr cursor-pointer'
-                        onClick={() => setModal({ show: true, order })}
-                      >
-                        <td className='tbody__tr__td w-2/12'>
-                          <div className='td__wrapper justify-center'>
+            <div className="w-full">
+              <h2 className='w-full text-right text-xl sansbold'>
+                لیست سفارشات تمام شده
+              </h2>
+              <div className="w-full overflow-x-auto rounded-xl mt-3">
+                <table className='table'>
+                  <thead className='thead'>
+                    <tr className='thead__tr'>
+                      <th className='thead__tr__th w-2/12'>کد سفارش</th>
+                      <th className='thead__tr__th w-3/12'>نام دستگاه</th>
+                      <th className='thead__tr__th w-3/12'>قطعات</th>
+                      <th className='thead__tr__th w-2/12'>هزینه نهایی</th>
+                      <th className='thead__tr__th w-2/12'>تاریخ</th>
+                    </tr>
+                  </thead>
+                  <tbody className='tbody'>
+                    {
+                      allOrders.all.map(order => (
+                        <tr
+                          key={order.id}
+                          className='tbody__tr cursor-pointer'
+                          onClick={() => setModal({ show: true, order })}
+                        >
+                          <td className='tbody__tr__td w-2/12'>
+                            <div className='td__wrapper justify-center'>
+                              {
+                                order.status === 'done' ? (
+                                  <button className='badge badge-success select-text'>{order.id} #</button>
+                                ) : (
+                                  <button className='badge badge-danger select-text'>{order.id} #</button>
+                                )
+                              }
+                            </div>
+                          </td>
+                          <td className='tbody__tr__td w-3/12 text-sm'>{order.phoneName}</td>
+                          <td className='tbody__tr__td w-3/12'>
+                            <div className="td__wrapper">
+                              <span className='text-xs'>{order.partName}</span>
+                            </div>
+                          </td>
+                          <td className='tbody__tr__td w-2/12 text-sm'>
                             {
-                              order.status === 'done' ? (
-                                <button className='badge badge-success select-text'>{order.id} #</button>
-                              ) : (
-                                <button className='badge badge-danger select-text'>{order.id} #</button>
-                              )
+                              order.total ? (
+                                <>
+                                  {
+                                    order.total.toLocaleString()
+                                  }
+                                  <small className='italic mr-1'>تومان</small>
+                                </>
+                              ) : '-'
                             }
-                          </div>
-                        </td>
-                        <td className='tbody__tr__td w-3/12 text-sm'>{order.phoneName}</td>
-                        <td className='tbody__tr__td w-3/12'>
-                          <div className="td__wrapper">
-                            <span className='text-xs'>{order.partName}</span>
-                          </div>
-                        </td>
-                        <td className='tbody__tr__td w-2/12 text-sm'>
-                          {
-                            order.total ? (
-                              <>
-                                {
-                                  order.total.toLocaleString()
-                                }
-                                <small className='italic mr-1'>تومان</small>
-                              </>
-                            ) : '-'
-                          }
-                        </td>
-                        <td className='tbody__tr__td w-2/12 text-sm'>
-                          {new Date(order.createdAt).toLocaleDateString('fa-IR')}
-                        </td>
-                      </tr>
-                    ))
-                  }
-                </tbody>
-              </table>
+                          </td>
+                          <td className='tbody__tr__td w-2/12 text-sm'>
+                            {new Date(order.createdAt).toLocaleDateString('fa-IR')}
+                          </td>
+                        </tr>
+                      ))
+                    }
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : (
             <Alert

@@ -61,7 +61,7 @@ function AdminTickets() {
         <h1 className='w-full text-right text-xl sansbold'>لیست تیکت ها</h1>
         {
           tickets.length > 0 ? (
-            <div className='w-full overflow-x-auto rounded-xl mt-1'>
+            <div className='w-full overflow-x-auto rounded-xl mt-3'>
               <table className='table'>
                 <thead className='thead mt-1'>
                   <tr className='thead__tr'>

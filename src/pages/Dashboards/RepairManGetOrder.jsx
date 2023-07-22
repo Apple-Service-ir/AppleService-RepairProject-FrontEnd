@@ -194,8 +194,10 @@ function RepairManGetOrder() {
         {
           orders.inPaymentDone.length > 1 && (
             <div className="w-full">
-              <h1 className='w-full text-right text-xl sansbold mb-3'>سفارش های در انتظار پرداخت</h1>
-              <div className="w-full overflow-x-auto rounded-xl">
+              <h1 className='w-full text-right text-xl sansbold'>
+                سفارش های در انتظار پرداخت
+              </h1>
+              <div className="w-full overflow-x-auto rounded-xl mt-3">
                 <table className='table'>
                   <thead className='thead'>
                     <tr className='thead__tr'>

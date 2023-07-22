@@ -155,9 +155,9 @@ function UserTickets() {
 
         {
           tickets.length > 0 && (
-            <>
+            <div className='w-full'>
               <h2 className='w-full text-right text-xl sansbold'>لیست تیکت ها</h2>
-              <div className="w-full overflow-x-auto rounded-xl">
+              <div className="w-full overflow-x-auto rounded-xl mt-3">
                 <table className='table'>
                   <thead className='thead'>
                     <tr className='thead__tr'>
@@ -210,7 +210,7 @@ function UserTickets() {
                   </tbody>
                 </table>
               </div>
-            </>
+            </div>
           )
         }
       </div>

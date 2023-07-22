@@ -385,7 +385,7 @@ function AdminUsers() {
         <h1 className='w-full text-right text-xl sansbold mt-6'>لیست کاربران</h1>
         {
           users.length > 0 ? (
-            <div className="w-full overflow-x-auto rounded-xl mt-1">
+            <div className="w-full overflow-x-auto rounded-xl mt-3">
               <table className='table'>
                 <thead className='thead'>
                   <tr className='thead__tr'>

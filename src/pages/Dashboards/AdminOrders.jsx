@@ -225,7 +225,7 @@ function AdminOrders() {
         <h1 className='w-full text-right text-xl sansbold'>لیست سفارشات</h1>
         {
           orders.length > 0 ? (
-            <div className="w-full overflow-x-auto rounded-xl mt-1">
+            <div className="w-full overflow-x-auto rounded-xl mt-3">
               <table className='table'>
                 <thead className='thead'>
                   <tr className='thead__tr'>
