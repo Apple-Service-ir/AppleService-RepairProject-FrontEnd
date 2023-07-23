@@ -2,7 +2,7 @@ import { createContext } from "react";
 
 const DataContext = createContext({
   cities: [],
-  setCities: () => { }
+  setCitiesHandler: () => { }
 })
 
 export default DataContext

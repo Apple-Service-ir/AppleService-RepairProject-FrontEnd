@@ -4,9 +4,10 @@ import { useRoutes, useNavigate } from "react-router-dom"
 import { toast } from "react-hot-toast"
 
 import { routes } from "./routes"
-import { get, post } from "./utils/connection"
 import AuthContext from "./context/AuthContext"
 import LoadingContext from "./context/LoadingContext"
+import DataContext from "./context/DataContext"
+import { get, post } from "./utils/connection"
 import Loader from "./components/Loader/Loader"
 import { Header } from "./components/Header/Header"
 import Footer from "./components/Footer/Footer"
@@ -33,8 +34,11 @@ function App() {
   const [userInfo, setUserInfo] = useState(
     localStorage.getItem("e-service-userInfo") ? JSON.parse(localStorage.getItem("e-service-userInfo")) : {}
   )
+
   const [screenLoaing, setScreenLoading] = useState(true)
   const [progressIsLoading, setProgressIsLoading] = useState(false)
+
+  const [cities, setCities] = useState([])
 
   const router = useRoutes(routes)
   const redirect = useNavigate()
@@ -46,7 +50,7 @@ function App() {
 
     const localStorageToken = localStorage.getItem('e-service-token')
     const localStorageUserInfo = localStorage.getItem('e-service-userInfo')
-    
+
     setUserToken(localStorageToken)
     setUserInfo(JSON.parse(localStorageUserInfo))
 
@@ -93,7 +97,7 @@ function App() {
 
   const setUserInfoHandler = userInfo => setUserInfo(userInfo)
 
-  const setProgressIsLoadingHandler = (status) => {
+  const setProgressIsLoadingHandler = status => {
     if (status) {
       setProgressIsLoading(true)
     }
@@ -104,6 +108,8 @@ function App() {
       }, 100);
     }
   }
+
+  const setCitiesHandler = cities => setCities(cities)
 
   return (
     <>
@@ -123,15 +129,22 @@ function App() {
             setProgressIsLoadingHandler
           }}
         >
-          {
-            containingHeader.includes(location.pathname) && <Header />
-          }
+          <DataContext.Provider
+            value={{
+              cities,
+              setCitiesHandler
+            }}
+          >
+            {
+              containingHeader.includes(location.pathname) && <Header />
+            }
 
-          {router}
+            {router}
 
-          {
-            containingFooter.includes(location.pathname) && <Footer />
-          }
+            {
+              containingFooter.includes(location.pathname) && <Footer />
+            }
+          </DataContext.Provider>
         </LoadingContext.Provider>
       </AuthContext.Provider>
 
