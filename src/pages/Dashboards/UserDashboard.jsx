@@ -4,9 +4,9 @@ import { toast, Toaster } from 'react-hot-toast'
 
 import AuthContext from '../../context/AuthContext'
 import LoadingContext from '../../context/LoadingContext'
+import DataContext from '../../context/DataContext'
 import { post } from '../../utils/connection'
 import PortalModal from '../../components/PortalModal/PortalModal'
-import useGetCities from './../../Hooks/useGetCities'
 import SubmitBtn from './../../components/SubmitBtn/SubmitBtn'
 
 
@@ -14,8 +14,8 @@ function UserDashboard() {
   const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
   const authContext = useContext(AuthContext)
   const loadingContext = useContext(LoadingContext)
+  const dataContext = useContext(DataContext)
 
-  const [defaultCity, allCities] = useGetCities()
   const [showEditInformationModal, setShowEditInformationModal] = useState(false)
   const [editInformationForm, setEditInformationForm] = useState({
     firstName: { value: userInfo.firstName, validation: true },
@@ -207,7 +207,7 @@ function UserDashboard() {
                   }}
                 >
                   {
-                    allCities.map(city => (
+                    dataContext.cities.map(city => (
                       <option key={city.id} value={city.id}>{city.name}</option>
                     ))
                   }
