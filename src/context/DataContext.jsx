@@ -2,7 +2,8 @@ import { createContext } from "react";
 
 const DataContext = createContext({
   cities: [],
-  setCitiesHandler: () => { }
+  addCityHandler: () => { },
+  removeCityHandler: () => { },
 })
 
 export default DataContext

@@ -54,23 +54,31 @@ function App() {
     setUserToken(localStorageToken)
     setUserInfo(JSON.parse(localStorageUserInfo))
 
-    get('/informations/get', localStorageToken)
-      .then(response => {
-        setIslogin(true)
-        setUserInfo(response.data.user)
-        setUserToken(response.data.token)
-        localStorage.setItem('e-service-userInfo', JSON.stringify(response.data.user))
-      }).catch(() => {
-        setUserToken(null)
-        setIslogin(false)
-        setUserInfo({})
-        localStorage.removeItem('e-service-token')
-        localStorage.removeItem('e-service-userInfo')
-      })
-      .finally(() => {
-        setProgressIsLoadingHandler(false)
-        setScreenLoading(false)
-      })
+    const func = async () => {
+      await get('/informations/get', localStorageToken)
+        .then(response => {
+          setIslogin(true)
+          setUserInfo(response.data.user)
+          setUserToken(response.data.token)
+          localStorage.setItem('e-service-userInfo', JSON.stringify(response.data.user))
+        }).catch(() => {
+          setUserToken(null)
+          setIslogin(false)
+          setUserInfo({})
+          localStorage.removeItem('e-service-token')
+          localStorage.removeItem('e-service-userInfo')
+        })
+      await get('/list/cities')
+        .then(response => {
+          const firstCity = response.data.find(city => city.name === userInfo.city)
+          const otherCities = response.data.filter(city => city.name !== userInfo.city)
+          setCities([firstCity, ...otherCities])
+        })
+      setProgressIsLoadingHandler(false)
+      setScreenLoading(false)
+    }
+
+    func()
   }, [])
 
   const login = (token, info) => {
@@ -109,7 +117,12 @@ function App() {
     }
   }
 
-  const setCitiesHandler = cities => setCities(cities)
+  const addCityHandler = newCity => setCities(prev => ([newCity, ...prev]))
+
+  const removeCityHandler = cityId => {
+    const filteredCities = cities.filter(city => city.id !== cityId)
+    setCities(filteredCities)
+  }
 
   return (
     <>
@@ -132,7 +145,8 @@ function App() {
           <DataContext.Provider
             value={{
               cities,
-              setCitiesHandler
+              addCityHandler,
+              removeCityHandler
             }}
           >
             {
