@@ -117,7 +117,11 @@ function App() {
     }
   }
 
-  const addCityHandler = newCity => setCities(prev => ([newCity, ...prev]))
+  const addCityHandler = newCity => {
+    const firstCity = cities.find(city => city.name === userInfo.city)
+    const otherCities = cities.filter(city => city.name !== userInfo.city)
+    setCities([firstCity, newCity, ...otherCities])
+  }
 
   const removeCityHandler = cityId => {
     const filteredCities = cities.filter(city => city.id !== cityId)
