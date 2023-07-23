@@ -54,19 +54,18 @@ function AdminDevices() {
   const submitHandler = async event => {
     event.preventDefault()
     if (deviceForm.selectBrand.validation && deviceForm.model.validation) {
-      setCreateDeviceLoading(true)
-
-      const devicesMap = datas.devices.map(d => d.model.toLowerCase())
+      const devicesMap = datas.devices.map(device => device.model.toLowerCase())
       if (devicesMap.includes(deviceForm.model.value.toLowerCase())) {
-        setCreateDeviceLoading(false)
         return toast.error("مدل وارد شده از قبل ثبت شده است.")
       }
+
+      setCreateDeviceLoading(true)
 
       const requestBody = {
         brand: deviceForm.selectBrand.value,
         model: deviceForm.model.value
       }
-      await post('/admins/devices/create', authContext.userToken)
+      await post('/admins/devices/create', authContext.userToken, requestBody)
         .then(response => {
           setDatas(prev => ({
             ...prev,
