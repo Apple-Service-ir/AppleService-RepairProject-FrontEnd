@@ -128,6 +128,18 @@ function App() {
     setCities(filteredCities)
   }
 
+  const updateCityHandler = (cityId, newCityName) => {
+    setCities(prev => {
+      const newCities = prev.map(city => {
+        if (city.id === cityId) {
+          city.name = newCityName
+        }
+        return city
+      })
+      return newCities
+    })
+  }
+
   return (
     <>
       <AuthContext.Provider
@@ -150,7 +162,8 @@ function App() {
             value={{
               cities,
               addCityHandler,
-              removeCityHandler
+              removeCityHandler,
+              updateCityHandler
             }}
           >
             {

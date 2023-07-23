@@ -68,29 +68,23 @@ function AdminCities() {
 
   const editCityNameHandler = async event => {
     event.preventDefault()
-    // if (!editCityName.validation) return toast.error('لطفا فیلد را کامل کنید')
+    if (!editCityName.validation) return toast.error('لطفا فیلد را کامل کنید')
 
-    // setEditCityLoader(true)
+    setEditCityLoader(true)
 
-    // const requestBody = {
-    //   id: modal.city.id,
-    //   data: { name: editCityName.value },
-    // }
-    // await post('/admins/cities/edit', authContext.userToken, requestBody)
-    //   .then(() => {
-    //     setCities(prev => {
-    //       const newCities = prev.map(city => {
-    //         if (city.id === modal.city.id) city.name = editCityName.value
-    //         return city
-    //       })
-    //       return newCities
-    //     })
-    //     toast.success('شهر با موفقیت ویرایش شد')
-    //   })
-    //   .catch(error => toast.error(error.response.data.err))
+    const requestBody = {
+      id: modal.city.id,
+      data: { name: editCityName.value },
+    }
+    await post('/admins/cities/edit', authContext.userToken, requestBody)
+      .then(() => {
+        dataContext.updateCityHandler(modal.city.id, editCityName.value)
+        toast.success('شهر با موفقیت ویرایش شد')
+      })
+      .catch(error => toast.error(error.response.data.err))
 
-    // setModal({ show: false, city: {} })
-    // setEditCityLoader(false)
+    setModal({ show: false, city: {} })
+    setEditCityLoader(false)
   }
 
   return (
