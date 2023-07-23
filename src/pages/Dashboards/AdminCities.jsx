@@ -4,6 +4,7 @@ import { toast, Toaster } from 'react-hot-toast'
 import { get, post } from '../../utils/connection'
 import AuthContext from '../../context/AuthContext'
 import LoadingContext from '../../context/LoadingContext'
+import DataContext from '../../context/DataContext'
 import Alert from '../../components/Alert/Alert'
 import PortalModal from '../../components/PortalModal/PortalModal'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn'
@@ -12,10 +13,10 @@ import DeleteIconLoader from '../../components/DeleteIconLoader/DeleteIconLoader
 function AdminCities() {
   const authContext = useContext(AuthContext)
   const loadingContext = useContext(LoadingContext)
+  const dataContext = useContext(DataContext)
 
   const [showCitiesForm, setShowCitiesForm] = useState(false)
   const [cityName, setCityName] = useState({ value: '', validation: false })
-  const [cities, setCities] = useState([])
   const [modal, setModal] = useState({ show: false, city: {} })
   const [editCityName, setEditCityName] = useState({ value: '', validation: false })
   const [createCityLoader, setCreateCityLoader] = useState(false)
@@ -24,9 +25,7 @@ function AdminCities() {
 
   useEffect(() => {
     document.title = "مدیریت شهر ها - داشبورد مدیریت اپل سرویس"
-    get('/list/cities')
-      .then(response => setCities(response.data))
-      .finally(() => loadingContext.setProgressIsLoadingHandler(false))
+    loadingContext.setProgressIsLoadingHandler(false)
   }, [])
 
   const addCityHandler = async event => {
@@ -36,7 +35,7 @@ function AdminCities() {
 
     if (!cityName.validation) return toast.error('لطفا فیلد را کامل کنید')
     if (!persianWords.test(cityName.value)) return toast.error('اسم شهر باید فقط حروف فارسی باشد.')
-    if (cities.map(city => city.name).includes(cityName.value)) return toast.error("این شهر از قبل ثبت شده است.")
+    if (dataContext.cities.map(city => city.name).includes(cityName.value)) return toast.error("این شهر از قبل ثبت شده است.")
 
     setCreateCityLoader(true)
 
@@ -45,7 +44,7 @@ function AdminCities() {
     }
     await post('/admins/cities/create', authContext.userToken, requestBody)
       .then(response => {
-        setCities(prev => [response.data.city, ...prev])
+        dataContext.addCityHandler(response.data.city)
         toast.success('شهر با موفقیت اضافه شد')
       })
       .catch(error => toast.error(error.response.data.err))
@@ -59,9 +58,7 @@ function AdminCities() {
     }
     await post('/admins/cities/delete', authContext.userToken, requestBody)
       .then(() => {
-        setCities(prev => {
-          return prev.filter(city => city.id !== cityId)
-        })
+        dataContext.removeCityHandler(cityId)
         toast.success('شهر با موفقیت حذف شد')
       })
       .catch(error => toast.error(error.response.data.err))
@@ -71,29 +68,29 @@ function AdminCities() {
 
   const editCityNameHandler = async event => {
     event.preventDefault()
-    if (!editCityName.validation) return toast.error('لطفا فیلد را کامل کنید')
+    // if (!editCityName.validation) return toast.error('لطفا فیلد را کامل کنید')
 
-    setEditCityLoader(true)
+    // setEditCityLoader(true)
 
-    const requestBody = {
-      id: modal.city.id,
-      data: { name: editCityName.value },
-    }
-    await post('/admins/cities/edit', authContext.userToken, requestBody)
-      .then(() => {
-        setCities(prev => {
-          const newCities = prev.map(city => {
-            if (city.id === modal.city.id) city.name = editCityName.value
-            return city
-          })
-          return newCities
-        })
-        toast.success('شهر با موفقیت ویرایش شد')
-      })
-      .catch(error => toast.error(error.response.data.err))
+    // const requestBody = {
+    //   id: modal.city.id,
+    //   data: { name: editCityName.value },
+    // }
+    // await post('/admins/cities/edit', authContext.userToken, requestBody)
+    //   .then(() => {
+    //     setCities(prev => {
+    //       const newCities = prev.map(city => {
+    //         if (city.id === modal.city.id) city.name = editCityName.value
+    //         return city
+    //       })
+    //       return newCities
+    //     })
+    //     toast.success('شهر با موفقیت ویرایش شد')
+    //   })
+    //   .catch(error => toast.error(error.response.data.err))
 
-    setModal({ show: false, city: {} })
-    setEditCityLoader(false)
+    // setModal({ show: false, city: {} })
+    // setEditCityLoader(false)
   }
 
   return (
@@ -152,7 +149,7 @@ function AdminCities() {
         }
 
         {
-          cities.length > 0 ? (
+          dataContext.cities.length > 0 ? (
             <div className='w-full mt-6'>
               <h1 className='w-full text-right text-xl sansbold'>
                 لیست شهر ها
@@ -169,7 +166,7 @@ function AdminCities() {
                   </thead>
                   <tbody className='tbody'>
                     {
-                      cities.map(city => (
+                      dataContext.cities.map(city => (
                         <tr
                           key={city.id}
                           className='tbody__tr'
