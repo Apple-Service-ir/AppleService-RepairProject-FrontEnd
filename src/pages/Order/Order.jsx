@@ -62,7 +62,7 @@ export default function Order() {
 
     const formData = new FormData()
     formData.append('address', form.address.value)
-    formData.append('city', form.city.value || defaultCity.id)
+    formData.append('city', form.city.value || dataContext.cities[0].id)
     formData.append('phoneId', selectedDatas.devices.id)
     formData.append('partId', selectedDatas.parts.id)
     formData.append('description', form.desc.value)
