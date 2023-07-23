@@ -4,9 +4,9 @@ import { toast, Toaster } from 'react-hot-toast'
 
 import { baseURL } from '../../../config.json'
 import AuthContext from '../../context/AuthContext'
+import DataContext from '../../context/DataContext'
 import LoadingContext from '../../context/LoadingContext'
 import { postForm } from '../../utils/connection'
-import useGetCities from './../../Hooks/useGetCities'
 import AdminSideBarLink from '../../components/Dashboard/AdminSideBarLink'
 import AdminSideBarMobile from '../../components/Dashboard/AdminMobileSideBarLink'
 import PortalModal from './../../components/PortalModal/PortalModal'
@@ -17,8 +17,8 @@ function AdminDashboard() {
   const userInfo = JSON.parse(localStorage.getItem('e-service-userInfo'))
   const authContext = useContext(AuthContext)
   const loadingContext = useContext(LoadingContext)
+  const dataContext = useContext(DataContext)
 
-  const [defaultCity, allCities] = useGetCities()
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showEditInformationModal, setShowEditInformationModal] = useState(false)
   const [profileUrl, setProfileUrl] = useState('')
@@ -436,7 +436,7 @@ function AdminDashboard() {
                   }}
                 >
                   {
-                    allCities.map(city => (
+                    dataContext.cities.map(city => (
                       <option key={city.id} value={city.id}>{city.name}</option>
                     ))
                   }
