@@ -3,16 +3,16 @@ import toast, { Toaster } from 'react-hot-toast';
 
 import { get, postForm } from '../../utils/connection';
 import AuthContext from './../../context/AuthContext'
+import DataContext from './../../context/DataContext'
 import LoadingContext from './../../context/LoadingContext'
-import useGetCities from './../../Hooks/useGetCities'
 import PortalModal from './../../components/PortalModal/PortalModal'
 import SubmitBtn from '../../components/SubmitBtn/SubmitBtn';
 
 export default function Order() {
   const authContext = useContext(AuthContext)
   const loadingContext = useContext(LoadingContext)
+  const dataContext = useContext(DataContext)
 
-  const [defaultCity, allCities] = useGetCities()
   const [datas, setDatas] = useState({ all: [], brands: [], devices: [], parts: [] })
   const [selectedDatas, setSelectedDatas] = useState({ devices: {}, parts: {} })
   const [modals, setModals] = useState({ brands: false, devices: false, parts: false })
@@ -51,7 +51,7 @@ export default function Order() {
     func()
   }, [])
 
-  async function postOrder() {
+  const postOrder = async () => {
     setSubmitLoading(true)
 
     for (const field in form)
@@ -127,8 +127,13 @@ export default function Order() {
               }}
             >
               {
-                allCities.map(city => (
-                  <option key={city.id} value={city.id}>{city.name}</option>
+                dataContext.cities.map(city => (
+                  <option
+                    key={city.id}
+                    value={city.id}
+                  >
+                    {city.name}
+                  </option>
                 ))
               }
             </select>
