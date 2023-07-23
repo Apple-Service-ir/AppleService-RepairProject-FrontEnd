@@ -127,7 +127,7 @@ function UserOrders() {
         }
 
         {
-          allOrders.all.length > 0 ? (
+          allOrders.all.length > 0 && (
             <div className="w-full">
               <h2 className='w-full text-right text-xl sansbold'>
                 لیست سفارشات تمام شده
@@ -190,7 +190,15 @@ function UserOrders() {
                 </table>
               </div>
             </div>
-          ) : (
+          )
+        }
+
+        {
+          !Object.keys(allOrders.pending).length
+          && !Object.keys(allOrders.working).length
+          && !Object.keys(allOrders.paymentWoring).length
+          && !Object.keys(allOrders.paymentDone).length
+          && !allOrders.all.length && (
             <Alert
               theme={'danger'}
               title={'سفارشی ثبت نشده است'}
